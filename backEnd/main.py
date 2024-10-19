@@ -10,7 +10,7 @@ app = FastAPI()
 # app.include_router(course.router, prefix="/api/v1/courses", tags=["Courses"])
 # app.include_router(user.router, prefix="/api/v1/users", tags=["Users"])
 
-
+#eer
 @app.get("/")
 async def root():
     return {"message": "Welcome to the Job Position Roadmap Recommender API"}
