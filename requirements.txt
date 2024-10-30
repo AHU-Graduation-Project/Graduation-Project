@@ -1,0 +1,6 @@
+fastapi[all]
+unicorn
+sqlalchemy
+databases
+psycopg2
+pydantic
