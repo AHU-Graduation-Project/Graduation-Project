@@ -1,7 +1,6 @@
 import dotenv from "dotenv";
 dotenv.config();
 import axios from "axios";
-import { URLSearchParams } from "url";
 
 const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
 
