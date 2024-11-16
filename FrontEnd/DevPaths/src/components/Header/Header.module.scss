@@ -1,3 +1,5 @@
+@import '/src/variables.scss';
+
 .header {
     padding: 20px;
     box-sizing: border-box;
@@ -5,14 +7,30 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    color: $white;
 }
 
+.brand {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font: $font-title;
+
+    *:not(img) {
+        font: $font-title;
+        display: inline-block;
+    }
+
+    img {
+        width: 35px;
+    }
+}
 .navMenu {
     display: flex;
-    gap: 20px;
+    gap: 30px;
     align-items: center;
-
+    font: $font-regular;
     a {
-        color: slategray;
+        text-decoration: none;
     }
 }
