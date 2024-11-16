@@ -5,7 +5,8 @@ export const Header = () => {
   return (
     <div className={style.header}>
       <div className={style.brand}>
-        <h3>Dev Paths</h3>
+        <img src="public/logo.png" alt="Dev Path Logo" />
+        <h3>Dev Path</h3>
       </div>
       <nav className={style.navMenu}>
         <a href="">home</a>
@@ -13,6 +14,9 @@ export const Header = () => {
         <a href="">My Progress</a>
         <a href="">about us</a>
       </nav>
+      <div className={style.searchBar + " hidden-lg"}>
+      <i className="bi bi-search"></i>
+      </div>
     </div>
   );
 };
