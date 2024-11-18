@@ -1,0 +1,16 @@
+@import "/src/variables.scss";
+
+/* Lister Container */
+.container {
+  display: flex; /* Matches flex */
+  flex-wrap: wrap; /* Allows items to wrap onto the next line */
+  gap: 0.5rem; /* Matches gap-2 */
+  padding: 1rem; /* Matches p-4 */
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .container {
+    justify-content: center; /* Center items on smaller screens */
+  }
+}

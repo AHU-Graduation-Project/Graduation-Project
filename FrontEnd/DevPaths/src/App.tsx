@@ -1,13 +1,14 @@
-
-import { Header } from './components/Header/index.tsx'
-import './App.css'
+import { Header } from "./components/Header/index.tsx";
+import Page from "./components/RoadsMapPage";
+import "./App.css";
 
 function App() {
   return (
     <>
-      <Header/>
+      <Header />
+      <Page />
     </>
-  )
+  );
 }
 
-export default App
+export default App;

@@ -1,0 +1,51 @@
+@import "/src/variables.scss";
+
+/* Container for the navigation menu */
+.container {
+  display: flex; /* Matches flex */
+  justify-content: center; /* Matches justify-center */
+  margin-left: 8rem; /* Matches mx-32 (32 x 0.25rem) */
+  margin-right: 8rem;
+}
+
+/* Menu styles */
+.menu {
+  display: flex; /* Matches menu-horizontal */
+  flex-direction: row; /* Horizontal menu */
+  background-color: transparent; /* Matches bg-base-200 */
+  border-radius: 0.5rem; /* Matches rounded-box */
+  padding: 0.5rem; /* Adds padding inside the menu */
+  list-style: none; /* Removes bullets */
+  margin: 0; /* Removes default margin */
+  gap: 0.5rem; /* Matches spacing between menu items */
+}
+
+/* Icon styles */
+.icon {
+  width: 1.75rem; /* Matches h-5 and w-5 */
+  height: 1.75rem;
+  color: #acaeaf; /* Matches text color for default state */
+  transition: color 0.3s ease-in-out; /* Smooth color transition */
+}
+
+.icon:hover {
+  color: #ffdb00; /* Change color to blue on hover */
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .container {
+    margin-left: 1rem; /* Reduce horizontal margin */
+    margin-right: 1rem;
+  }
+
+  .menu {
+    flex-wrap: wrap; /* Allow menu items to wrap on small screens */
+    justify-content: center; /* Center menu items */
+  }
+
+  .icon {
+    width: 1rem; /* Slightly smaller icons */
+    height: 1rem;
+  }
+}

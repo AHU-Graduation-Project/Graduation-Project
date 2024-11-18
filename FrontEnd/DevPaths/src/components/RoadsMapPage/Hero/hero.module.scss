@@ -1,0 +1,51 @@
+@import "/src/variables.scss";
+
+.hero {
+  padding-top: 2.25rem;
+  padding-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+  background-color: $black;
+  color: #333;
+}
+
+/* Content Wrapper */
+.hero__content {
+  text-align: center;
+}
+
+/* Text Container */
+.hero__text_container {
+  max-width: 40rem; /* Matches max-w-lg */
+  margin: 0 auto;
+}
+
+/* Header Styles */
+.hero__header {
+  font-size: 2.25rem; /* Matches text-4xl (36px) */
+  font-weight: 700; /* Matches font-bold */
+  margin-bottom: 1rem;
+  color: #ffdb00; /* Darker shade for contrast */
+  font-family: $font-title;
+}
+
+/* Description Paragraph */
+.hero__description {
+  margin: 1rem 0; /* Matches py-4 */
+  font-family: $font-small-title;
+  font-size: 1rem; /* Matches default font size */
+  line-height: 1.75rem; /* Improved readability */
+  color: #cacaca; /* Subtle gray for less emphasis */
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .hero__header {
+    font-size: 1.875rem; /* Adjust header size for smaller screens */
+  }
+
+  .hero__description {
+    font-size: 0.875rem; /* Slightly smaller text for mobile */
+    line-height: 1.5rem;
+  }
+}

@@ -1,0 +1,47 @@
+@import "/src/variables.scss";
+
+.card {
+  display: inline-block;
+  text-decoration: none;
+}
+
+.card__container {
+  position: relative;
+  width: 12rem;
+  height: 3.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background-color: $gray;
+  border-radius: 0.5rem;
+  border: 1px solid #6b7280;
+  transition: border-color 0.3s ease-in-out, color 0.3s ease-in-out; /* Matches transition duration-300 ease-in-out */
+}
+
+.card__container:hover {
+  border-color: #d2d3d5;
+}
+
+.card__text {
+  color: $white;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  transition: color 0.3s ease-in-out;
+}
+
+.card__container:hover .card__text {
+  color: #f9fafb; /* Matches group-hover:text-gray-100 */
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .card__container {
+    width: 10rem; /* Slightly smaller for mobile screens */
+    height: 3rem;
+  }
+
+  .card__text {
+    font-size: 0.875rem; /* Adjust text size for smaller screens */
+  }
+}

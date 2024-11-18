@@ -1,0 +1,41 @@
+@import "/src/variables.scss";
+
+/* Main container for the RoadMap component */
+.mainRoadmap {
+  display: flex;
+  flex-direction: column;
+  font-family: $font-regular;
+  padding-bottom: 3rem; /* Matches pb-12 */
+}
+
+/* Card section container */
+.cardSection {
+  display: flex;
+  justify-content: center;
+  gap: 1.25rem; /* Matches gap-5 */
+  margin-top: 2.25rem; /* Matches mt-9 */
+  overflow: hidden;
+  width: 100%;
+  position: relative;
+}
+
+/* Lister section */
+.listerSection {
+  display: flex;
+  justify-content: center;
+  margin-left: 8rem; /* Matches mx-32 */
+  margin-right: 8rem;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .listerSection {
+    margin-left: 2rem; /* Reduce horizontal margin */
+    margin-right: 2rem;
+  }
+
+  .cardSection {
+    flex-wrap: wrap; /* Allow cards to wrap on smaller screens */
+    gap: 1rem; /* Reduce gap between cards */
+  }
+}
