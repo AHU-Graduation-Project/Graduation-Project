@@ -1,94 +1,123 @@
-@import '/src/variables.scss';
+@import "/src/variables.scss";
 
 .header {
-    padding: 20px;
-    box-sizing: border-box;
-    width: 100vw;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: $white;
+  padding: 20px;
+  box-sizing: border-box;
+  width: 100vw;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: $white;
 }
 
 .brand {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    font: $font-brand;
-    color: $primary-color;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font: $font-brand;
+  color: $primary-color;
 }
 
 .navMenu {
-    display: flex;
-    gap: 30px;
-    align-items: center;
-    font: $font-regular;
-    a {
-        text-decoration: none;
-        color: $light-gray;
-    }
-    a:hover {
-        color: $white;
-    }
-    a.visited {
-        color: $primary-color;
-    }
+  display: flex;
+  gap: 30px;
+  align-items: center;
+  font: $font-regular;
+  a {
+    text-decoration: none;
+    color: $light-gray;
+  }
+  a:hover {
+    color: $white;
+  }
+  a.visited {
+    color: $primary-color;
+  }
 }
 
 .actions {
-    display: flex;
-    gap: 5px;
-    align-items: center;
+  display: flex;
+  gap: 5px;
+  align-items: center;
 }
 
 .searchBar {
+  height: 30px;
+  box-sizing: border-box;
+  border: 1px solid $primary-color;
+  border-radius: 100px;
+  padding: 0;
+  color: white;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  transition: width 0.3s ease-in-out;
+
+  .searchInput {
     height: 30px;
-    box-sizing: border-box;
-    border: 1px solid $primary-color;
-    border-radius: 100px;
-    padding: 0;
     color: white;
-    display: flex;
-    gap: 5px;
-    align-items: center;
-    justify-content: center;
-    width: 20px;
-    transition: width 0.3s ease-in-out;
-
-    .searchInput {
-        height: 30px;
-        color: white;
-        background-color: transparent;
-        border: none;
-        outline: none;
-        display: none;
-    }
-    &.open {
-        width: 200px;
-        .searchInput {
-            display: block;
-        }
-    }
-}
-
-.button {
-    border: none;
-    border-radius: 100px;
-    padding: 10px 20px;
-    cursor: pointer;
-
-    &:hover {
-        opacity: 0.8;
-    }
-}
-
-.loginButton {
-    background-color: $primary-color;
-    color: $black;
-}
-
-.registerButton {
     background-color: transparent;
-    border: 1px solid $primary-color;
-    color: $primary-color;
+    border: none;
+    outline: none;
+    display: none;
+  }
+  &.open {
+    width: 200px;
+    .searchInput {
+      display: block;
+    }
+  }
+}
+
+.mobileNav {
+  position: fixed;
+  display: block;
+  top: 100vh;
+  left: 0;
+  width: 100vw;
+  height: 80vh;
+  background-color: $dark-gray;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 20px;
+  box-sizing: border-box;
+  border-radius: 20px 20px 0 0;
+  border-top: 2px solid $primary-color;
+  transition: top 0.5s ease-out;
+  .navMenu,
+  .actions {
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  &.isOpen {
+    top: 20vh;
+  }
+}
+
+.mobileNavToggle {
+  display: none;
+  position: fixed;
+  right: 10px;
+  
+}
+
+@media screen and (max-width: 768px) {
+  .actions,
+  :not(.mobileNav) > .navMenu {
+    display: none !important;
+  }
+
+  .brand {
+    justify-content: center;
+    width: 100%;
+  }
+  .mobileNavToggle {
+    display: inline-block;
+  }
 }

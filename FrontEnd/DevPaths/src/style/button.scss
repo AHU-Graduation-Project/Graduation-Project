@@ -1,0 +1,27 @@
+@import "/src/variables.scss";
+
+.btn {
+    border: none;
+    border-radius: 100px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-weight: 700;
+
+    &:hover {
+        opacity: 0.8;
+    }
+}
+
+.btn-primary {
+    background-color: $primary-color;
+}
+.btn-primary-outline {
+    background-color: transparent;
+    border: 1px solid $primary-color;
+    color: $primary-color;
+
+    &:hover {
+        background-color: $primary-color;
+        color: $black;
+    }
+}
