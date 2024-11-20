@@ -1,36 +1,65 @@
-import style from "./Footer.module.scss";
-import NavSocial from "./NavSocial/index";
-import twitterSvg from "../../assets/img/twitter.svg";
-import facebookSvg from "../../assets/img/facebook.svg";
+import React from "react";
+import styles from "./Footer.module.scss";
+import { FaFacebook, FaInstagram, FaGithub, FaLinkedin } from "react-icons/fa";
 
-const Footer = () => {
-  const link = "#";
+const FooterComponent: React.FC = () => {
   return (
-    <footer className={style.footer}>
-      <nav className={style.footer__links}>
-        <a href="/" className={style.footer__link}>
-          HomePage
-        </a>
-        <a href="/" className={style.footer__link}>
-          RoadMaps
-        </a>
-        <a href="/" className={style.footer__link}>
-          Contact Us
-        </a>
-      </nav>
+    <footer className={styles.footer}>
+      <div className={styles.footer_content}>
+        {/* Footer Brand (Centered) */}
+        <div className={styles.footer_brand}>
+          <a href="/" className={styles.footer_logo}>
+            <img
+              src="/logo.png"
+              alt="DevPath Logo"
+              className={styles.logo_image}
+            />
+            Dev Path
+          </a>
+        </div>
 
-      <nav className={style.footer__social}>
-        <NavSocial link={link} imgSrc={twitterSvg} />
-        <NavSocial link={link} imgSrc={facebookSvg} />
-      </nav>
+        {/* Social Media Icons */}
+        <div className={styles.social_media}>
+          <a
+            href="https://facebook.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FaFacebook />
+          </a>
+          <a
+            href="https://instagram.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FaInstagram />
+          </a>
+          <a
+            href="https://github.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FaGithub />
+          </a>
+          <a
+            href="https://linkedin.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FaLinkedin />
+          </a>
+        </div>
 
-      <aside className={style.footer__copyright}>
-        <p>
-          Copyright © 2024 - All rights reserved by Dev Paths, AHU University
-        </p>
-      </aside>
+        {/* Separator (Divider) */}
+        <div className={styles.separator}></div>
+
+        {/* Footer Bottom */}
+        <div className={styles.footer_bottom}>
+          <p>© Dev Path 2024</p>
+        </div>
+      </div>
     </footer>
   );
 };
 
-export default Footer;
+export default FooterComponent;

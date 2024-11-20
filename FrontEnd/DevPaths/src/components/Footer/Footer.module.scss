@@ -1,62 +1,76 @@
-@import "/src/variables.scss";
-
 .footer {
-  background-color: $black; /* Light background for a modern look */
-  color: #333; /* Dark text for good contrast */
+  background-color: #1a202c;
+  color: #f7fafc;
   padding: 2rem;
-  border-radius: 8px;
   text-align: center;
-  font: $font-regular;
+  font-family: "IBM Plex Mono", monospace;
+  opacity: 0; /* Initially hidden for fade-in effect */
+  animation: fadeIn 1s forwards; /* Fade-in animation */
 }
 
-.footer__links {
+.footer_content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer_brand {
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  gap: 1rem;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: bold;
   margin-bottom: 1.5rem;
 }
 
-.footer__link {
+.footer_logo {
+  display: flex;
+  align-items: center;
+  color: #63b3ed;
   text-decoration: none;
-  color: $white;
-  /* Subtle blue link */
-  font-weight: 500;
-  transition: color 0.3s ease;
+  justify-content: center;
 }
 
-.footer__link:hover {
-  color: #005bb5; /* Darker blue on hover */
+.logo_image {
+  width: 40px;
+  margin-right: 10px;
 }
 
-.footer__social {
+.social_media {
   display: flex;
   justify-content: center;
-  gap: 2rem;
-  margin-bottom: 1.5rem;
+  gap: 1.5rem;
+  margin: 1.5rem 0;
 }
 
-.footer__icon:hover {
-  fill: #007acc; /* Highlight color on hover */
+.social_media a {
+  color: #f7fafc;
+  font-size: 1.5rem;
+  transition: color 0.3s ease, transform 0.3s ease;
 }
 
-.footer__copyright {
+.social_media a:hover {
+  color: #63b3ed;
+  transform: scale(1.1); /* Slightly enlarge on hover */
+}
+
+.separator {
+  border-top: 1px solid #4a5568;
+  margin: 1.5rem 0;
+}
+
+.footer_bottom {
+  margin-top: 1rem;
+  color: #a0aec0;
   font-size: 0.875rem;
-  color: $white; /* Subtle text color */
 }
 
-/* Responsive Design */
-@media (max-width: 640px) {
-  .footer {
-    padding: 1rem;
+/* Animation for the fade-in effect */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
   }
-
-  .footer__links {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .footer__social {
-    flex-direction: column;
-    gap: 0.5rem;
+  100% {
+    opacity: 1;
   }
 }
