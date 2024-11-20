@@ -6,18 +6,6 @@ const FooterComponent: React.FC = () => {
   return (
     <footer className={styles.footer}>
       <div className={styles.footer_content}>
-        {/* Footer Brand (Centered) */}
-        <div className={styles.footer_brand}>
-          <a href="/" className={styles.footer_logo}>
-            <img
-              src="/logo.png"
-              alt="DevPath Logo"
-              className={styles.logo_image}
-            />
-            Dev Path
-          </a>
-        </div>
-
         {/* Social Media Icons */}
         <div className={styles.social_media}>
           <a
@@ -50,12 +38,28 @@ const FooterComponent: React.FC = () => {
           </a>
         </div>
 
+        {/* Terms and Privacy Section */}
+        <div className={styles.footer_terms}>
+          <a href="/terms-of-use" className={styles.footer_link}>
+            Terms of Use
+          </a>
+          <span className={styles.footer_separator}>|</span>
+          <a href="/privacy-policy" className={styles.footer_link}>
+            Privacy Policy
+          </a>
+        </div>
+
+        {/* Location Section */}
+        <div className={styles.location}>
+          <p>Jordan</p>
+        </div>
+
         {/* Separator (Divider) */}
         <div className={styles.separator}></div>
 
         {/* Footer Bottom */}
         <div className={styles.footer_bottom}>
-          <p>© Dev Path 2024</p>
+          <p>© Dev Path 2024. All Rights Reserved.</p>
         </div>
       </div>
     </footer>

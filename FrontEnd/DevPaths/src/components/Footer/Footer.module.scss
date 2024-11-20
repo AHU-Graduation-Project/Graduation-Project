@@ -1,9 +1,27 @@
+/* Default (Light Mode) Styles */
+:root {
+  --footer-background: #111827;
+  --footer-text-color: #cfd1d5;
+  --footer-link-color: #c6c8cb;
+  --footer-separator-color: #4a5568;
+  --footer-hover-color: #63b3ed;
+}
+
+/* Dark Mode Styles */
+[data-theme="dark"] {
+  --footer-background: #111827;
+  --footer-text-color: #f7fafc;
+  --footer-link-color: #63b3ed;
+  --footer-separator-color: #4a5568;
+  --footer-hover-color: #63b3ed;
+}
+
 .footer {
-  background-color: #1a202c;
-  color: #f7fafc;
+  background-color: var(--footer-background);
+  color: var(--footer-text-color);
   padding: 2rem;
   text-align: center;
-  font-family: "IBM Plex Mono", monospace;
+  font-family: Arial, Helvetica, sans-serif;
   opacity: 0; /* Initially hidden for fade-in effect */
   animation: fadeIn 1s forwards; /* Fade-in animation */
 }
@@ -13,27 +31,26 @@
   margin: 0 auto;
 }
 
-.footer_brand {
+.footer_terms {
   display: flex;
-  flex-direction: column;
   justify-content: center;
-  align-items: center;
-  font-size: 1.5rem;
-  font-weight: bold;
+  gap: 1rem;
+  font-size: 1rem;
   margin-bottom: 1.5rem;
 }
 
-.footer_logo {
-  display: flex;
-  align-items: center;
-  color: #63b3ed;
+.footer_link {
+  color: var(--footer-link-color);
   text-decoration: none;
-  justify-content: center;
+  transition: color 0.3s ease;
 }
 
-.logo_image {
-  width: 40px;
-  margin-right: 10px;
+.footer_link:hover {
+  color: var(--footer-hover-color);
+}
+
+.footer_separator {
+  color: var(--footer-separator-color);
 }
 
 .social_media {
@@ -44,24 +61,31 @@
 }
 
 .social_media a {
-  color: #f7fafc;
+  color: var(--footer-text-color);
   font-size: 1.5rem;
   transition: color 0.3s ease, transform 0.3s ease;
 }
 
 .social_media a:hover {
-  color: #63b3ed;
+  color: var(--footer-hover-color);
   transform: scale(1.1); /* Slightly enlarge on hover */
 }
 
+.location {
+  margin-top: 1rem;
+  font-size: 1rem;
+  color: var(--footer-text-color);
+  text-transform: uppercase;
+}
+
 .separator {
-  border-top: 1px solid #4a5568;
+  border-top: 1px solid var(--footer-separator-color);
   margin: 1.5rem 0;
 }
 
 .footer_bottom {
   margin-top: 1rem;
-  color: #a0aec0;
+  color: var(--footer-separator-color);
   font-size: 0.875rem;
 }
 
