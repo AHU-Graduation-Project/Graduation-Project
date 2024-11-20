@@ -1,12 +1,13 @@
 import { Header } from "./components/Header/index.tsx";
-import Page from "./components/RoadsMapPage";
+import RoadMaps from "./components/NewRoadMap/index.tsx";
+
 import "./App.css";
 
 function App() {
   return (
     <>
       <Header />
-      <Page />
+      <RoadMaps />
     </>
   );
 }
