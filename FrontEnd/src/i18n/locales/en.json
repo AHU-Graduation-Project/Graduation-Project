@@ -1,0 +1,70 @@
+{
+  "nav": {
+    "roadmaps": "Roadmaps",
+    "overview": "Overview",
+    "generate": "Generate",
+    "profile": "Profile"
+  },
+  "search": {
+    "placeholder": "Search roadmaps..."
+  },
+  "profile": {
+    "welcome": "Welcome",
+    "yourRoadmaps": "Your Roadmaps",
+    "availableRoadmaps": "Available Roadmaps",
+    "progress": "Progress",
+    "continueLearn": "Continue Learning",
+    "addToRoadmaps": "Add to My Roadmaps",
+    "removeFromRoadmaps": "Remove from My Roadmaps",
+    "stats": {
+      "selectedPaths": "Selected Paths",
+      "hoursSpent": "Hours Spent",
+      "completedTasks": "Completed Tasks"
+    }
+  },
+  "roadmaps": {
+    "title": "Development Roadmaps",
+    "subtitle": "Choose your path and start your journey in software development",
+    "learnMore": "Learn more",
+    "noResults": "No roadmaps found matching your search."
+  },
+  "roadmap": {
+    "viewDetails": "View Details",
+    "completed": "Completed",
+    "markComplete": "Mark Complete",
+    "details": {
+      "description": "Description",
+      "marketDemand": "Market Demand",
+      "salary": "Average Salary Range",
+      "skills": "Required Skills"
+    }
+  },
+  "generate": {
+    "title": "Generate Custom Roadmap",
+    "subtitle": "Enter your learning goals and let AI create a personalized roadmap for you",
+    "placeholder": "I want to learn...",
+    "button": "Generate Roadmap",
+    "generating": "Generating..."
+  },
+  "auth": {
+    "login": {
+      "title": "Welcome back",
+      "subtitle": "Continue your learning journey",
+      "email": "Email address",
+      "password": "Password",
+      "submit": "Sign in",
+      "noAccount": "Don't have an account?",
+      "signUp": "Sign up"
+    },
+    "signup": {
+      "title": "Create your account",
+      "subtitle": "Start your learning journey today",
+      "name": "Full name",
+      "email": "Email address",
+      "password": "Password",
+      "submit": "Create account",
+      "haveAccount": "Already have an account?",
+      "signIn": "Sign in"
+    }
+  }
+}
