@@ -1,6 +1,12 @@
 -- Schema Creation
 CREATE SCHEMA IF NOT EXISTS devPath;
 
+-- Country Table
+CREATE TABLE IF NOT EXISTS devPath.country (
+  country_id SERIAL PRIMARY KEY,
+  name VARCHAR(100) UNIQUE NOT NULL
+);
+
 -- User Table
 CREATE TABLE IF NOT EXISTS devPath."User" (
   user_id SERIAL PRIMARY KEY,
@@ -8,7 +14,8 @@ CREATE TABLE IF NOT EXISTS devPath."User" (
   lname VARCHAR(50) NOT NULL,
   email VARCHAR(50) UNIQUE NOT NULL,
   password VARCHAR(300) NOT NULL,
-  country INT
+  country INT,
+  FOREIGN KEY (country) REFERENCES devPath.country (country_id) ON DELETE SET NULL
 );
 
 -- Roadmap Table
@@ -36,6 +43,7 @@ CREATE TABLE IF NOT EXISTS devPath."Topic" (
   is_analysis_needed BOOLEAN,
   roadmap_id INT NOT NULL,
   parent_topic_id INT,
+  resources TEXT, -- New Attribute for Resources
   FOREIGN KEY (roadmap_id) REFERENCES devPath."Roadmap" (roadmap_id) ON DELETE CASCADE,
   FOREIGN KEY (node_type) REFERENCES devPath.node_type (node_type_id) ON DELETE SET NULL,
   FOREIGN KEY (parent_topic_id) REFERENCES devPath."Topic" (topic_id) ON DELETE SET NULL
