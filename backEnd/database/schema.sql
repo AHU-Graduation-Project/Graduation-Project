@@ -14,8 +14,8 @@ CREATE TABLE IF NOT EXISTS devPath."User" (
   lname VARCHAR(50) NOT NULL,
   email VARCHAR(50) UNIQUE NOT NULL,
   password VARCHAR(300) NOT NULL,
-  country INT,
-  FOREIGN KEY (country) REFERENCES devPath.country (country_id) ON DELETE SET NULL
+  country_id INT,
+  FOREIGN KEY (country_id) REFERENCES devPath.country (country_id) ON DELETE SET NULL
 );
 
 -- Roadmap Table
@@ -36,16 +36,16 @@ CREATE TABLE IF NOT EXISTS devPath."Topic" (
   topic_id SERIAL PRIMARY KEY,
   title VARCHAR(20) UNIQUE NOT NULL,
   description TEXT,
-  node_type INT,
+  node_type_id INT NOT NULL,
   keywords VARCHAR(50),
-  position_x INT,
-  position_y INT,
-  is_analysis_needed BOOLEAN,
+  position_x INT NOT NULL,
+  position_y INT NOT NULL,
+  is_analysis_needed BOOLEAN NOT NULL,
   roadmap_id INT NOT NULL,
   parent_topic_id INT,
   resources TEXT, -- New Attribute for Resources
   FOREIGN KEY (roadmap_id) REFERENCES devPath."Roadmap" (roadmap_id) ON DELETE CASCADE,
-  FOREIGN KEY (node_type) REFERENCES devPath.node_type (node_type_id) ON DELETE SET NULL,
+  FOREIGN KEY (node_type_id) REFERENCES devPath.node_type (node_type_id) ON DELETE SET NULL,
   FOREIGN KEY (parent_topic_id) REFERENCES devPath."Topic" (topic_id) ON DELETE SET NULL
 );
 
