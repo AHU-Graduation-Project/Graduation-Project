@@ -24,8 +24,9 @@ export default function Header() {
   };
 
   const menuItems = [
-    { to: "/", icon: Code2, label: t("nav.roadmaps") },
     { to: "/overview", icon: BarChart2, label: t("nav.overview") },
+
+    { to: "/", icon: Code2, label: t("nav.roadmaps") },
     { to: "/generate", icon: Sparkles, label: t("nav.generate") },
     { to: "/profile", icon: User, label: t("nav.profile") },
   ];
@@ -37,7 +38,7 @@ export default function Header() {
           <div className="relative">
             <ThemeIcon icon={Map} className="w-8 h-8" />
           </div>
-          <h1 className="text-2xl font-bold text-theme">DevRoadmap</h1>
+          <h1 className="text-2xl font-bold text-theme">DevPath</h1>
         </Link>
 
         {/* Desktop Navigation */}
