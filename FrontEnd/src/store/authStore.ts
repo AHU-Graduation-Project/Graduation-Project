@@ -6,6 +6,12 @@ interface User {
   email: string;
   name: string;
   selectedRoadmaps: string[];
+  customRoadmaps: Record<string, {
+    title: string;
+    description: string;
+    nodes: any[];
+    edges: any[];
+  }>;
   progress: Record<string, string[]>; // roadmapId -> completed node IDs
 }
 
@@ -17,6 +23,7 @@ interface AuthState {
   logout: () => void;
   updateProgress: (roadmapId: string, nodeId: string, completed: boolean) => void;
   selectRoadmap: (roadmapId: string) => void;
+  saveCustomRoadmap: (id: string, title: string, description: string, nodes: any[], edges: any[]) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -32,6 +39,7 @@ export const useAuthStore = create<AuthState>()(
             email,
             name: 'Ahmad alshamary',
             selectedRoadmaps: [],
+            customRoadmaps: {},
             progress: {},
           },
           isAuthenticated: true,
@@ -45,6 +53,7 @@ export const useAuthStore = create<AuthState>()(
             email,
             name,
             selectedRoadmaps: [],
+            customRoadmaps: {},
             progress: {},
           },
           isAuthenticated: true,
@@ -87,6 +96,29 @@ export const useAuthStore = create<AuthState>()(
               ...state.user,
               selectedRoadmaps,
             },
+          };
+        });
+      },
+      saveCustomRoadmap: (id, title, description, nodes, edges) => {
+        set((state) => {
+          if (!state.user) return state;
+
+          return {
+            user: {
+              ...state.user,
+              customRoadmaps: {
+                ...state.user.customRoadmaps,
+                [id]: {
+                  title,
+                  description,
+                  nodes,
+                  edges,
+                }
+              },
+              selectedRoadmaps: state.user.selectedRoadmaps.includes(id)
+                ? state.user.selectedRoadmaps
+                : [...state.user.selectedRoadmaps, id]
+            }
           };
         });
       },

@@ -19,13 +19,13 @@ import ChatPanel from './ChatPanel';
 import RoadmapTopBar from './RoadmapTopBar';
 import { cn } from '../utils/cn';
 import { AlertCircle, MessageCircle } from 'lucide-react';
+import { useRoadmapNodes } from '../hooks/useRoadmapNodes';
 
 const CustomNode = ({ data, id }: NodeProps) => {
   const { user, updateProgress } = useAuthStore();
   const { id: roadmapId } = useParams();
   const isCompleted = user?.progress[roadmapId || '']?.includes(id);
-  const isFirstNode = id === '1';
-  const shouldBeActive = isCompleted || isFirstNode || data.isUnlocked;
+  const shouldBeActive = isCompleted || data.isUnlocked;
 
   return (
     <div 
@@ -95,107 +95,46 @@ const nodeTypes = {
   custom: CustomNode,
 };
 
-const initialNodes: Node[] = [
-  {
-    id: '1',
-    type: 'custom',
-    position: { x: 400, y: 100 },
-    data: { 
-      label: 'Start Your Journey',
-      description: 'Begin your development journey here. Learn the basics of programming and computer science.',
-      marketDemand: 'Entry-level positions are abundant with 25% growth expected.',
-      averageSalary: '$65,000 - $85,000',
-      requiredSkills: ['Problem Solving', 'Logical Thinking', 'Basic Mathematics'],
-      isUnlocked: true,
-    },
-  },
-  {
-    id: '2',
-    type: 'custom',
-    position: { x: 250, y: 200 },
-    data: { 
-      label: 'Learn HTML & CSS',
-      description: 'Master the fundamentals of web development with HTML and CSS.',
-      marketDemand: 'High demand with 15% annual growth in web development roles.',
-      averageSalary: '$70,000 - $90,000',
-      requiredSkills: ['HTML5', 'CSS3', 'Responsive Design'],
-      isUnlocked: false,
-      requiredNodes: ['1'],
-    },
-  },
-  {
-    id: '3',
-    type: 'custom',
-    position: { x: 550, y: 200 },
-    data: { 
-      label: 'JavaScript Basics',
-      description: 'Learn the fundamentals of JavaScript programming.',
-      marketDemand: 'Very high demand with 30% growth in JavaScript roles.',
-      averageSalary: '$80,000 - $120,000',
-      requiredSkills: ['ES6+', 'DOM Manipulation', 'Async Programming'],
-      isUnlocked: false,
-      requiredNodes: ['1'],
-    },
-  },
-  {
-    id: '4',
-    type: 'custom',
-    position: { x: 250, y: 300 },
-    data: { 
-      label: 'CSS Frameworks',
-      description: 'Master modern CSS frameworks and design systems.',
-      marketDemand: 'Strong demand with focus on responsive design.',
-      averageSalary: '$85,000 - $110,000',
-      requiredSkills: ['Tailwind CSS', 'Bootstrap', 'Sass'],
-      isUnlocked: false,
-      requiredNodes: ['2'],
-    },
-  },
-];
-
-const initialEdges: Edge[] = [
-  { id: 'e1-2', source: '1', target: '2', animated: true },
-  { id: 'e1-3', source: '1', target: '3', animated: true },
-  { id: 'e2-4', source: '2', target: '4' },
-];
-
 export default function RoadmapFlow() {
   const { id } = useParams();
-  const roadmap = roadmaps.find(r => r.id === id);
+  const { user } = useAuthStore();
   const [selectedNode, setSelectedNode] = useState<any>(null);
   const [showInfo, setShowInfo] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const { t } = useTranslation();
-  const { user } = useAuthStore();
+
+  // Get roadmap data from either built-in roadmaps or custom roadmaps
+  const builtInRoadmap = roadmaps.find(r => r.id === id);
+  const customRoadmap = user?.customRoadmaps[id || ''];
   
+  const roadmap = builtInRoadmap || {
+    id,
+    title: customRoadmap?.title || '',
+    description: customRoadmap?.description || '',
+    icon: AlertCircle // Default icon for custom roadmaps
+  };
+
+  // Use either custom nodes/edges or built-in ones
+  const initialNodes = customRoadmap?.nodes || [];
+  const initialEdges = customRoadmap?.edges || [];
+  const completedNodeIds = user?.progress[id || ''] || [];
+  
+  // Use the custom hook to process nodes and determine which should be unlocked
+  const nodes = useRoadmapNodes(initialNodes, initialEdges, completedNodeIds).map(node => ({
+    ...node,
+    data: {
+      ...node.data,
+      onShowDetails: (nodeData: any) => setSelectedNode(nodeData),
+      t,
+    },
+  }));
+
   const onNodesChange = useCallback(() => {}, []);
   const onEdgesChange = useCallback(() => {}, []);
 
-  // Update node unlock status based on completed nodes
-  const nodes = initialNodes.map(node => {
-    const nodeData = { ...node.data };
-    const completedNodes = user?.progress[id || ''] || [];
-
-    // Check if all required nodes are completed
-    if (nodeData.requiredNodes) {
-      nodeData.isUnlocked = nodeData.requiredNodes.every(requiredId => 
-        completedNodes.includes(requiredId)
-      );
-    }
-
-    return {
-      ...node,
-      data: {
-        ...nodeData,
-        onShowDetails: (nodeData: any) => setSelectedNode(nodeData),
-        t,
-      },
-    };
-  });
-
-  const completedNodes = user?.progress[id || '']?.length || 0;
+  const completedNodes = completedNodeIds.length;
   const totalNodes = nodes.length;
-  const progress = Math.round((completedNodes / totalNodes) * 100);
+  const progress = totalNodes > 0 ? Math.round((completedNodes / totalNodes) * 100) : 0;
 
   return (
     <div className="relative h-screen pt-20">
@@ -266,7 +205,7 @@ export default function RoadmapFlow() {
         isOpen={showChat}
         onClose={() => setShowChat(false)}
         roadmap={roadmap}
-        userProgress={user?.progress[id || '']}
+        userProgress={completedNodeIds}
       />
     </div>
   );

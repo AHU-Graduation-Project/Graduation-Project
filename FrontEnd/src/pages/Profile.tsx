@@ -40,6 +40,19 @@ export default function Profile() {
     },
   ];
 
+  // Combine built-in and custom roadmaps
+  const allRoadmaps = [
+    ...roadmaps,
+    ...Object.entries(user.customRoadmaps).map(([id, roadmap]) => ({
+      id,
+      title: roadmap.title,
+      description: roadmap.description,
+      icon: Star,
+      image: '', // You might want to generate or use a default image
+      color: 'from-purple-500 to-pink-500',
+    })),
+  ];
+
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="max-w-6xl mx-auto">
@@ -70,7 +83,7 @@ export default function Profile() {
         <div className="mb-12">
           <div className="flex items-center gap-3 mb-6">
             <Palette className="w-6 h-6 text-blue-500" />
-            <h2 className="text-2xl font-bold ">Customize Theme</h2>
+            <h2 className="text-2xl font-bold">Customize Theme</h2>
           </div>
           <div className="bg-white dark:bg-slate-800 rounded-xl p-6">
             <p className="text-slate-600 dark:text-slate-400 mb-6">
@@ -84,11 +97,13 @@ export default function Profile() {
           <h2 className="text-2xl font-bold mb-6 text-theme">{t('profile.yourRoadmaps')}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {user.selectedRoadmaps.map((roadmapId) => {
-              const roadmap = roadmaps.find((r) => r.id === roadmapId);
+              const roadmap = allRoadmaps.find((r) => r.id === roadmapId);
               if (!roadmap) return null;
 
               const progress = user.progress[roadmapId] || [];
-              const totalNodes = 4;
+              const totalNodes = roadmapId.startsWith('custom-')
+                ? user.customRoadmaps[roadmapId]?.nodes.length || 0
+                : 4; // Default for built-in roadmaps
               const completedNodes = progress.length;
               const percentComplete = Math.round((completedNodes / totalNodes) * 100);
 
@@ -99,7 +114,7 @@ export default function Profile() {
                 >
                   <div
                     className="absolute inset-0 bg-cover bg-center opacity-10"
-                    style={{ backgroundImage: `url(${roadmap.image})` }}
+                    style={{ backgroundImage: roadmap.image ? `url(${roadmap.image})` : undefined }}
                   />
                   <div className="relative p-6">
                     <div className="flex items-start justify-between mb-4">
@@ -136,7 +151,7 @@ export default function Profile() {
         <div>
           <h2 className="text-2xl font-bold mb-6 text-theme">{t('profile.availableRoadmaps')}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {roadmaps.map((roadmap) => {
+            {allRoadmaps.map((roadmap) => {
               const isSelected = user.selectedRoadmaps.includes(roadmap.id);
 
               return (
@@ -146,7 +161,7 @@ export default function Profile() {
                 >
                   <div
                     className="absolute inset-0 bg-cover bg-center opacity-10"
-                    style={{ backgroundImage: `url(${roadmap.image})` }}
+                    style={{ backgroundImage: roadmap.image ? `url(${roadmap.image})` : undefined }}
                   />
                   <div className="relative p-6">
                     <div className="flex items-start justify-between mb-4">

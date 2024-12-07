@@ -1,104 +1,147 @@
 import { useState } from 'react';
-import { Sparkles } from 'lucide-react';
-import ReactFlow from 'reactflow';
-import 'reactflow/dist/style.css';
-import { cn } from '../utils/cn';
+import { useNavigate } from 'react-router-dom';
+import { AlertCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { useAuthStore } from '../store/authStore';
+import { generateRoadmap } from '../services/openai';
+import GenerateForm from '../components/GenerateForm';
+import GeneratePreview from '../components/GeneratePreview';
+import html2canvas from 'html2canvas';
+import { PDFDocument, rgb } from 'pdf-lib';
 
 export default function GenerateRoadmap() {
-  const [prompt, setPrompt] = useState('');
+  const navigate = useNavigate();
+  const { t } = useTranslation();
+  const { user, saveCustomRoadmap } = useAuthStore();
   const [isGenerating, setIsGenerating] = useState(false);
-  const [showRoadmap, setShowRoadmap] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [roadmapData, setRoadmapData] = useState<{
+    nodes: any[];
+    edges: any[];
+  } | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleGenerate = async (prompt: string) => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+
     setIsGenerating(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    setIsGenerating(false);
-    setShowRoadmap(true);
+    setError(null);
+
+    try {
+      const data = await generateRoadmap(prompt);
+      
+      const enhancedNodes = data.nodes.map(node => ({
+        ...node,
+        data: {
+          ...node.data,
+          t,
+          onShowDetails: (nodeData: any) => {
+            console.log('Node details:', nodeData);
+          }
+        }
+      }));
+
+      setRoadmapData({
+        ...data,
+        nodes: enhancedNodes
+      });
+    } catch (err: any) {
+      setError(err.message || 'Failed to generate roadmap. Please try again.');
+      console.error('Generation error:', err);
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
-  const initialNodes = [
-    {
-      id: '1',
-      type: 'custom',
-      position: { x: 400, y: 0 },
-      data: { label: 'Start Here' },
-    },
-    {
-      id: '2',
-      type: 'custom',
-      position: { x: 400, y: 100 },
-      data: { label: 'Learn Fundamentals' },
-    },
-    {
-      id: '3',
-      type: 'custom',
-      position: { x: 400, y: 200 },
-      data: { label: 'Build Projects' },
-    },
-    {
-      id: '4',
-      type: 'custom',
-      position: { x: 400, y: 300 },
-      data: { label: 'Master Advanced Topics' },
-    },
-  ];
+  const handleSave = () => {
+    if (!roadmapData) return;
+    const roadmapId = `custom-${Date.now()}`;
+    saveCustomRoadmap(
+      roadmapId,
+      'Custom Roadmap',
+      'Generated learning path',
+      roadmapData.nodes,
+      roadmapData.edges
+    );
+    navigate(`/roadmap/${roadmapId}`);
+  };
 
-  const initialEdges = [
-    { id: 'e1-2', source: '1', target: '2', animated: true },
-    { id: 'e2-3', source: '2', target: '3', animated: true },
-    { id: 'e3-4', source: '3', target: '4', animated: true },
-  ];
+  const handleDownload = async () => {
+    if (!roadmapData) return;
+
+    try {
+      // Capture the ReactFlow canvas
+      const flowElement = document.querySelector('.react-flow') as HTMLElement;
+      const canvas = await html2canvas(flowElement, {
+        backgroundColor: null,
+        scale: 2,
+      });
+
+      // Create PDF
+      const pdfDoc = await PDFDocument.create();
+      const page = pdfDoc.addPage([canvas.width / 2, canvas.height / 2]);
+      
+      // Add the captured image
+      const jpgImage = await pdfDoc.embedJpg(canvas.toDataURL('image/jpeg'));
+      page.drawImage(jpgImage, {
+        x: 0,
+        y: 0,
+        width: page.getWidth(),
+        height: page.getHeight(),
+      });
+
+      // Save the PDF
+      const pdfBytes = await pdfDoc.save();
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'learning-roadmap.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Error generating PDF:', err);
+    }
+  };
 
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="max-w-3xl mx-auto text-center mb-12">
         <h1 className="text-4xl font-bold mb-4 text-theme text-transparent bg-clip-text">
-          Generate Custom Roadmap
+          {t('generate.title')}
         </h1>
         <p className="text-lg text-slate-600 dark:text-white/80">
-          Enter your learning goals and let AI create a personalized roadmap for you
+          {t('generate.subtitle')}
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="max-w-2xl mx-auto mb-12">
-        <div className="relative">
-          <div className="absolute inset-0 bg-theme rounded-lg blur opacity-20 animate-pulse"></div>
-          <div className="relative">
-            <textarea
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              placeholder="I want to learn..."
-              className="w-full h-32 px-4 py-3 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all resize-none"
-            />
-          </div>
-        </div>
-        <button
-          type="submit"
-          disabled={isGenerating || !prompt}
-          className={cn(
-            "mt-4 w-full flex items-center justify-center gap-2 px-6 py-3 rounded-lg text-white font-medium transition-all",
-            "bg-theme ",
-            "disabled:opacity-50 disabled:cursor-not-allowed",
-            "group relative overflow-hidden",
-          )}
-        >
-          <div className="absolute inset-0 bg-theme opacity-0 group-hover:opacity-100 transition-opacity" />
-          <Sparkles className="w-5 h-5" />
-          <span>{isGenerating ? 'Generating...' : 'Generate Roadmap'}</span>
-        </button>
-      </form>
+      <div className="max-w-2xl mx-auto mb-12">
+        <GenerateForm 
+          onSubmit={handleGenerate}
+          isGenerating={isGenerating}
+        />
+      </div>
 
-      {showRoadmap && (
-        <div className="w-full h-[600px] rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700">
-          <ReactFlow
-            nodes={initialNodes}
-            edges={initialEdges}
-            fitView
-            className="bg-slate-50 dark:bg-slate-900"
-          >
-          </ReactFlow>
+      {error && (
+        <div className="max-w-2xl mx-auto mb-8 p-4 bg-red-500/10 border border-red-500/20 rounded-lg flex items-center gap-3 text-red-500">
+          <AlertCircle className="w-5 h-5" />
+          <p>{error}</p>
+        </div>
+      )}
+
+      {roadmapData && (
+        <div className="max-w-4xl mx-auto">
+          <GeneratePreview
+            nodes={roadmapData.nodes}
+            edges={roadmapData.edges}
+            onSave={handleSave}
+            onDownload={handleDownload}
+          />
         </div>
       )}
     </div>
