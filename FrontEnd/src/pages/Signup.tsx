@@ -1,31 +1,33 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAuthStore } from '../store/authStore';
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuthStore } from "../store/authStore";
 
 export default function Signup() {
   const navigate = useNavigate();
   const signup = useAuthStore((state) => state.signup);
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmitSignUp = (e: React.FormEvent) => {
     e.preventDefault();
     signup(email, password, name);
-    navigate('/profile');
+    navigate("/profile");
   };
 
   return (
     <div className="min-h-[calc(100vh-5rem)] flex items-center justify-center py-12 px-4">
       <div className="max-w-md w-full space-y-8">
         <div>
-          <h2 className="text-3xl font-bold text-center mb-2">Create your account</h2>
+          <h2 className="text-3xl font-bold text-center mb-2">
+            Create your account
+          </h2>
           <p className="text-center text-slate-600 dark:text-slate-400">
             Start your learning journey today
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+        <form onSubmit={handleSubmitSignUp} className="mt-8 space-y-6">
           <div className="space-y-4">
             <div>
               <label htmlFor="name" className="block text-sm font-medium mb-2">
@@ -54,7 +56,10 @@ export default function Signup() {
               />
             </div>
             <div>
-              <label htmlFor="password" className="block text-sm font-medium mb-2">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium mb-2"
+              >
                 Password
               </label>
               <input
@@ -76,8 +81,11 @@ export default function Signup() {
           </button>
 
           <p className="text-center text-sm">
-            Already have an account?{' '}
-            <Link to="/login" className="text-blue-500 hover:text-blue-600 font-medium">
+            Already have an account?{" "}
+            <Link
+              to="/login"
+              className="text-blue-500 hover:text-blue-600 font-medium"
+            >
               Sign in
             </Link>
           </p>
