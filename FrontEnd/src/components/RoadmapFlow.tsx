@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import ReactFlow, {
@@ -20,36 +20,39 @@ import RoadmapTopBar from './RoadmapTopBar';
 import { cn } from '../utils/cn';
 import { AlertCircle, MessageCircle } from 'lucide-react';
 import { useRoadmapNodes } from '../hooks/useRoadmapNodes';
+import { calculateHierarchicalLayout, createHierarchicalEdges } from '../utils/layoutUtils';
 
 const CustomNode = ({ data, id }: NodeProps) => {
   const { user, updateProgress } = useAuthStore();
   const { id: roadmapId } = useParams();
-  const isCompleted = user?.progress[roadmapId || '']?.includes(id);
+  const isCompleted = user?.progress[roadmapId || ""]?.includes(id);
   const shouldBeActive = isCompleted || data.isUnlocked;
 
   return (
-    <div 
+    <div
       className={cn(
-        "px-4 py-2 shadow-lg rounded-lg border-2",
+        "px-4 py-2 shadow-lg rounded-lg border-2 min-w-[200px] max-w-[300px]",
         "transition-all duration-300",
-        shouldBeActive 
-          ? "border-white/10 bg-theme" 
+        shouldBeActive
+          ? "border-white/10 bg-theme"
           : "border-slate-700/50 bg-slate-800/50 cursor-not-allowed"
       )}
     >
-      <Handle 
-        type="target" 
-        position={Position.Top} 
+      <Handle
+        type="target"
+        position={Position.Top}
         className={cn(
           "transition-colors duration-300",
           shouldBeActive ? "!bg-white" : "!bg-slate-600"
-        )} 
+        )}
       />
       <div className="flex flex-col items-center gap-2">
-        <div className={cn(
-          "font-medium transition-colors duration-300",
-          shouldBeActive ? "text-white" : "text-slate-400"
-        )}>
+        <div
+          className={cn(
+            "font-medium transition-colors duration-300 text-center",
+            shouldBeActive ? "text-white" : "text-slate-400"
+          )}
+        >
           {data.label}
         </div>
         <div className="flex gap-2">
@@ -57,33 +60,53 @@ const CustomNode = ({ data, id }: NodeProps) => {
             onClick={() => data.onShowDetails(data)}
             className={cn(
               "px-2 py-1 text-xs rounded-md transition-colors",
-              shouldBeActive 
-                ? "bg-white/10 hover:bg-white/20 text-white" 
+              shouldBeActive
+                ? "bg-white/10 hover:bg-white/20 text-white"
                 : "bg-slate-700/50 text-slate-400"
             )}
           >
-            {data.t('roadmap.viewDetails')}
+            {data.t("roadmap.viewDetails")}
           </button>
           {user && shouldBeActive && (
             <button
-              onClick={() => updateProgress(roadmapId || '', id, !isCompleted)}
+              onClick={() => updateProgress(roadmapId || "", id, !isCompleted)}
               className={cn(
                 "px-2 py-1 text-xs rounded-md text-white transition-colors",
-                isCompleted ? "bg-green-500/20 hover:bg-green-500/30" : "bg-white/10 hover:bg-white/20"
+                isCompleted
+                  ? "bg-green-500/20 hover:bg-green-500/30"
+                  : "bg-white/10 hover:bg-white/20"
               )}
             >
-              {isCompleted ? data.t('roadmap.completed') : data.t('roadmap.markComplete')}
+              {isCompleted
+                ? data.t("roadmap.completed")
+                : data.t("roadmap.markComplete")}
             </button>
           )}
         </div>
       </div>
-      <Handle 
-        type="source" 
-        position={Position.Bottom} 
+      <Handle
+        type="source"
+        position={Position.Bottom}
         className={cn(
           "transition-colors duration-300",
           shouldBeActive ? "!bg-white" : "!bg-slate-600"
-        )} 
+        )}
+      />
+      <Handle
+        type="source"
+        position={Position.Left}
+        className={cn(
+          "transition-colors duration-300",
+          shouldBeActive ? "!bg-white" : "!bg-slate-600"
+        )}
+      />
+      <Handle
+        type="source"
+        position={Position.Right}
+        className={cn(
+          "transition-colors duration-300",
+          shouldBeActive ? "!bg-white" : "!bg-slate-600"
+        )}
       />
     </div>
   );
@@ -95,6 +118,8 @@ const nodeTypes = {
   custom: CustomNode,
 };
 
+const defaultViewport = { x: 0, y: 0, zoom: 0.8 };
+
 export default function RoadmapFlow() {
   const { id } = useParams();
   const { user } = useAuthStore();
@@ -103,7 +128,6 @@ export default function RoadmapFlow() {
   const [showChat, setShowChat] = useState(false);
   const { t } = useTranslation();
 
-  // Get roadmap data from either built-in roadmaps or custom roadmaps
   const builtInRoadmap = roadmaps.find(r => r.id === id);
   const customRoadmap = user?.customRoadmaps[id || ''];
   
@@ -111,16 +135,14 @@ export default function RoadmapFlow() {
     id,
     title: customRoadmap?.title || '',
     description: customRoadmap?.description || '',
-    icon: AlertCircle // Default icon for custom roadmaps
+    icon: AlertCircle
   };
 
-  // Use either custom nodes/edges or built-in ones
-  const initialNodes = customRoadmap?.nodes || [];
-  const initialEdges = customRoadmap?.edges || [];
-  const completedNodeIds = user?.progress[id || ''] || [];
+  const initialNodes = customRoadmap?.nodes || builtInRoadmap?.nodes || [];
+  const initialEdges = customRoadmap?.edges || builtInRoadmap?.edges || [];
+  const completedNodeIds = user?.progress[id || ""] || [];
   
-  // Use the custom hook to process nodes and determine which should be unlocked
-  const nodes = useRoadmapNodes(initialNodes, initialEdges, completedNodeIds).map(node => ({
+  const processedNodes = useRoadmapNodes(initialNodes, initialEdges, completedNodeIds).map(node => ({
     ...node,
     data: {
       ...node.data,
@@ -128,6 +150,16 @@ export default function RoadmapFlow() {
       t,
     },
   }));
+
+  const nodes = useMemo(() => 
+    calculateHierarchicalLayout(processedNodes, initialEdges),
+    [processedNodes, initialEdges]
+  );
+
+  const edges = useMemo(() => 
+    createHierarchicalEdges(initialEdges),
+    [initialEdges]
+  );
 
   const onNodesChange = useCallback(() => {}, []);
   const onEdgesChange = useCallback(() => {}, []);
@@ -138,33 +170,42 @@ export default function RoadmapFlow() {
 
   return (
     <div className="relative h-screen pt-20">
-      {/* Top Bar */}
       <RoadmapTopBar
         roadmap={roadmap}
         progress={progress}
         completedNodes={completedNodes}
         totalNodes={totalNodes}
         nodes={nodes}
-        edges={initialEdges}
+        edges={edges}
       />
 
-      {/* Main Flow Area */}
       <div className="h-[calc(100vh-5rem)]">
         <ReactFlow
           nodes={nodes}
-          edges={initialEdges}
+          edges={edges}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           nodeTypes={nodeTypes}
           fitView
           className="bg-slate-50 dark:bg-slate-900"
+          minZoom={0.1}
+          maxZoom={1.5}
+          defaultViewport={defaultViewport}
         >
           <Background className="bg-slate-50 dark:bg-slate-900" />
           <Controls className="!bg-white/10 !rounded-lg" />
+          
+          <svg style={{ position: 'absolute', width: 0, height: 0 }}>
+            <defs>
+              <linearGradient id="edge-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="var(--theme-from)" />
+                <stop offset="100%" stopColor="var(--theme-to)" />
+              </linearGradient>
+            </defs>
+          </svg>
         </ReactFlow>
       </div>
 
-      {/* Interactive Buttons */}
       <div className="fixed bottom-6 right-6 flex flex-col gap-4 z-50">
         <button
           onClick={() => setShowInfo(!showInfo)}
@@ -190,7 +231,6 @@ export default function RoadmapFlow() {
         </button>
       </div>
 
-      {/* Modals and Panels */}
       <NodeDetailsModal
         isOpen={!!selectedNode}
         onClose={() => setSelectedNode(null)}
