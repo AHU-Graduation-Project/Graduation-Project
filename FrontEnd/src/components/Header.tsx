@@ -1,10 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Code2,
   Map,
   Sparkles,
   BarChart2,
-  User,
   Menu,
   X,
   Languages,
@@ -13,6 +12,9 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import ThemeToggle from "./ThemeToggle";
 import ThemeIcon from "./ThemeIcon";
+import DropDown from "./DrowDown";
+
+// type EventTypes = "mousedown";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -23,12 +25,25 @@ export default function Header() {
     document.documentElement.dir = i18n.language === "ar" ? "rtl" : "ltr";
   };
 
+  const handleClickOutside = (event: Event) => {
+    const target = event.target as HTMLElement;
+    if (target.closest(".dropdown-toggle-button")) return;
+    setIsMenuOpen(false);
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const menuItems = [
     { to: "/overview", icon: BarChart2, label: t("nav.overview") },
 
     { to: "/", icon: Code2, label: t("nav.roadmaps") },
     { to: "/generate", icon: Sparkles, label: t("nav.generate") },
-    { to: "/profile", icon: User, label: t("nav.profile") },
+    // { to: "/profile", icon: User, label: t("nav.profile") },
   ];
 
   return (
@@ -60,6 +75,7 @@ export default function Header() {
             <ThemeIcon icon={Languages} className="w-5 h-5" />
           </button>
           <ThemeToggle />
+          <DropDown />
         </nav>
 
         {/* Mobile Menu Button */}
@@ -71,6 +87,8 @@ export default function Header() {
             <ThemeIcon icon={Languages} className="w-5 h-5" />
           </button>
           <ThemeToggle />
+          <DropDown />
+
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
@@ -85,7 +103,7 @@ export default function Header() {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden fixed inset-x-0 top-20 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 p-4">
+          <div className="dropdown-toggle-button md:hidden fixed inset-x-0 top-20 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 p-4">
             <nav className="flex flex-col gap-4">
               {menuItems.map((item) => (
                 <Link
