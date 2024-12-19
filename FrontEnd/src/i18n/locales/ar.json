@@ -1,0 +1,70 @@
+{
+  "nav": {
+    "roadmaps": "خرائط التعلم",
+    "overview": "نظرة عامة",
+    "generate": "إنشاء",
+    "profile": "الملف الشخصي"
+  },
+  "search": {
+    "placeholder": "البحث في خرائط التعلم..."
+  },
+  "profile": {
+    "welcome": "مرحباً",
+    "yourRoadmaps": "خرائط التعلم الخاصة بك",
+    "availableRoadmaps": "خرائط التعلم المتاحة",
+    "progress": "التقدم",
+    "continueLearn": "متابعة التعلم",
+    "addToRoadmaps": "إضافة إلى خرائطي",
+    "removeFromRoadmaps": "إزالة من خرائطي",
+    "stats": {
+      "selectedPaths": "المسارات المختارة",
+      "hoursSpent": "الساعات المستغرقة",
+      "completedTasks": "المهام المكتملة"
+    }
+  },
+  "roadmaps": {
+    "title": "خرائط تطوير البرمجيات",
+    "subtitle": "اختر مسارك وابدأ رحلتك في تطوير البرمجيات",
+    "learnMore": "اعرف المزيد",
+    "noResults": "لم يتم العثور على خرائط تعلم مطابقة لبحثك."
+  },
+  "roadmap": {
+    "viewDetails": "عرض التفاصيل",
+    "completed": "مكتمل",
+    "markComplete": "تحديد كمكتمل",
+    "details": {
+      "description": "الوصف",
+      "marketDemand": "الطلب في السوق",
+      "salary": "متوسط نطاق الراتب",
+      "skills": "المهارات المطلوبة"
+    }
+  },
+  "generate": {
+    "title": "إنشاء خريطة تعلم مخصصة",
+    "subtitle": "أدخل أهداف التعلم الخاصة بك ودع الذكاء الاصطناعي ينشئ خريطة تعلم مخصصة لك",
+    "placeholder": "أريد أن أتعلم...",
+    "button": "إنشاء خريطة التعلم",
+    "generating": "جاري الإنشاء..."
+  },
+  "auth": {
+    "login": {
+      "title": "مرحباً بعودتك",
+      "subtitle": "واصل رحلة تعلمك",
+      "email": "البريد الإلكتروني",
+      "password": "كلمة المرور",
+      "submit": "تسجيل الدخول",
+      "noAccount": "ليس لديك حساب؟",
+      "signUp": "إنشاء حساب"
+    },
+    "signup": {
+      "title": "إنشاء حسابك",
+      "subtitle": "ابدأ رحلة تعلمك اليوم",
+      "name": "الاسم الكامل",
+      "email": "البريد الإلكتروني",
+      "password": "كلمة المرور",
+      "submit": "إنشاء حساب",
+      "haveAccount": "لديك حساب بالفعل؟",
+      "signIn": "تسجيل الدخول"
+    }
+  }
+}
