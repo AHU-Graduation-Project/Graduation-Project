@@ -19,7 +19,7 @@ export default function ThemeSelector() {
   }, [currentTheme]);
 
   return (
-    <div className="flex flex-col w-100 py-2">
+    <div className="grid grid-cols-1 gap-2 w-full py-2">
       {gradientThemes.map((theme) => (
         <button
           key={theme.id}
@@ -28,20 +28,20 @@ export default function ThemeSelector() {
             "relative px-4 py-2 rounded-lg border-2 transition-all",
             "hover:scale-100 hover:shadow-lg",
             currentTheme?.id === theme.id
-              ? "border-white/20 shadow-lg scale-100"
+              ? " border-slate-600 shadow-lg scale-100"
               : "border-transparent"
           )}
         >
-          <div className="flex items-center justify-start gap-4">
-            <p className="text-sm font-medium text-theme whitespace-nowrap">
-              {theme.name}
-            </p>
+          <div className="grid grid-cols-[auto_1fr] items-center gap-2 text-center">
             <div
               className={cn(
                 "h-6 w-6 rounded-full bg-gradient-to-r",
                 theme.class
               )}
             />
+            <p className="text-sm font-medium text-theme whitespace-nowrap">
+              {theme.name}
+            </p>
           </div>
         </button>
       ))}
