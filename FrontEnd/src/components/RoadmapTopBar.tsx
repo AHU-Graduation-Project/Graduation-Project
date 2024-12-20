@@ -1,42 +1,56 @@
-import { useState, useEffect, useCallback } from 'react';
-import { Download, ChevronDown, ChevronUp } from 'lucide-react';
-import { cn } from '../utils/cn';
-import { PDFDownloadLink, Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
-import { useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../store/authStore';
-import ReactFlow, { ReactFlowProvider } from 'reactflow';
-import html2canvas from 'html2canvas';
-import ThemeIcon from './ThemeIcon';
+import { useState, useEffect, useCallback } from "react";
+import { Download, ChevronDown, ChevronUp } from "lucide-react";
+import { cn } from "../utils/cn";
+import {
+  PDFDownloadLink,
+  Document,
+  Page,
+  Text,
+  View,
+  StyleSheet,
+  Image,
+} from "@react-pdf/renderer";
+import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "../store/authStore";
+import ReactFlow, { ReactFlowProvider } from "reactflow";
+import html2canvas from "html2canvas";
+import ThemeIcon from "./ThemeIcon";
 
 const styles = StyleSheet.create({
   page: {
     padding: 30,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
   },
   title: {
     fontSize: 24,
     marginBottom: 20,
-    color: '#1E40AF',
+    color: "#1E40AF",
   },
   flowImage: {
-    width: '100%',
+    width: "100%",
     height: 500,
     marginTop: 20,
   },
   legend: {
     marginTop: 20,
     padding: 10,
-    backgroundColor: '#F1F5F9',
+    backgroundColor: "#F1F5F9",
     borderRadius: 4,
   },
   legendTitle: {
     fontSize: 12,
     marginBottom: 5,
-    color: '#475569',
+    color: "#475569",
   },
 });
 
-const RoadmapPDF = ({ roadmap, flowImage }: { roadmap: any; flowImage: string }) => (
+const RoadmapPDF = ({
+  roadmap,
+  flowImage,
+}: {
+  roadmap: any;
+  flowImage: string;
+}) => (
   <Document>
     <Page size="A4" style={styles.page}>
       <Text style={styles.title}>{roadmap.title} Learning Path</Text>
@@ -53,10 +67,10 @@ const RoadmapPDF = ({ roadmap, flowImage }: { roadmap: any; flowImage: string })
 
 // ... rest of your existing imports
 
-export default function RoadmapTopBar({ 
-  roadmap, 
-  progress, 
-  completedNodes, 
+export default function RoadmapTopBar({
+  roadmap,
+  progress,
+  completedNodes,
   totalNodes,
   nodes,
   edges,
@@ -69,17 +83,17 @@ export default function RoadmapTopBar({
   const isSelected = user?.selectedRoadmaps.includes(roadmap?.id);
 
   const captureFlow = useCallback(async () => {
-    const flowElement = document.querySelector('.react-flow');
+    const flowElement = document.querySelector(".react-flow");
     if (flowElement) {
       try {
         const canvas = await html2canvas(flowElement as HTMLElement, {
           backgroundColor: null,
           scale: 2,
         });
-        const image = canvas.toDataURL('image/png');
+        const image = canvas.toDataURL("image/png");
         setFlowImage(image);
       } catch (error) {
-        console.error('Error capturing flow:', error);
+        console.error("Error capturing flow:", error);
       }
     }
   }, []);
@@ -91,13 +105,13 @@ export default function RoadmapTopBar({
       setLastScrollY(currentScrollY);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
 
   const handleAddToRoadmap = () => {
     if (!user) {
-      navigate('/login');
+      navigate("/login");
       return;
     }
     selectRoadmap(roadmap.id);
@@ -106,10 +120,12 @@ export default function RoadmapTopBar({
   if (!roadmap) return null;
 
   return (
-    <div className={cn(
-      "fixed top-20 left-0 right-0 z-40 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 transition-transform duration-300",
-      isVisible ? "translate-y-0" : "-translate-y-full"
-    )}>
+    <div
+      className={cn(
+        "fixed top-20 left-0 right-0 z-40 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 transition-transform duration-300",
+        isVisible ? "translate-y-0" : "-translate-y-full"
+      )}
+    >
       <div className="max-w-7xl mx-auto p-4 md:p-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
           <div className="flex-1">
@@ -131,20 +147,19 @@ export default function RoadmapTopBar({
             )}
             <PDFDownloadLink
               document={<RoadmapPDF roadmap={roadmap} flowImage={flowImage!} />}
-              fileName={`${roadmap.title.toLowerCase().replace(/\s+/g, '-')}-roadmap.pdf`}
+              fileName={`${roadmap.title
+                .toLowerCase()
+                .replace(/\s+/g, "-")}-roadmap.pdf`}
               className={cn(
                 "px-4 py-2 rounded-lg flex items-center gap-2 text-sm md:text-base",
                 "bg-theme text-white hover:opacity-90 transition-colors"
               )}
             >
               {({ loading }) => (
-                <button
-                  onClick={captureFlow}
-                  disabled={loading}
-                >
+                <button onClick={captureFlow} disabled={loading}>
                   <Download className="w-4 h-4" />
                   <span className="hidden md:inline">
-                    {loading ? 'Preparing PDF...' : 'Download PDF'}
+                    {loading ? "Preparing PDF..." : "Download PDF"}
                   </span>
                 </button>
               )}
@@ -155,7 +170,9 @@ export default function RoadmapTopBar({
         <div className="flex flex-col md:flex-row md:items-center gap-4">
           <div className="flex-1">
             <div className="flex justify-between text-sm mb-2">
-              <span className="text-slate-600 dark:text-slate-400">Overall Progress</span>
+              <span className="text-slate-600 dark:text-slate-400">
+                Overall Progress
+              </span>
               <span className="font-medium">{progress}%</span>
             </div>
             <div className="h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">

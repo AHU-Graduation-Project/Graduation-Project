@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Star, Clock, Trophy } from "lucide-react";
 import { useAuthStore } from "../store/authStore";
-import { roadmaps } from "../data/roadmaps";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -69,7 +68,7 @@ export default function Profile() {
           </div>
         </div>
 
-        <div className="mb-12">
+        {/* <div className="mb-12">
           <h2 className="text-2xl font-bold mb-6 text-theme">
             {t("profile.yourRoadmaps")}
           </h2>
@@ -115,20 +114,28 @@ export default function Profile() {
                         />
                       </div>
                     </div>
-                    <button
-                      onClick={() => navigate(`/roadmap/${roadmap.id}`)}
-                      className="text-theme hover:opacity-80 font-medium"
-                    >
-                      {t("profile.continueLearn")}
-                    </button>
+                    <div className="flex flex-row justify-between">
+                      <button
+                        onClick={() => navigate(`/roadmap/${roadmap.id}`)}
+                        className="text-theme hover:opacity-80 font-medium"
+                      >
+                        {t("profile.continueLearn")}
+                      </button>
+                      <button
+                        onClick={() => selectRoadmap(roadmap.id)}
+                        className="text-theme hover:opacity-80 font-medium"
+                      >
+                        {"Remove"}
+                      </button>
+                    </div>
                   </div>
                 </div>
               );
             })}
           </div>
-        </div>
+        </div> */}
 
-        <div>
+        {/* <div>
           <h2 className="text-2xl font-bold mb-6 text-theme">
             {t("profile.availableRoadmaps")}
           </h2>
@@ -170,7 +177,7 @@ export default function Profile() {
               );
             })}
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
