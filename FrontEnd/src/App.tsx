@@ -6,8 +6,7 @@ import BrowseRoadmaps from "./pages/BrowseRoadmaps";
 import RoadmapFlow from "./components/RoadmapFlow";
 import GenerateRoadmap from "./pages/GenerateRoadmap";
 import Overview from "./pages/Overview";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
+import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
 import Background from "./components/Background";
 import { ThemeProvider } from "./context/ThemeContext";
@@ -16,8 +15,10 @@ import { useThemeStore } from "./store/themeStore";
 
 function AppContent() {
   const location = useLocation();
-  const showFooter = !location.pathname.startsWith("/roadmap");
   const { currentTheme } = useThemeStore();
+
+  // Check if current route is "/Auth"
+  const isAuthPage = location.pathname === "/auth";
 
   // Initialize theme on app load
   useEffect(() => {
@@ -35,26 +36,25 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
-      <Header />
+      {!isAuthPage && <Header />}
       <Routes>
         <Route path="/" element={<BrowseRoadmaps />} />
         <Route path="/overview" element={<Overview />} />
         <Route path="/generate" element={<GenerateRoadmap />} />
         <Route path="/roadmap/:id" element={<RoadmapFlow />} />
         <Route
-          path="/login"
+          path="/Auth"
           element={
             <div className="relative w-full h-screen">
               <Background />
-              <Login />
+              <Auth />
             </div>
           }
         />
-        <Route path="/signup" element={<Signup />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-      {showFooter && <FooterComponent />}
+      {!isAuthPage && <FooterComponent />}
     </div>
   );
 }
