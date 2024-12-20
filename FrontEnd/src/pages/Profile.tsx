@@ -1,13 +1,13 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+
 import { Star, Clock, Trophy } from "lucide-react";
 import { useAuthStore } from "../store/authStore";
 
 export default function Profile() {
   const navigate = useNavigate();
-  const { t } = useTranslation();
-  const { user, isAuthenticated, selectRoadmap } = useAuthStore();
+
+  const { user, isAuthenticated } = useAuthStore();
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -26,8 +26,8 @@ export default function Profile() {
     },
     {
       icon: Clock,
-      label: "Hours Spent",
-      value: "24",
+      label: "Completed RoadMaps",
+      value: user.selectedRoadmaps.length,
       color: "text-blue-500",
     },
     {
@@ -43,7 +43,7 @@ export default function Profile() {
       <div className="max-w-6xl mx-auto">
         <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-2xl p-8 mb-12">
           <h1 className="text-4xl font-bold mb-4 text-theme">
-            {t("profile.welcome")}, {user.name}
+            {"profile.welcome"}, {user.name}
           </h1>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
