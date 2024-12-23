@@ -1,184 +1,261 @@
-import { useCallback, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+import { useCallback, useState } from "react";
+import { useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import ReactFlow, {
   Node,
   Edge,
   Background,
   Controls,
-  NodeProps,
-  Handle,
-  Position,
-} from 'reactflow';
-import 'reactflow/dist/style.css';
-import { roadmaps } from '../data/roadmaps';
-import { useAuthStore } from '../store/authStore';
-import NodeDetailsModal from './NodeDetailsModal';
-import RoadmapInfo from './RoadmapInfo';
-import ChatPanel from './ChatPanel';
-import RoadmapTopBar from './RoadmapTopBar';
-import { cn } from '../utils/cn';
-import { AlertCircle, MessageCircle } from 'lucide-react';
-
-const CustomNode = ({ data, id }: NodeProps) => {
-  const { user, updateProgress } = useAuthStore();
-  const { id: roadmapId } = useParams();
-  const isCompleted = user?.progress[roadmapId || '']?.includes(id);
-  const isFirstNode = id === '1';
-  const shouldBeActive = isCompleted || isFirstNode || data.isUnlocked;
-
-  return (
-    <div 
-      className={cn(
-        "px-4 py-2 shadow-lg rounded-lg border-2",
-        "transition-all duration-300",
-        shouldBeActive 
-          ? "border-white/10 bg-theme" 
-          : "border-slate-700/50 bg-slate-800/50 cursor-not-allowed"
-      )}
-    >
-      <Handle 
-        type="target" 
-        position={Position.Top} 
-        className={cn(
-          "transition-colors duration-300",
-          shouldBeActive ? "!bg-white" : "!bg-slate-600"
-        )} 
-      />
-      <div className="flex flex-col items-center gap-2">
-        <div className={cn(
-          "font-medium transition-colors duration-300",
-          shouldBeActive ? "text-white" : "text-slate-400"
-        )}>
-          {data.label}
-        </div>
-        <div className="flex gap-2">
-          <button
-            onClick={() => data.onShowDetails(data)}
-            className={cn(
-              "px-2 py-1 text-xs rounded-md transition-colors",
-              shouldBeActive 
-                ? "bg-white/10 hover:bg-white/20 text-white" 
-                : "bg-slate-700/50 text-slate-400"
-            )}
-          >
-            {data.t('roadmap.viewDetails')}
-          </button>
-          {user && shouldBeActive && (
-            <button
-              onClick={() => updateProgress(roadmapId || '', id, !isCompleted)}
-              className={cn(
-                "px-2 py-1 text-xs rounded-md text-white transition-colors",
-                isCompleted ? "bg-green-500/20 hover:bg-green-500/30" : "bg-white/10 hover:bg-white/20"
-              )}
-            >
-              {isCompleted ? data.t('roadmap.completed') : data.t('roadmap.markComplete')}
-            </button>
-          )}
-        </div>
-      </div>
-      <Handle 
-        type="source" 
-        position={Position.Bottom} 
-        className={cn(
-          "transition-colors duration-300",
-          shouldBeActive ? "!bg-white" : "!bg-slate-600"
-        )} 
-      />
-    </div>
-  );
-};
-
-export { CustomNode };
-
+} from "reactflow";
+import "reactflow/dist/style.css";
+import { roadmaps } from "../data/roadmaps";
+import { useAuthStore } from "../store/authStore";
+import NodeDetailsModal from "./NodeDetailsModal";
+import RoadmapInfo from "./RoadmapInfo";
+import ChatPanel from "./ChatPanel";
+import RoadmapTopBar from "./RoadmapTopBar";
+import { cn } from "../utils/cn";
+import { AlertCircle, MessageCircle } from "lucide-react";
+import { CustomNode } from "./CustomNode";
 const nodeTypes = {
   custom: CustomNode,
 };
 
 const initialNodes: Node[] = [
   {
-    id: '1',
-    type: 'custom',
-    position: { x: 400, y: 100 },
-    data: { 
-      label: 'Start Your Journey',
-      description: 'Begin your development journey here. Learn the basics of programming and computer science.',
-      marketDemand: 'Entry-level positions are abundant with 25% growth expected.',
-      averageSalary: '$65,000 - $85,000',
-      requiredSkills: ['Problem Solving', 'Logical Thinking', 'Basic Mathematics'],
+    id: "1",
+    type: "custom",
+    position: { x: 400, y: 0 },
+    data: {
+      label: "HTML",
+      type: "topic",
+      description: "Learn the fundamentals of HTML markup language.",
+      marketDemand: "High demand as the foundation of web development.",
+      averageSalary: "$60,000 - $80,000",
+      requiredSkills: ["Semantic HTML", "Forms", "Accessibility"],
       isUnlocked: true,
     },
   },
   {
-    id: '2',
-    type: 'custom',
-    position: { x: 250, y: 200 },
-    data: { 
-      label: 'Learn HTML & CSS',
-      description: 'Master the fundamentals of web development with HTML and CSS.',
-      marketDemand: 'High demand with 15% annual growth in web development roles.',
-      averageSalary: '$70,000 - $90,000',
-      requiredSkills: ['HTML5', 'CSS3', 'Responsive Design'],
+    id: "2",
+    type: "custom",
+    position: { x: 400, y: 100 },
+    data: {
+      label: "CSS",
+      type: "topic",
+      description: "Master styling and layout with CSS.",
+      marketDemand: "Essential skill for frontend development.",
+      averageSalary: "$65,000 - $85,000",
+      requiredSkills: ["Flexbox", "Grid", "Responsive Design"],
       isUnlocked: false,
-      requiredNodes: ['1'],
+      requiredNodes: ["1"],
     },
   },
   {
-    id: '3',
-    type: 'custom',
-    position: { x: 550, y: 200 },
-    data: { 
-      label: 'JavaScript Basics',
-      description: 'Learn the fundamentals of JavaScript programming.',
-      marketDemand: 'Very high demand with 30% growth in JavaScript roles.',
-      averageSalary: '$80,000 - $120,000',
-      requiredSkills: ['ES6+', 'DOM Manipulation', 'Async Programming'],
+    id: "3",
+    type: "custom",
+    position: { x: 400, y: 200 },
+    data: {
+      label: "JavaScript",
+      type: "topic",
+      description: "Learn core JavaScript programming concepts.",
+      marketDemand: "Very high demand with excellent job prospects.",
+      averageSalary: "$80,000 - $120,000",
+      requiredSkills: ["ES6+", "Async Programming", "DOM Manipulation"],
       isUnlocked: false,
-      requiredNodes: ['1'],
+      requiredNodes: ["2"],
     },
   },
   {
-    id: '4',
-    type: 'custom',
+    id: "4",
+    type: "custom",
+    position: { x: 200, y: 200 },
+    data: {
+      label: "JS Syntax",
+      type: "subtopic",
+      description: "Master JavaScript syntax and core concepts.",
+      marketDemand: "Fundamental skill for all JavaScript development.",
+      averageSalary: "$75,000 - $95,000",
+      requiredSkills: ["Variables", "Functions", "Objects"],
+      isUnlocked: false,
+      requiredNodes: ["3"],
+    },
+  },
+  {
+    id: "5",
+    type: "custom",
+    position: { x: 600, y: 200 },
+    data: {
+      label: "DOM",
+      type: "subtopic",
+      description: "Learn DOM manipulation and events.",
+      marketDemand: "Essential for frontend development.",
+      averageSalary: "$75,000 - $95,000",
+      requiredSkills: ["Selectors", "Events", "Traversal"],
+      isUnlocked: false,
+      requiredNodes: ["3"],
+    },
+  },
+  {
+    id: "6",
+    type: "custom",
     position: { x: 250, y: 300 },
-    data: { 
-      label: 'CSS Frameworks',
-      description: 'Master modern CSS frameworks and design systems.',
-      marketDemand: 'Strong demand with focus on responsive design.',
-      averageSalary: '$85,000 - $110,000',
-      requiredSkills: ['Tailwind CSS', 'Bootstrap', 'Sass'],
+    data: {
+      label: "React",
+      type: "topic",
+      description: "Build modern web applications with React.",
+      marketDemand: "Very high demand for React developers.",
+      averageSalary: "$90,000 - $140,000",
+      requiredSkills: ["Components", "Hooks", "State Management"],
       isUnlocked: false,
-      requiredNodes: ['2'],
+      requiredNodes: ["3"],
+    },
+  },
+  {
+    id: "7",
+    type: "custom",
+    position: { x: 550, y: 300 },
+    data: {
+      label: "Angular",
+      type: "topic",
+      description: "Develop enterprise applications with Angular.",
+      marketDemand: "Strong demand in enterprise environments.",
+      averageSalary: "$95,000 - $145,000",
+      requiredSkills: ["TypeScript", "RxJS", "Angular CLI"],
+      isUnlocked: false,
+      requiredNodes: ["3"],
+    },
+  },
+  {
+    id: "8",
+    type: "custom",
+    position: { x: 400, y: 400 },
+    data: {
+      label: "VCS",
+      type: "topic",
+      description: "Learn version control with Git.",
+      marketDemand: "Essential skill for all developers.",
+      averageSalary: "$70,000 - $90,000",
+      requiredSkills: ["Git", "GitHub", "Branching Strategies"],
+      isUnlocked: false,
+      requiredNodes: ["6", "7"],
+    },
+  },
+  {
+    id: "9",
+    type: "custom",
+    position: { x: 400, y: 500 },
+    data: {
+      label: "SSR Vs CSR",
+      type: "topic",
+      description: "Understand server-side and client-side rendering.",
+      marketDemand: "Growing demand for full-stack knowledge.",
+      averageSalary: "$100,000 - $150,000",
+      requiredSkills: ["Next.js", "Performance Optimization", "SEO"],
+      isUnlocked: false,
+      requiredNodes: ["8"],
     },
   },
 ];
 
 const initialEdges: Edge[] = [
-  { id: 'e1-2', source: '1', target: '2', animated: true },
-  { id: 'e1-3', source: '1', target: '3', animated: true },
-  { id: 'e2-4', source: '2', target: '4' },
+  {
+    id: "e1-2",
+    source: "1",
+    target: "2",
+    sourceHandle: "bottom",
+    targetHandle: "top",
+    animated: true,
+  },
+  {
+    id: "e2-3",
+    source: "2",
+    target: "3",
+    sourceHandle: "bottom",
+    targetHandle: "top",
+    animated: true,
+  },
+  {
+    id: "e3-4",
+    source: "3",
+    target: "4",
+    sourceHandle: "left",
+    targetHandle: "right",
+    type: "smoothstep",
+    style: { strokeDasharray: "5,5" },
+  },
+  {
+    id: "e3-5",
+    source: "3",
+    target: "5",
+    sourceHandle: "right",
+    targetHandle: "left",
+    type: "smoothstep",
+    style: { strokeDasharray: "5,5" },
+  },
+  {
+    id: "e3-6",
+    source: "3",
+    target: "6",
+    sourceHandle: "bottom",
+    targetHandle: "top",
+    animated: true,
+  },
+  {
+    id: "e3-7",
+    source: "3",
+    target: "7",
+    sourceHandle: "bottom",
+    targetHandle: "top",
+    animated: true,
+  },
+  {
+    id: "e6-8",
+    source: "6",
+    target: "8",
+    sourceHandle: "bottom",
+    targetHandle: "top",
+    animated: true,
+  },
+  {
+    id: "e7-8",
+    source: "7",
+    target: "8",
+    sourceHandle: "bottom",
+    targetHandle: "top",
+    animated: true,
+  },
+  {
+    id: "e8-9",
+    source: "8",
+    target: "9",
+    sourceHandle: "bottom",
+    targetHandle: "top",
+    animated: true,
+  },
 ];
+
 
 export default function RoadmapFlow() {
   const { id } = useParams();
-  const roadmap = roadmaps.find(r => r.id === id);
+  const roadmap = roadmaps.find((r) => r.id === id);
   const [selectedNode, setSelectedNode] = useState<any>(null);
   const [showInfo, setShowInfo] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const { t } = useTranslation();
   const { user } = useAuthStore();
-  
+
   const onNodesChange = useCallback(() => {}, []);
   const onEdgesChange = useCallback(() => {}, []);
 
   // Update node unlock status based on completed nodes
-  const nodes = initialNodes.map(node => {
+  const nodes = initialNodes.map((node) => {
     const nodeData = { ...node.data };
-    const completedNodes = user?.progress[id || ''] || [];
+    const completedNodes = user?.progress[id || ""] || [];
 
     // Check if all required nodes are completed
     if (nodeData.requiredNodes) {
-      nodeData.isUnlocked = nodeData.requiredNodes.every(requiredId => 
+      nodeData.isUnlocked = nodeData.requiredNodes.every((requiredId) =>
         completedNodes.includes(requiredId)
       );
     }
@@ -193,7 +270,7 @@ export default function RoadmapFlow() {
     };
   });
 
-  const completedNodes = user?.progress[id || '']?.length || 0;
+  const completedNodes = user?.progress[id || ""]?.length || 0;
   const totalNodes = nodes.length;
   const progress = Math.round((completedNodes / totalNodes) * 100);
 
@@ -266,7 +343,7 @@ export default function RoadmapFlow() {
         isOpen={showChat}
         onClose={() => setShowChat(false)}
         roadmap={roadmap}
-        userProgress={user?.progress[id || '']}
+        userProgress={user?.progress[id || ""]}
       />
     </div>
   );
