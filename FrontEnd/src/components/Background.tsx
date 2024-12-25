@@ -2,7 +2,7 @@ const Background: React.FC = () => {
   return (
     <div className="absolute inset-0 w-full h-full overflow-hidden bg-gray-900">
       {/* Animated Gradient Background */}
-      <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 animate-gradient-x opacity-40 z-0"></div>
+      <div className="absolute inset-0 bg-theme animate-gradient-x opacity-40 z-0"></div>
 
       {/* Pulsating Circles */}
       <div className="absolute inset-0 z-0">
@@ -16,7 +16,7 @@ const Background: React.FC = () => {
         {[...Array(80)].map((_, i) => (
           <div
             key={i}
-            className="absolute w-1.5 h-1.5 bg-cyan-400 rounded-full opacity-70 animate-particle"
+            className="absolute w-1.5 h-1.5 bg-gray-300 rounded-full opacity-70 animate-particle"
             style={{
               top: `${Math.random() * 100}%`,
               left: `${Math.random() * 100}%`,

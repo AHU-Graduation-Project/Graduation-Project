@@ -67,7 +67,7 @@ export default function Login() {
 
           {/* Login Form */}
           <div
-            className={`w-full md:w-1/2 p-12  md:p-8 transition-transform duration-700 ease-in-out bg-gray-800 bg-opacity-75 rounded-xl md:bg-gray-100  ${
+            className={`w-full md:w-1/2 p-12  md:p-8 transition-transform duration-700 ease-in-out bg-gray-800 bg-opacity-75 rounded-xl md:bg-gray-800 ${
               isSignUp ? "-translate-x-full" : "translate-x-0"
             }`}
           >
@@ -79,7 +79,7 @@ export default function Login() {
 
           {/* Sign-Up Form */}
           <div
-            className={`w-full md:w-1/2 p-12  md:p-8 transition-transform duration-700 ease-in-out bg-gray-800 bg-opacity-75 rounded-xl md:bg-gray-100  ${
+            className={`w-full md:w-1/2 p-12  md:p-8 transition-transform duration-700 ease-in-out bg-gray-800 bg-opacity-75 rounded-xl md:bg-gray-800  ${
               isSignUp ? "translate-x-0" : "translate-x-full"
             }`}
           >
