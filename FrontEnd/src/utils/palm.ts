@@ -2,6 +2,12 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_OPENAI_API_KEY);
 
+interface GenerateOptions {
+  minTopics: number;
+  minSubtopics: number;
+}
+
+
 const EXAMPLE_STRUCTURE = `{
   "nodes": [
   {
@@ -217,7 +223,8 @@ const EXAMPLE_STRUCTURE = `{
 ]
 }`;
 
-const SYSTEM_PROMPT = `You are a learning path generator. Generate a detailed roadmap in JSON format following these EXACT rules:
+
+const createSystemPrompt = (options: GenerateOptions) => `You are a learning path generator. Generate a detailed roadmap in JSON format following these EXACT rules:
 
 1. Node Structure:
    - All nodes must use type: "custom"
@@ -252,9 +259,9 @@ const SYSTEM_PROMPT = `You are a learning path generator. Generate a detailed ro
      * Left side at x: 200
      * Right side at x: 600
    - Y coordinates must increment by 100 for each level
-   - Minimum 15 main topics
+   - Minimum ${options.minTopics} main topics
    - Maximum 50 nodes total
-   - Minimum 2-3 subtopics per main topic
+   - Minimum ${options.minSubtopics} subtopics per main topic
    - Ensure logical topic progression
 
 4. Connection Rules:
@@ -265,17 +272,18 @@ const SYSTEM_PROMPT = `You are a learning path generator. Generate a detailed ro
 
 Use this exact structure and follow the example provided. Ensure all nodes and edges match the format precisely.`;
 
-export async function generateRoadmap(prompt: string) {
+export async function generateRoadmap(prompt: string, options: GenerateOptions = { minTopics: 15, minSubtopics: 2 }) {
   try {
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     
     const result = await model.generateContent([
-      SYSTEM_PROMPT,
+      createSystemPrompt(options),
       EXAMPLE_STRUCTURE,
-      `Generate a learning roadmap for: ${prompt}. Follow the example structure to take idea of how it will be,and a give a full roadmap to the reqested topic include all possible topics ensuring proper node positioning and connections as shown in the example.`,
+      `Generate a learning roadmap for: ${prompt}. Follow the example structure to take idea of how it will be, and give a full roadmap to the requested topic including all possible topics ensuring proper node positioning and connections as shown in the example. Make sure to include at least ${options.minTopics} main topics and ${options.minSubtopics} subtopics per main topic.`,
     ]);
     
     const response = await result.response;
+    console.log('Response:', response);
     const text = response.text();
     
     // Extract JSON content

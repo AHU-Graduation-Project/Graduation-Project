@@ -248,28 +248,33 @@ export default function RoadmapFlow() {
   const onNodesChange = useCallback(() => {}, []);
   const onEdgesChange = useCallback(() => {}, []);
 
-  // Update node unlock status based on completed nodes
-  const nodes = initialNodes.map((node) => {
-    const nodeData = { ...node.data };
-    const completedNodes = user?.progress[id || ""] || [];
+ const nodes = initialNodes.map((node) => {
 
-    // Check if all required nodes are completed
-    if (nodeData.requiredNodes) {
-      nodeData.isUnlocked = nodeData.requiredNodes.every((requiredId) =>
-        completedNodes.includes(requiredId)
-      );
-    }
+   if (!node?.data) {
+     console.error("Node data is missing:", node);
+     return node; // Skip this node if data is missing
+   }
 
-    return {
-      ...node,
-      data: {
-        ...nodeData,
-        onShowDetails: (nodeData: any) => setSelectedNode(nodeData),
-        t,
-      },
-    };
-  });
+   const nodeData = { ...node.data };
+   const completedNodes = user?.progress?.[id || ""] || [];
 
+   if (nodeData?.requiredNodes) {
+     nodeData.isUnlocked = nodeData.requiredNodes.every((requiredId) =>
+       completedNodes.includes(requiredId)
+     );
+   }
+
+   return {
+     ...node,
+     data: {
+       ...nodeData,
+       onShowDetails: (nodeData: any) => setSelectedNode(nodeData),
+       t,
+     },
+   };
+ });
+
+console.log(user);
   const completedNodes = user?.progress[id || ""]?.length || 0;
   const totalNodes = nodes.length;
   const progress = Math.round((completedNodes / totalNodes) * 100);

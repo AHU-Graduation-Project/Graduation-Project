@@ -117,3 +117,15 @@ border: none;
 .react-flow__controls-button svg{
   @apply fill-fill;
 }
+
+.custom-range {
+  /* Change the color of the track */
+  ::-webkit-slider-runnable-track {
+    background: #f00; /* Red color */
+  }
+
+  /* Change the color of the thumb */
+  ::-webkit-slider-thumb {
+    background: #00f; /* Blue color */
+  }
+}
