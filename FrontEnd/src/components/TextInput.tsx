@@ -17,7 +17,7 @@ export function InputField({
   label: string;
   placeholder: string;
   showToggle?: boolean;
-  toggleHandler?: () => void;
+  inputClickHandler?: () => void;
 }) {
   return (
     <div className="relative">
