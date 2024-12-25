@@ -4,7 +4,7 @@ import { useAuthStore } from "../store/authStore";
 import LoginForm from "../components/LoginForm";
 import SignupForm from "../components/SignUpForm";
 
-export default function Login() {
+export default function Auth() {
   const navigate = useNavigate();
   const login = useAuthStore((state) => state.login);
   const signup = useAuthStore((state) => state.signup);
@@ -12,7 +12,7 @@ export default function Login() {
 
   const handleSubmitLogin = (email: string, password: string) => {
     login(email, password);
-    navigate("/profile");
+    navigate("/BrowseRoadmaps");
   };
 
   const handleSubmitSignUp = (

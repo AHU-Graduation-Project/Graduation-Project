@@ -40,7 +40,7 @@ export default function LoginForm({ onSubmit, onSignUpClick }: LoginFormProps) {
           label="Password"
           placeholder="Password"
           showToggle
-          toggleHandler={() => setShowPassword(!showPassword)}
+          inputClickHandler={() => setShowPassword((current) => current)}
         />
         <div className="text-sm text-center text-gray-400 mt-4">
           <span>Don't have an account? </span>

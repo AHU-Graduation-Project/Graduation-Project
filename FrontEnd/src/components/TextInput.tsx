@@ -8,7 +8,7 @@ export function InputField({
   label,
   placeholder,
   showToggle,
-  toggleHandler,
+  inputClickHandler,
 }: {
   id: string;
   type: string;
@@ -32,10 +32,10 @@ export function InputField({
         className="w-full px-4 py-3 bg-gray-900 text-gray-300 rounded-lg border border-gray-600 focus:ring-2 focus:ring-cyan-400 focus:outline-none placeholder-transparent transition-all duration-200 ease-in-out shadow-md"
         placeholder={placeholder}
       />
-      {showToggle && toggleHandler && (
+      {showToggle && inputClickHandler && (
         <button
           type="button"
-          onClick={toggleHandler}
+          onClick={inputClickHandler}
           className="absolute right-4 top-12 transform -translate-y-1/2 text-gray-400 hover:text-cyan-400 transition focus:outline-none"
         >
           {type === "password" ? <FaEyeSlash size={20} /> : <FaEye size={20} />}

@@ -50,7 +50,7 @@ export function SignupForm({ onSubmit, onLoginClick }: SignupFormProps) {
           label="Password"
           placeholder="Password"
           showToggle
-          toggleHandler={() => setShowPassword(!showPassword)}
+          inputClickHandler={() => setShowPassword(!showPassword)}
         />
         <div className="text-sm text-center text-gray-400 mt-4">
           <span>Already have an account? </span>
