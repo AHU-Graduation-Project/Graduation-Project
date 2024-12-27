@@ -292,7 +292,7 @@ console.log(user);
 
 
   return (
-    <div className="relative h-screen pt-20">
+    <div className="relative ">
         {/* Top Bar */}
       <RoadmapTopBar
         roadmap={roadmap}

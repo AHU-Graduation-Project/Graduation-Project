@@ -71,7 +71,7 @@ body {
 
 @layer base {
   * {
-    @apply border-border transition-colors duration-200;
+    @apply border-border ;
   }
   body {
     @apply bg-gradient-to-t from-gray-950 to-gray-800 text-foreground;
@@ -118,14 +118,3 @@ border: none;
   @apply fill-fill;
 }
 
-.custom-range {
-  /* Change the color of the track */
-  ::-webkit-slider-runnable-track {
-    background: #f00; /* Red color */
-  }
-
-  /* Change the color of the thumb */
-  ::-webkit-slider-thumb {
-    background: #00f; /* Blue color */
-  }
-}
