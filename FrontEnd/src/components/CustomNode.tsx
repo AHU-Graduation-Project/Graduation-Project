@@ -1,6 +1,8 @@
-import { NodeProps, Handle, Position } from "reactflow";
+import { NodeProps, Handle, Position, NodeToolbar } from "reactflow";
 import { cn } from "../utils/cn";
 import { useParams } from "react-router-dom";
+import { MoreHorizontal } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
 import "reactflow/dist/style.css";
 import { useAuthStore } from "../store/authStore";
 
@@ -14,7 +16,7 @@ interface NodeData {
   isUnlocked: boolean;
   requiredNodes?: string[];
   onShowDetails: (data: any) => void;
-  t: (key: string) => string;
+  jobs?: number;
 }
 
 export function CustomNode({ data, id }: NodeProps<NodeData>) {
@@ -23,8 +25,68 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
   const isCompleted = user?.progress[roadmapId || ""]?.includes(id);
   const isFirstNode = id === "1";
   const shouldBeActive = isCompleted || isFirstNode || data.isUnlocked;
+  const [showToolbar, setShowToolbar] = useState(false);
+  const toolbarContainerRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
-  // Determine which handles to show based on node type
+ useEffect(() => {
+   const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+     const toolbarClicked = toolbarContainerRef.current?.contains(
+       event.target as Node
+     );
+     const buttonClicked = buttonRef.current?.contains(event.target as Node);
+
+     // Close only if the click is outside both the toolbar and button
+     if (!toolbarClicked && !buttonClicked) {
+       setTimeout(() => setShowToolbar(false), 0); // Delay to let click events on dropdown propagate
+     }
+   };
+
+   document.addEventListener("mousedown", handleClickOutside);
+   document.addEventListener("touchstart", handleClickOutside);
+
+   return () => {
+     document.removeEventListener("mousedown", handleClickOutside);
+     document.removeEventListener("touchstart", handleClickOutside);
+   };
+ }, []);
+
+
+  const handleAction = (action: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowToolbar(false);
+
+    switch (action) {
+      case "details":
+        data.onShowDetails(data);
+        break;
+      case "complete":
+        if (user && shouldBeActive) {
+          updateProgress(roadmapId || "", id, !isCompleted);
+        }
+        break;
+      case "jobs":
+        window.open(
+          `https://www.linkedin.com/jobs/search/?keywords=${data.label}`,
+          "_blank"
+        );
+        break;
+      case "courses":
+        
+  // data.onShowDetails(data);
+  // setShowCourses(true);
+    break;
+
+        
+    }
+  };
+
+  const handleNodeClick = () => {
+    if (shouldBeActive) {
+      data.onShowDetails(data);
+    }
+  };
+
   const showHandles = {
     top: data.type === "topic",
     bottom: data.type === "topic",
@@ -33,106 +95,133 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
   };
 
   return (
-    <div
-      className={cn(
-        "px-4 py-2 shadow-lg rounded-lg border-2",
-        "transition-all duration-300",
-        shouldBeActive
-          ? "border-white/10 bg-theme"
-          : "border-slate-700/50 bg-slate-800/50 cursor-not-allowed",
-        data.type === "subtopic" && "bg-opacity-80"
-      )}
-    >
-      {/* Top Handle */}
-      {showHandles.top && (
-        <Handle
-          type="target"
-          position={Position.Top}
-          id="top"
-          className={cn(
-            "transition-colors duration-300",
-            shouldBeActive ? "!bg-white" : "!bg-slate-600"
-          )}
-        />
-      )}
-
-      {/* Bottom Handle */}
-      {showHandles.bottom && (
-        <Handle
-          type="source"
-          position={Position.Bottom}
-          id="bottom"
-          className={cn(
-            "transition-colors duration-300",
-            shouldBeActive ? "!bg-white" : "!bg-slate-600"
-          )}
-        />
-      )}
-
-      {/* Left Handle */}
-      {showHandles.left && (
-        <Handle
-          type={data.type === "subtopic" ? "target" : "source"}
-          position={Position.Left}
-          id="left"
-          className={cn(
-            "transition-colors duration-300",
-            shouldBeActive ? "!bg-white" : "!bg-slate-600"
-          )}
-        />
-      )}
-
-      {/* Right Handle */}
-      {showHandles.right && (
-        <Handle
-          type={data.type === "subtopic" ? "target" : "source"}
-          position={Position.Right}
-          id="right"
-          className={cn(
-            "transition-colors duration-300",
-            shouldBeActive ? "!bg-white" : "!bg-slate-600"
-          )}
-        />
-      )}
-
-      <div className="flex flex-col items-center gap-2">
-        <div
-          className={cn(
-            "font-medium transition-colors duration-300",
-            shouldBeActive ? "text-white" : "text-slate-400"
-          )}
+    <>
+      <div ref={toolbarContainerRef}>
+        <NodeToolbar
+          isVisible={showToolbar}
+          position="bottom"
+          align="end"
+          className="bg-slate-800/95 backdrop-blur-sm rounded-lg shadow-xl border border-slate-700 p-2 fixed top-[-40px]"
         >
-          {data.label}
-        </div>
-        <div className="flex gap-2">
-          <button
-            onClick={() => data.onShowDetails(data)}
+          <div className="flex flex-col min-w-[160px]">
+            <button
+              onClick={(e) => handleAction("details", e)}
+              className="w-full px-4 py-2 text-left text-white hover:bg-white/10 transition-colors text-sm rounded-lg"
+            >
+              View Details
+            </button>
+            {user && shouldBeActive && (
+              <button
+                onClick={(e) => handleAction("complete", e)}
+                className="w-full px-4 py-2 text-left text-white hover:bg-white/10 transition-colors text-sm rounded-lg"
+              >
+                {isCompleted ? "Mark Incomplete" : "Mark Complete"}
+              </button>
+            )}
+            <button
+              onClick={(e) => handleAction("jobs", e)}
+              className="w-full px-4 py-2 text-left text-white hover:bg-white/10 transition-colors text-sm rounded-lg"
+            >
+              View Jobs ({data.jobs || 0})
+            </button>
+            <button
+              onClick={(e) => handleAction("courses", e)}
+              className="w-full px-4 py-2 text-left text-white hover:bg-white/10 transition-colors text-sm rounded-lg"
+            >
+              View Courses
+            </button>
+          </div>
+        </NodeToolbar>
+      </div>
+
+      <div
+        onClick={handleNodeClick}
+        className={cn(
+          "px-6 py-3 shadow-lg rounded-xl border-2 relative hover:scale-105 transition-transform",
+          "min-w-[200px]",
+          data.type === "topic"
+            ? "rounded-2xl text-lg font-bold tracking-wide shadow-xl"
+            : "rounded-md text-sm font-medium tracking-normal shadow-md ",
+          !shouldBeActive && "opacity-50 bg-slate-800/50",
+          shouldBeActive &&
+            (isCompleted
+              ? data.type === "topic"
+                ? "bg-theme text-white "
+                : "bg-theme text-white"
+              : data.type === "topic"
+              ? ""
+              : ""),
+          !shouldBeActive && "cursor-not-allowed"
+        )}
+      >
+        {data.jobs && (
+          <div className="absolute -top-3 -left-3 w-6 h-6 rounded-full bg-theme flex items-center justify-center text-white text-xs font-medium shadow-lg">
+            {data.jobs}
+          </div>
+        )}
+
+        <button
+          ref={buttonRef}
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowToolbar(!showToolbar);
+          }}
+          className="absolute -top-3 -right-3 p-1.5 rounded-full bg-theme text-white hover:opacity-90 transition-colors shadow-lg z-10"
+        >
+          <MoreHorizontal className="w-4 h-4" />
+        </button>
+
+        <div className="text-center mt-1">
+          <h3
             className={cn(
-              "px-2 py-1 text-xs rounded-md transition-colors",
+              "font-medium transition-colors",
+              data.type === "topic" ? "text-lg" : "text-lg",
               shouldBeActive
-                ? "bg-white/10 hover:bg-white/20 text-white"
-                : "bg-slate-700/50 text-slate-400"
+                ? isCompleted
+                  ? "text-white"
+                  : data.type === "topic"
+                  ? "text-theme dark:text-white"
+                  : "text-theme/90 dark:text-white/90"
+                : "text-slate-400"
             )}
           >
-            {data.t("roadmap.viewDetails")}
-          </button>
-          {user && shouldBeActive && (
-            <button
-              onClick={() => updateProgress(roadmapId || "", id, !isCompleted)}
-              className={cn(
-                "px-2 py-1 text-xs rounded-md text-white transition-colors",
-                isCompleted
-                  ? "bg-green-500/20 hover:bg-green-500/30"
-                  : "bg-white/10 hover:bg-white/20"
-              )}
-            >
-              {isCompleted
-                ? data.t("roadmap.completed")
-                : data.t("roadmap.markComplete")}
-            </button>
-          )}
+            {data.label}
+          </h3>
         </div>
+
+        {showHandles.top && (
+          <Handle
+            type="target"
+            position={Position.Top}
+            id="top"
+            className="border-none bg-transparent"
+          />
+        )}
+        {showHandles.bottom && (
+          <Handle
+            type="source"
+            position={Position.Bottom}
+            id="bottom"
+            className="border-none bg-transparent"
+          />
+        )}
+        {showHandles.left && (
+          <Handle
+            type={data.type === "subtopic" ? "target" : "source"}
+            position={Position.Left}
+            id="left"
+            className="border-none bg-transparent"
+          />
+        )}
+        {showHandles.right && (
+          <Handle
+            type={data.type === "subtopic" ? "target" : "source"}
+            position={Position.Right}
+            id="right"
+            className="border-none bg-transparent"
+          />
+        )}
       </div>
-    </div>
+    </>
   );
 }

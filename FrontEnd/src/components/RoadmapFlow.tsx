@@ -1,26 +1,31 @@
-import { useCallback, useState } from "react";
-import { useParams } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import ReactFlow, {
-  Node,
-  Edge,
-  Background,
-  Controls,
-} from "reactflow";
+import { useState, useCallback } from 'react';
+import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import ReactFlow, { 
+  Node, 
+  Edge, 
+  Background, 
+  Controls 
+} from 'reactflow';
 import "reactflow/dist/style.css";
 import { roadmaps } from "../data/roadmaps";
 import { useAuthStore } from "../store/authStore";
 import NodeDetailsModal from "./NodeDetailsModal";
 import RoadmapInfo from "./RoadmapInfo";
 import ChatPanel from "./ChatPanel";
+import CoursesSidebar from "./CoursesSidebar";
 import RoadmapTopBar from "./RoadmapTopBar";
 import { cn } from "../utils/cn";
-import { AlertCircle, MessageCircle } from "lucide-react";
+import { AlertCircle, MessageCircle, BookOpen } from "lucide-react";
 import { CustomNode } from "./CustomNode";
+
+
 const nodeTypes = {
   custom: CustomNode,
 };
 
+
+{/* Update the initialNodes array to include jobs data */}
 const initialNodes: Node[] = [
   {
     id: "1",
@@ -34,6 +39,7 @@ const initialNodes: Node[] = [
       averageSalary: "$60,000 - $80,000",
       requiredSkills: ["Semantic HTML", "Forms", "Accessibility"],
       isUnlocked: true,
+      jobs: 150,
     },
   },
   {
@@ -49,9 +55,9 @@ const initialNodes: Node[] = [
       requiredSkills: ["Flexbox", "Grid", "Responsive Design"],
       isUnlocked: false,
       requiredNodes: ["1"],
+      jobs: 200,
     },
-  },
-  {
+  },{
     id: "3",
     type: "custom",
     position: { x: 400, y: 200 },
@@ -69,7 +75,7 @@ const initialNodes: Node[] = [
   {
     id: "4",
     type: "custom",
-    position: { x: 200, y: 200 },
+    position: { x: 100, y: 200 },
     data: {
       label: "JS Syntax",
       type: "subtopic",
@@ -84,7 +90,7 @@ const initialNodes: Node[] = [
   {
     id: "5",
     type: "custom",
-    position: { x: 600, y: 200 },
+    position: { x: 700, y: 200 },
     data: {
       label: "DOM",
       type: "subtopic",
@@ -158,6 +164,8 @@ const initialNodes: Node[] = [
   },
 ];
 
+
+// Update the edges array to use different styles for topic and subtopic connections
 const initialEdges: Edge[] = [
   {
     id: "e1-2",
@@ -165,7 +173,8 @@ const initialEdges: Edge[] = [
     target: "2",
     sourceHandle: "bottom",
     targetHandle: "top",
-    animated: true,
+   
+
   },
   {
     id: "e2-3",
@@ -173,7 +182,7 @@ const initialEdges: Edge[] = [
     target: "3",
     sourceHandle: "bottom",
     targetHandle: "top",
-    animated: true,
+   
   },
   {
     id: "e3-4",
@@ -182,7 +191,7 @@ const initialEdges: Edge[] = [
     sourceHandle: "left",
     targetHandle: "right",
     type: "smoothstep",
-    style: { strokeDasharray: "5,5" },
+    style: { strokeWidth: 2, strokeDasharray: "5,5" }, // Thinner, dashed lines for subtopics
   },
   {
     id: "e3-5",
@@ -191,7 +200,7 @@ const initialEdges: Edge[] = [
     sourceHandle: "right",
     targetHandle: "left",
     type: "smoothstep",
-    style: { strokeDasharray: "5,5" },
+    style: { strokeWidth: 2,strokeDasharray: "5,5" },
   },
   {
     id: "e3-6",
@@ -199,7 +208,7 @@ const initialEdges: Edge[] = [
     target: "6",
     sourceHandle: "bottom",
     targetHandle: "top",
-    animated: true,
+    
   },
   {
     id: "e3-7",
@@ -207,7 +216,7 @@ const initialEdges: Edge[] = [
     target: "7",
     sourceHandle: "bottom",
     targetHandle: "top",
-    animated: true,
+    
   },
   {
     id: "e6-8",
@@ -215,7 +224,7 @@ const initialEdges: Edge[] = [
     target: "8",
     sourceHandle: "bottom",
     targetHandle: "top",
-    animated: true,
+    
   },
   {
     id: "e7-8",
@@ -223,7 +232,7 @@ const initialEdges: Edge[] = [
     target: "8",
     sourceHandle: "bottom",
     targetHandle: "top",
-    animated: true,
+    
   },
   {
     id: "e8-9",
@@ -231,7 +240,7 @@ const initialEdges: Edge[] = [
     target: "9",
     sourceHandle: "bottom",
     targetHandle: "top",
-    animated: true,
+   
   },
 ];
 
@@ -242,6 +251,8 @@ export default function RoadmapFlow() {
   const [selectedNode, setSelectedNode] = useState<any>(null);
   const [showInfo, setShowInfo] = useState(false);
   const [showChat, setShowChat] = useState(false);
+  const [showCourses, setShowCourses] = useState(false);
+
   const { t } = useTranslation();
   const { user } = useAuthStore();
 
@@ -279,9 +290,10 @@ console.log(user);
   const totalNodes = nodes.length;
   const progress = Math.round((completedNodes / totalNodes) * 100);
 
+
   return (
     <div className="relative h-screen pt-20">
-      {/* Top Bar */}
+        {/* Top Bar */}
       <RoadmapTopBar
         roadmap={roadmap}
         progress={progress}
@@ -331,6 +343,17 @@ console.log(user);
         >
           <MessageCircle className="w-6 h-6" />
         </button>
+        <button
+          onClick={() => setShowCourses(!showCourses)}
+          className={cn(
+            "p-4 rounded-full shadow-lg transition-all",
+            "bg-theme text-white",
+            "hover:scale-110",
+            showCourses && "ring-4 ring-purple-500/20"
+          )}
+        >
+          <BookOpen className="w-6 h-6" />
+        </button>
       </div>
 
       {/* Modals and Panels */}
@@ -349,6 +372,11 @@ console.log(user);
         onClose={() => setShowChat(false)}
         roadmap={roadmap}
         userProgress={user?.progress[id || ""]}
+      />
+      <CoursesSidebar
+        isOpen={showCourses}
+        onClose={() => setShowCourses(false)}
+        topic={selectedNode?.label}
       />
     </div>
   );
