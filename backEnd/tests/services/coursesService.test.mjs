@@ -10,7 +10,7 @@ describe('searchCourses', () => {
       expect(course).toHaveProperty('title');
       expect(course).toHaveProperty('description');
       expect(course).toHaveProperty('courseType');
-      expect(course).toHaveProperty('slug');
+      expect(course).toHaveProperty("url");
       expect(course).toHaveProperty('photoUrl');
       expect(course).toHaveProperty('instructorIds');
     });
