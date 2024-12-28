@@ -1,8 +1,9 @@
-import { X } from 'lucide-react';
+import { X, Filter } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '../utils/cn';
 import { courses } from '../data/courses';
 import CourseCard from './CourseCard';
+import { useState } from 'react';
 
 interface CoursesSidebarProps {
   isOpen: boolean;
@@ -10,55 +11,78 @@ interface CoursesSidebarProps {
   topic?: string;
 }
 
+type Platform = 'all' | 'udemy' | 'coursera';
+
 export default function CoursesSidebar({ isOpen, onClose, topic }: CoursesSidebarProps) {
   const { t } = useTranslation();
-  const isRtl = document.documentElement.dir === 'rtl';
+  const [platform, setPlatform] = useState<Platform>('all');
 
-  const filteredCourses = topic
-    ? courses.filter(course => course.topics.includes(topic.toLowerCase()))
-    : courses;
+  if (!isOpen) return null;
+
+  const filteredCourses = courses.filter(course => {
+    const matchesTopic = topic 
+      ? course.topics.includes(topic.toLowerCase())
+      : true;
+    const matchesPlatform = platform === 'all' 
+      ? true 
+      : course.platform === platform;
+    return matchesTopic && matchesPlatform;
+  });
 
   return (
-    <div
-      className={cn(
-        "fixed inset-y-0 h-full w-full md:w-[480px] bg-white dark:bg-slate-800 shadow-xl transform transition-transform duration-700 ease-in-out z-50",
-        isOpen
-          ? "translate-x-0"
-          : isRtl
-            ? "-translate-x-full"
-            : "translate-x-full",
-        isRtl ? "left-0" : "right-0"
-      )}
-    >
-      {/* Fixed Header */}
-      <div className="absolute top-0 left-0 right-0 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 p-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-theme text-transparent bg-clip-text">
-            {topic ? `Courses: ${topic}` : 'Recommended Courses'}
-          </h2>
-          <button
-            onClick={onClose}
-            className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-      </div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
+        {/* Header */}
+        <div className="p-6 border-b border-slate-200 dark:border-slate-700">
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-bold text-theme text-transparent bg-clip-text">
+              {topic ? `Courses: ${topic}` : 'Recommended Courses'}
+            </h2>
+            <button
+              onClick={onClose}
+              className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
 
-      {/* Scrollable Content */}
-      <div className="h-full overflow-y-auto pt-24 pb-6 px-6">
-        <div className="grid gap-6">
-          {filteredCourses.map(course => (
-            <CourseCard key={course.id} course={course} />
-          ))}
-          
-          {filteredCourses.length === 0 && (
-            <div className="text-center py-12">
-              <p className="text-slate-600 dark:text-slate-400">
-                No courses found for this topic.
-              </p>
+          {/* Platform Filter */}
+          <div className="flex items-center gap-4 mt-4">
+            <Filter className="w-4 h-4 text-slate-400" />
+            <div className="flex gap-2">
+              {(['all', 'udemy', 'coursera'] as const).map((p) => (
+                <button
+                  key={p}
+                  onClick={() => setPlatform(p)}
+                  className={cn(
+                    "px-3 py-1 rounded-full text-sm font-medium transition-colors",
+                    platform === p
+                      ? "bg-theme text-white"
+                      : "bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600"
+                  )}
+                >
+                  {p.charAt(0).toUpperCase() + p.slice(1)}
+                </button>
+              ))}
             </div>
-          )}
+          </div>
+        </div>
+
+        {/* Course Grid */}
+        <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredCourses.map(course => (
+              <CourseCard key={course.id} course={course} />
+            ))}
+            
+            {filteredCourses.length === 0 && (
+              <div className="col-span-full text-center py-12">
+                <p className="text-slate-600 dark:text-slate-400">
+                  No courses found for this topic and platform.
+                </p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

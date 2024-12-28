@@ -2,43 +2,59 @@ import React, { useState } from "react";
 
 interface SliderProps {
   advancedOptions: {
-    minSubtopics: number;
-  };
+  minTopics: number;
+  minSubtopics: number;
+}
   handleOptionChange: (option: string, value: number) => void;
+  option : string;
+  max: number;
+  min: number;
 }
 
 const Slider: React.FC<SliderProps> = ({
   advancedOptions,
   handleOptionChange,
+  option,
+  max,
+  min = 0,
 }) => {
+  
   const [sliderValue, setSliderValue] = useState<number>(
-    advancedOptions.minSubtopics
+   option == 'minTopics' ? advancedOptions.minTopics : advancedOptions.minSubtopics
   );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value, 10);
     setSliderValue(value);
-    handleOptionChange("minSubtopics", value);
+    handleOptionChange(option, value);
   };
 
   const calculateBackground = (): string => {
-    const percentage = ((sliderValue - 1) / (5 - 1)) * 100; // Calculate the percentage (min = 1, max = 5)
-    return `linear-gradient(to right, red ${percentage}%, gray ${percentage}%)`;
+    const percentage = ((sliderValue - min) / (max - min)) * 100;
+    return `linear-gradient(to right, var(--theme-from) ${percentage}%, #334155 ${percentage}%)`;
   };
 
   return (
     <input
       type="range"
-      min="1"
-      max="5"
+      min={min}
+      max={max}
       value={sliderValue}
       onChange={handleChange}
       className="flex-1 h-2 rounded-lg appearance-none 
-                 [&::-webkit-slider-runnable-track]:rounded-lg 
-                 [&::-webkit-slider-thumb]:w-4 
-                 [&::-webkit-slider-thumb]:h-4 
-                 [&::-webkit-slider-thumb]:rounded-full 
-                 [&::-webkit-slider-thumb]:bg-red-500"
+                [&::-webkit-slider-runnable-track]:rounded-lg 
+                [&::-webkit-slider-thumb]:appearance-none 
+                [&::-webkit-slider-thumb]:w-4
+                [&::-webkit-slider-thumb]:h-4 
+                [&::-webkit-slider-thumb]:rounded-full 
+                [&::-webkit-slider-thumb]:shadow-md 
+              [&::-webkit-slider-thumb]:border-slate-400
+                [&::-webkit-slider-thumb]:cursor-pointer
+                [&::-webkit-slider-thumb]:bg-theme
+                hover:[&::-webkit-slider-thumb]:scale-[1.17]
+                [&::-webkit-slider-thumb]:transition-all
+                
+                 "
       style={{
         background: calculateBackground(),
       }}

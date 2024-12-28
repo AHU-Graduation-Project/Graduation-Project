@@ -137,44 +137,30 @@ export default function GenerateRoadmap() {
                     Minimum Main Topics
                   </label>
                   <div className="flex items-center gap-2">
-                    <input
-                      type="range"
-                      min="5"
-                      max="30"
-                      value={advancedOptions.minTopics}
-                      onChange={(e) =>
-                        handleOptionChange(
-                          "minTopics",
-                          parseInt(e.target.value)
-                        )
-                      }
-                      className="flex-1 appearance-none h-2 rounded-lg [&::-webkit-slider-runnable-track]:h-2 [&::-webkit-slider-runnable-track]:rounded-lg [&::-webkit-slider-runnable-track]:bg-slate-200 [&::-webkit-slider-runnable-track]:dark:bg-slate-700 [&::-moz-range-track]:h-2 [&::-moz-range-track]:rounded-lg [&::-moz-range-track]:bg-slate-200 [&::-moz-range-track]:dark:bg-slate-700 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-theme [&::-webkit-slider-thumb]:mt-[-4px] [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-theme [&::-moz-range-thumb]:border-0"
+                    <Slider
+                      advancedOptions={advancedOptions}
+                      handleOptionChange={handleOptionChange}
+                      option="minTopics"
+                      max={30}
+                      min={5}
                     />
                     <span className="w-12 text-center">
                       {advancedOptions.minTopics}
                     </span>
                   </div>
                 </div>
+
                 <div>
                   <label className="block text-sm font-medium mb-2">
                     Minimum Subtopics per Topic
                   </label>
                   <div className="flex items-center gap-2">
-                    <input
-                      type="range"
-                      min="1"
-                      max="5"
-                      value={advancedOptions.minSubtopics}
-                      onChange={(e) =>
-                        handleOptionChange(
-                          "minSubtopics",
-                          parseInt(e.target.value)
-                        )
-                      }
-                      className="flex-1 appearance-none h-2 rounded-lg [&::-webkit-slider-runnable-track]:h-2 [&::-webkit-slider-runnable-track]:rounded-lg [&::-webkit-slider-runnable-track]:bg-slate-200 [&::-webkit-slider-runnable-track]:dark:bg-slate-700 [&::-moz-range-track]:h-2 [&::-moz-range-track]:rounded-lg [&::-moz-range-track]:bg-slate-200 [&::-moz-range-track]:dark:bg-slate-700 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-theme [&::-webkit-slider-thumb]:mt-[-4px] [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-theme [&::-moz-range-thumb]:border-0"
-                      style={{
-                        background: `linear-gradient(to right, red 0%, red 50%, gray 50%, gray 100%)`,
-                      }}
+                    <Slider
+                      advancedOptions={advancedOptions}
+                      handleOptionChange={handleOptionChange}
+                      option="minSubtopics"
+                      max={5}
+                      min={1}
                     />
                     <span className="w-12 text-center">
                       {advancedOptions.minSubtopics}
