@@ -1,8 +1,7 @@
-import { X, Briefcase, TrendingUp, Target } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
-import { cn } from '../utils/cn';
-import { useAuthStore } from '../store/authStore';
-import { useNavigate } from 'react-router-dom';
+import { X, Briefcase, TrendingUp, Target } from "lucide-react";
+import { cn } from "../utils/cn";
+import { useAuthStore } from "../store/authStore";
+import { useNavigate } from "react-router-dom";
 
 interface RoadmapInfoProps {
   isOpen: boolean;
@@ -10,18 +9,21 @@ interface RoadmapInfoProps {
   roadmap: any;
 }
 
-export default function RoadmapInfo({ isOpen, onClose, roadmap }: RoadmapInfoProps) {
-  const { t } = useTranslation();
+export default function RoadmapInfo({
+  isOpen,
+  onClose,
+  roadmap,
+}: RoadmapInfoProps) {
   const navigate = useNavigate();
   const { user, selectRoadmap } = useAuthStore();
   const isSelected = user?.selectedRoadmaps.includes(roadmap?.id);
-  const isRtl = document.documentElement.dir === 'rtl';
+  const isRtl = document.documentElement.dir === "rtl";
 
   if (!isOpen || !roadmap) return null;
 
   const handleAddToRoadmap = () => {
     if (!user) {
-      navigate('/login');
+      navigate("/login");
       return;
     }
     selectRoadmap(roadmap.id);
@@ -29,25 +31,25 @@ export default function RoadmapInfo({ isOpen, onClose, roadmap }: RoadmapInfoPro
 
   const marketStats = [
     {
-      label: 'Market Growth',
-      value: '+25%',
-      description: 'Annual growth in job opportunities',
+      label: "Market Growth",
+      value: "+25%",
+      description: "Annual growth in job opportunities",
       icon: TrendingUp,
-      color: 'text-green-500',
+      color: "text-green-500",
     },
     {
-      label: 'Average Salary',
-      value: '$95,000',
-      description: 'Based on current market data',
+      label: "Average Salary",
+      value: "$95,000",
+      description: "Based on current market data",
       icon: Briefcase,
-      color: 'text-blue-500',
+      color: "text-blue-500",
     },
     {
-      label: 'Time to Master',
-      value: '6-12 months',
-      description: 'With dedicated learning',
+      label: "Time to Master",
+      value: "6-12 months",
+      description: "With dedicated learning",
       icon: Target,
-      color: 'text-purple-500',
+      color: "text-purple-500",
     },
   ];
 
@@ -58,8 +60,8 @@ export default function RoadmapInfo({ isOpen, onClose, roadmap }: RoadmapInfoPro
         isOpen
           ? "translate-x-0"
           : isRtl
-            ? "-translate-x-full"
-            : "translate-x-full",
+          ? "-translate-x-full"
+          : "translate-x-full",
         isRtl ? "left-0" : "right-0"
       )}
     >
@@ -90,7 +92,12 @@ export default function RoadmapInfo({ isOpen, onClose, roadmap }: RoadmapInfoPro
                 className="p-4 rounded-lg bg-slate-50 dark:bg-slate-900/50"
               >
                 <div className="flex items-start gap-3">
-                  <div className={cn("p-2 rounded-lg bg-slate-100 dark:bg-slate-800", stat.color)}>
+                  <div
+                    className={cn(
+                      "p-2 rounded-lg bg-slate-100 dark:bg-slate-800",
+                      stat.color
+                    )}
+                  >
                     <stat.icon className="w-5 h-5" />
                   </div>
                   <div>

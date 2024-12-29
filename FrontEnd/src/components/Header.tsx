@@ -10,12 +10,17 @@ export default function Header() {
     "header" | "dropdown" | null
   >(null);
 
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+
   const closeDropdown = () => setActiveDropdown(null);
 
   // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (!(e.target as HTMLElement).closest(".dropdown-toggle-button")) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node)
+      ) {
         closeDropdown();
       }
     };
@@ -25,13 +30,13 @@ export default function Header() {
   }, []);
 
   const menuItems = [
-    { to: "/overview", icon: BarChart2, label: "Overview" },
-    { to: "/", icon: Code2, label: "Roadmaps" },
+    { to: "/", icon: BarChart2, label: "Overview" },
+    { to: "/roadmaps", icon: Code2, label: "Roadmaps" },
     { to: "/generate", icon: Sparkles, label: "Generate" },
   ];
 
   const toggleHeaderMenu = () => {
-    setActiveDropdown(activeDropdown === "header" ? null : "header");
+    setActiveDropdown((prev) => (prev === "header" ? null : "header"));
   };
 
   return (
@@ -75,6 +80,8 @@ export default function Header() {
 
           <button
             onClick={toggleHeaderMenu}
+            aria-expanded={activeDropdown === "header"}
+            aria-label="Toggle menu"
             className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
             {activeDropdown === "header" ? (
@@ -87,7 +94,10 @@ export default function Header() {
 
         {/* Mobile Menu */}
         {activeDropdown === "header" && (
-          <div className="md:hidden fixed inset-x-0 top-20 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 p-4">
+          <div
+            ref={dropdownRef}
+            className="md:hidden fixed inset-x-0 top-20 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 p-4"
+          >
             <nav className="flex flex-col gap-4">
               {menuItems.map((item) => (
                 <Link
