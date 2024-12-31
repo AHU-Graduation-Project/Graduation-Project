@@ -1,17 +1,15 @@
 import { useState } from "react";
 import { InputField } from "./TextInput";
+import { useAuthStore } from "../store/authStore";
+import { useNavigate } from "react-router-dom";
 
 interface SignupFormProps {
-  onSubmit: (
-    fname: string,
-    lname: string,
-    email: string,
-    password: string
-  ) => void;
   onLoginClick: () => void;
 }
 
-export function SignupForm({ onSubmit, onLoginClick }: SignupFormProps) {
+export function SignupForm({ onLoginClick }: SignupFormProps) {
+  const { updateUser } = useAuthStore();
+  const navigate = useNavigate();
   const [fname, setfName] = useState("");
   const [lname, setlName] = useState("");
   const [email, setEmail] = useState("");
@@ -20,7 +18,13 @@ export function SignupForm({ onSubmit, onLoginClick }: SignupFormProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(fname, lname, email, password);
+    updateUser({
+      fname,
+      lname,
+      email,
+      password,
+    });
+    navigate("/BrowseRoadmaps");
   };
 
   return (

@@ -28,6 +28,7 @@ interface AuthState {
     completed: boolean
   ) => void;
   selectRoadmap: (roadmapId: string) => void;
+  updateUser: (updatedData: Partial<User>) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -62,7 +63,7 @@ export const useAuthStore = create<AuthState>()(
             email,
             fname,
             lname,
-            password: "1234",
+            password,
             selectedRoadmaps: [],
             progress: {},
           },
@@ -107,6 +108,17 @@ export const useAuthStore = create<AuthState>()(
             user: {
               ...state.user,
               selectedRoadmaps,
+            },
+          };
+        });
+      },
+      updateUser: (updatedData) => {
+        set((state) => {
+          if (!state.user) return state;
+          return {
+            user: {
+              ...state.user,
+              ...updatedData,
             },
           };
         });
