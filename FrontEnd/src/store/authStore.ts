@@ -1,10 +1,12 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 interface User {
   id: string;
   email: string;
-  name: string;
+  fname: string;
+  lname: string;
+  password: string;
   selectedRoadmaps: string[];
   progress: Record<string, string[]>; // roadmapId -> completed node IDs
 }
@@ -13,9 +15,18 @@ interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
   login: (email: string, password: string) => void;
-  signup: (email: string, password: string, name: string) => void;
+  signup: (
+    email: string,
+    password: string,
+    fname: string,
+    lname: string
+  ) => void;
   logout: () => void;
-  updateProgress: (roadmapId: string, nodeId: string, completed: boolean) => void;
+  updateProgress: (
+    roadmapId: string,
+    nodeId: string,
+    completed: boolean
+  ) => void;
   selectRoadmap: (roadmapId: string) => void;
 }
 
@@ -24,26 +35,34 @@ export const useAuthStore = create<AuthState>()(
     (set) => ({
       user: null,
       isAuthenticated: false,
-      login: (email, password) => {
-        // Simulate API call
-        set({
-          user: {
-            id: '1',
-            email,
-            name: 'Ahmad alshamary',
-            selectedRoadmaps: [],
-            progress: {},
-          },
-          isAuthenticated: true,
-        });
+      login: async (email, password) => {
+        // Replace this with real API call
+        if (email === "ahmad@gmail.com" && password === "1234") {
+          set({
+            user: {
+              id: "1",
+              email,
+              password,
+              fname: "ahmad",
+              lname: "alshamary",
+              selectedRoadmaps: [],
+              progress: {},
+            },
+            isAuthenticated: true,
+          });
+        } else {
+          throw new Error("Invalid credentials");
+        }
       },
-      signup: (email, password, name) => {
+      signup: (email, password, fname, lname) => {
         // Simulate API call
         set({
           user: {
-            id: '1',
+            id: "1",
             email,
-            name,
+            fname,
+            lname,
+            password: "1234",
             selectedRoadmaps: [],
             progress: {},
           },
@@ -78,7 +97,9 @@ export const useAuthStore = create<AuthState>()(
         set((state) => {
           if (!state.user) return state;
 
-          const selectedRoadmaps = state.user.selectedRoadmaps.includes(roadmapId)
+          const selectedRoadmaps = state.user.selectedRoadmaps.includes(
+            roadmapId
+          )
             ? state.user.selectedRoadmaps.filter((id) => id !== roadmapId)
             : [...state.user.selectedRoadmaps, roadmapId];
 
@@ -92,7 +113,7 @@ export const useAuthStore = create<AuthState>()(
       },
     }),
     {
-      name: 'auth-storage',
+      name: "auth-storage",
     }
   )
 );

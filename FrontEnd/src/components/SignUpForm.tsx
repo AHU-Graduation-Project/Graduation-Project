@@ -2,19 +2,25 @@ import { useState } from "react";
 import { InputField } from "./TextInput";
 
 interface SignupFormProps {
-  onSubmit: (name: string, email: string, password: string) => void;
+  onSubmit: (
+    fname: string,
+    lname: string,
+    email: string,
+    password: string
+  ) => void;
   onLoginClick: () => void;
 }
 
 export function SignupForm({ onSubmit, onLoginClick }: SignupFormProps) {
-  const [name, setName] = useState("");
+  const [fname, setfName] = useState("");
+  const [lname, setlName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(name, email, password);
+    onSubmit(fname, lname, email, password);
   };
 
   return (
@@ -29,9 +35,17 @@ export function SignupForm({ onSubmit, onLoginClick }: SignupFormProps) {
         <InputField
           id="signup-name"
           type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          label="Full Name"
+          value={fname}
+          onChange={(e) => setfName(e.target.value)}
+          label="First Name"
+          placeholder="Full Name"
+        />
+        <InputField
+          id="signup-name"
+          type="text"
+          value={lname}
+          onChange={(e) => setlName(e.target.value)}
+          label="Last Name"
           placeholder="Full Name"
         />
         <InputField

@@ -1,27 +1,23 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 import LoginForm from "../components/LoginForm";
 import SignupForm from "../components/SignUpForm";
 
 export default function Auth() {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const login = useAuthStore((state) => state.login);
   const signup = useAuthStore((state) => state.signup);
   const [isSignUp, setIsSignUp] = useState(false);
 
-  const handleSubmitLogin = (email: string, password: string) => {
-    login(email, password);
-    navigate("/BrowseRoadmaps");
-  };
-
   const handleSubmitSignUp = (
-    name: string,
+    fname: string,
+    lname: string,
     email: string,
     password: string
   ) => {
-    signup(email, password, name);
-    navigate("/profile");
+    signup(email, password, fname, lname);
+    // navigate("/profile");
   };
 
   return (

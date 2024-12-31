@@ -1,18 +1,32 @@
 import { useState } from "react";
 import { InputField } from "./TextInput";
+import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "../store/authStore";
+
 interface LoginFormProps {
-  onSubmit: (email: string, password: string) => void;
   onSignUpClick: () => void;
 }
 
-export default function LoginForm({ onSubmit, onSignUpClick }: LoginFormProps) {
+export default function LoginForm({ onSignUpClick }: LoginFormProps) {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const { login, user } = useAuthStore();
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(email, password);
+    try {
+      // Call the login function from authStore
+      await login(email, password);
+      setError(null); // Clear errors on successful login
+      // alert(`Welcome, ${user?.fname || "User"}!`);
+      navigate("/BrowseRoadmaps");
+    } catch (err: any) {
+      setError(err.message || "Login failed. Please try again.");
+    }
   };
 
   return (
@@ -24,6 +38,7 @@ export default function LoginForm({ onSubmit, onSignUpClick }: LoginFormProps) {
         Sign in to continue exploring our platform!
       </p>
       <form onSubmit={handleSubmit} className="space-y-6">
+        {error && <p className="text-sm text-red-500">{error}</p>}
         <InputField
           id="login-email"
           type="email"
@@ -40,21 +55,21 @@ export default function LoginForm({ onSubmit, onSignUpClick }: LoginFormProps) {
           label="Password"
           placeholder="Password"
           showToggle
-          inputClickHandler={() => setShowPassword((current) => current)}
+          inputClickHandler={() => setShowPassword((current) => !current)}
         />
         <div className="text-sm text-center text-gray-400 mt-4">
           <span>Don't have an account? </span>
           <button
             type="button"
             onClick={onSignUpClick}
-            className="text-theme  transition"
+            className="text-theme transition"
           >
             Sign Up
           </button>
         </div>
         <button
           type="submit"
-          className="w-full py-3 bg-theme  text-white rounded-lg shadow-md transition-transform transform hover:scale-105"
+          className="w-full py-3 bg-theme text-white rounded-lg shadow-md transition-transform transform hover:scale-105"
         >
           Login
         </button>
