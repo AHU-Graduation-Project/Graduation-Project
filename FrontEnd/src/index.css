@@ -71,7 +71,7 @@ body {
 
 @layer base {
   * {
-    @apply border-border transition-colors duration-200;
+    @apply border-border ;
   }
   body {
     @apply bg-gradient-to-t from-gray-950 to-gray-800 text-foreground;
@@ -117,3 +117,4 @@ border: none;
 .react-flow__controls-button svg{
   @apply fill-fill;
 }
+
