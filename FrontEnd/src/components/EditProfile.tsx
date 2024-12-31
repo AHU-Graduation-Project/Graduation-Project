@@ -4,24 +4,41 @@ import { Camera } from "lucide-react";
 
 const EditProfile = () => {
   const { user, updateUser } = useAuthStore();
-  const [name, setName] = useState(user?.name || "");
+  const [fname, setFirstName] = useState(user?.fname || "");
+  const [lname, setLastName] = useState(user?.lname || "");
   const [email, setEmail] = useState(user?.email || "");
   const [profilePicture, setProfilePicture] = useState(
     user?.profilePicture || ""
   );
 
   const handleSaveChanges = () => {
-    updateUser({ name, email, profilePicture });
+    updateUser({
+      fname,
+      lname,
+      email,
+      profilePicture,
+    });
+  };
+
+  const handleProfilePictureChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => setProfilePicture(reader.result);
+      reader.readAsDataURL(file);
+    }
   };
 
   if (!user) return null;
 
   return (
-    <div className="dark:bg-slate-800 rounded-2xl p-8 mb-12">
-      <h2 className="text-theme text-2xl font-bold mb-4">Edit Profile</h2>
+    <div className="  p-2 mb-2">
+      <h2 className="flex justify-center text-theme text-2xl font-bold mb-4">
+        Edit Profile
+      </h2>
 
       <div className="flex flex-col gap-4">
-        <div className="flex items-center gap-4">
+        <div className="flex justify-center mb-4">
           <label htmlFor="profilePicture" className="cursor-pointer">
             <div className="w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center">
               {profilePicture ? (
@@ -40,31 +57,48 @@ const EditProfile = () => {
             id="profilePicture"
             className="hidden"
             accept="image/*"
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) {
-                const reader = new FileReader();
-                reader.onload = () => setProfilePicture(reader.result);
-                reader.readAsDataURL(file);
-              }
-            }}
+            onChange={handleProfilePictureChange}
           />
+        </div>
 
+        <div className="flex flex-col gap-4 sm:flex-row sm:gap-6">
           <div className="flex-1">
-            <label htmlFor="name" className="text-sm font-medium mb-1">
-              Username
+            <label
+              htmlFor="firstName"
+              className="flex justify-center text-sm font-medium mb-1"
+            >
+              First Name
             </label>
             <input
               type="text"
-              id="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg dark:bg-slate-700 dark:text-white"
+              id="firstName"
+              value={fname}
+              onChange={(e) => setFirstName(e.target.value)}
+              className="w-full border bg-transparent border-gray-500 rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-theme mb-2"
             />
           </div>
 
           <div className="flex-1">
-            <label htmlFor="email" className="text-sm font-medium mb-1">
+            <label
+              htmlFor="lastName"
+              className="flex justify-center text-theme text-sm font-medium mb-1"
+            >
+              Last Name
+            </label>
+            <input
+              type="text"
+              id="lastName"
+              value={lname}
+              onChange={(e) => setLastName(e.target.value)}
+              className="w-full border bg-transparent border-gray-500 rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-theme mb-2"
+            />
+          </div>
+
+          <div className="flex-1">
+            <label
+              htmlFor="email"
+              className="flex justify-center text-theme text-sm font-medium mb-1"
+            >
               Email
             </label>
             <input
@@ -72,7 +106,7 @@ const EditProfile = () => {
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg dark:bg-slate-700 dark:text-white"
+              className="w-full border bg-transparent border-gray-500 rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-theme mb-2"
             />
           </div>
         </div>

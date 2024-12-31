@@ -48,13 +48,17 @@ function DropdownToggle({
         <div className="hidden md:block absolute top-full right-0 w-60 z-40 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg py-2 px-4">
           <nav className="flex flex-col gap-2">
             <ul>
-              <Link
-                to="/Profile"
-                className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
-              >
-                <ThemeIcon icon={Info} className="w-5 h-5" />
-                My Profile
-              </Link>
+              {user ? (
+                <Link
+                  to="/Profile"
+                  className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                >
+                  <ThemeIcon icon={Info} className="w-5 h-5" />
+                  My Profile
+                </Link>
+              ) : (
+                ""
+              )}
 
               <Link
                 to="#"

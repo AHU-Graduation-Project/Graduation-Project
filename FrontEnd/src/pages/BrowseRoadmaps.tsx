@@ -94,8 +94,6 @@ export default function BrowseRoadmaps() {
   const [searchQuery, setSearchQuery] = useState("");
   const { user, selectRoadmap } = useAuthStore();
 
-  if (!user) return null;
-
   const filteredRoadmaps = roadmaps.filter((roadmap) =>
     [roadmap.title, roadmap.description].some((field) =>
       field.toLowerCase().includes(searchQuery.toLowerCase())
@@ -120,7 +118,7 @@ export default function BrowseRoadmaps() {
         />
       </div>
 
-      {user.selectedRoadmaps.length > 0 && (
+      {user?.selectedRoadmaps?.length > 0 && (
         <div className="mb-12">
           <h2 className="text-2xl font-bold mb-6 text-theme">Your Roadmaps</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

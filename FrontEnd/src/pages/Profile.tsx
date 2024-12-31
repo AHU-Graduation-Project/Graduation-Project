@@ -28,8 +28,10 @@ export default function Profile() {
     <div className="container mx-auto px-4 py-12">
       <div className="max-w-6xl mx-auto">
         <UserInfo />
-        <EditProfile />
-        <Skills />
+        <div className="dark:bg-slate-800 rounded-2xl p-8">
+          <EditProfile />
+          <Skills />
+        </div>
 
         <div className="flex justify-end mt-5">
           <button
