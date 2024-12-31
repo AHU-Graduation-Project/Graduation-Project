@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import Header from "./components/Header";
@@ -16,9 +16,7 @@ import { useThemeStore } from "./store/themeStore";
 
 function AppContent() {
   const location = useLocation();
-  const showFooter =
-    !location.pathname.startsWith("/roadmap") ||
-    !location.pathname.startsWith("*");
+  const showFooter = !location.pathname.startsWith("/roadmap");
   const { currentTheme } = useThemeStore();
 
   // Initialize theme on app load

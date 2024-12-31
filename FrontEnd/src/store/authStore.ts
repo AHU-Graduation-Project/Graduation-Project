@@ -8,6 +8,9 @@ interface User {
   fname: string;
   lname: string;
   profilePicture: string;
+  position: string; // New field
+  level: string; // New field
+  country: string; // New field
   selectedRoadmaps: string[];
   completedRoadmaps: string[];
   selectedSkills: string[];
@@ -23,7 +26,10 @@ interface AuthState {
     email: string,
     password: string,
     fname: string,
-    lname: string
+    lname: string,
+    position: string,
+    level: string,
+    country: string
   ) => void;
   logout: () => void;
   updateProgress: (
@@ -59,6 +65,9 @@ export const useAuthStore = create<AuthState>()(
             fname: "ahmad",
             lname: "alshamary",
             profilePicture: img,
+            position: "Front end", // Example value
+            level: "Intermediate", // Example value
+            country: "Jordan", // Example value
             selectedRoadmaps: [],
             completedRoadmaps: [],
             selectedSkills: ["CSS", "HTML"],
@@ -67,7 +76,7 @@ export const useAuthStore = create<AuthState>()(
           isAuthenticated: true,
         });
       },
-      signup: (email, password, fname, lname) => {
+      signup: (email, password, fname, lname, position, level, country) => {
         // Simulate API call
         set({
           user: {
@@ -76,6 +85,9 @@ export const useAuthStore = create<AuthState>()(
             fname,
             lname,
             profilePicture: img,
+            position,
+            level,
+            country,
             selectedRoadmaps: [],
             completedRoadmaps: [],
             selectedSkills: [],

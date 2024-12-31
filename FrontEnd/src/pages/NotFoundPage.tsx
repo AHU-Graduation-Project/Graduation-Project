@@ -9,7 +9,7 @@ const NotFoundPage: React.FC = () => {
           Oops! The page you’re looking for does not exist.
         </p>
         <div className="relative inline-block">
-          <span className="absolute inset-0 border-t-2 border-blue-500 animate-pulse" />
+          <span className="absolute inset-0 border-b-2 border-blue-500 animate-pulse" />
           <a
             href="/"
             className="relative z-10 p-5 text-lg font-semibold text-theme hover:text-blue-600 transition duration-300"
