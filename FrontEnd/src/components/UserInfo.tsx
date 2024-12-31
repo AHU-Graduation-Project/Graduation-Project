@@ -16,19 +16,19 @@ const UserInfo = () => {
     {
       icon: Star,
       label: "Selected Paths",
-      value: user.selectedRoadmaps?.length || 0, // Safeguard for undefined values
+      value: user.selectedRoadmaps?.length || 0,
       color: "text-yellow-500",
     },
     {
       icon: Clock,
       label: "Completed Roadmaps",
-      value: user.completedRoadmaps?.length || 0, // Ensure it's correctly derived
+      value: user.completedRoadmaps?.length || 0,
       color: "text-blue-500",
     },
     {
       icon: Trophy,
       label: "Completed Tasks",
-      value: Object.values(user.progress || {}).flat().length, // Safeguard for undefined progress
+      value: Object.values(user.progress || {}).flat().length,
       color: "text-green-500",
     },
   ];

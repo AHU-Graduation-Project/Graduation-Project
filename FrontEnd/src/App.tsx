@@ -5,6 +5,7 @@ import Header from "./components/Header";
 import BrowseRoadmaps from "./pages/BrowseRoadmaps";
 import RoadmapFlow from "./components/RoadmapFlow";
 import GenerateRoadmap from "./pages/GenerateRoadmap";
+import NotFoundPage from "./pages/NotFoundPage";
 import Overview from "./pages/Overview";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -15,7 +16,9 @@ import { useThemeStore } from "./store/themeStore";
 
 function AppContent() {
   const location = useLocation();
-  const showFooter = !location.pathname.startsWith("/roadmap");
+  const showFooter =
+    !location.pathname.startsWith("/roadmap") ||
+    !location.pathname.startsWith("*");
   const { currentTheme } = useThemeStore();
 
   // Initialize theme on app load
@@ -43,7 +46,7 @@ function AppContent() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
       {showFooter && <FooterComponent />}
     </div>

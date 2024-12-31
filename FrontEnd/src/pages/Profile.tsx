@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Skills from "../components/Skills";
 import UserInfo from "../components/UserInfo";
 import EditProfile from "../components/EditProfile";
+import Country from "../components/Country";
 import { LogOut } from "lucide-react";
 import { useAuthStore } from "../store/authStore";
 
@@ -31,8 +32,8 @@ export default function Profile() {
         <div className="dark:bg-slate-800 rounded-2xl p-8">
           <EditProfile />
           <Skills />
+          <Country />
         </div>
-
         <div className="flex justify-end mt-5">
           <button
             onClick={handleLogout}
