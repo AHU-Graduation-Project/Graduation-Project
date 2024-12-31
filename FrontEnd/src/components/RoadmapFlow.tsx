@@ -38,7 +38,7 @@ const initialNodes: Node[] = [
       marketDemand: "High demand as the foundation of web development.",
       averageSalary: "$60,000 - $80,000",
       requiredSkills: ["Semantic HTML", "Forms", "Accessibility"],
-      isUnlocked: true,
+      isAchieved: true,
       jobs: 150,
     },
   },
@@ -53,11 +53,12 @@ const initialNodes: Node[] = [
       marketDemand: "Essential skill for frontend development.",
       averageSalary: "$65,000 - $85,000",
       requiredSkills: ["Flexbox", "Grid", "Responsive Design"],
-      isUnlocked: false,
+      isAchieved: false,
       requiredNodes: ["1"],
       jobs: 200,
     },
-  },{
+  },
+  {
     id: "3",
     type: "custom",
     position: { x: 400, y: 200 },
@@ -68,7 +69,7 @@ const initialNodes: Node[] = [
       marketDemand: "Very high demand with excellent job prospects.",
       averageSalary: "$80,000 - $120,000",
       requiredSkills: ["ES6+", "Async Programming", "DOM Manipulation"],
-      isUnlocked: false,
+      isAchieved: false,
       requiredNodes: ["2"],
     },
   },
@@ -83,7 +84,7 @@ const initialNodes: Node[] = [
       marketDemand: "Fundamental skill for all JavaScript development.",
       averageSalary: "$75,000 - $95,000",
       requiredSkills: ["Variables", "Functions", "Objects"],
-      isUnlocked: false,
+      isAchieved: false,
       requiredNodes: ["3"],
     },
   },
@@ -98,7 +99,7 @@ const initialNodes: Node[] = [
       marketDemand: "Essential for frontend development.",
       averageSalary: "$75,000 - $95,000",
       requiredSkills: ["Selectors", "Events", "Traversal"],
-      isUnlocked: false,
+      isAchieved: false,
       requiredNodes: ["3"],
     },
   },
@@ -113,7 +114,7 @@ const initialNodes: Node[] = [
       marketDemand: "Very high demand for React developers.",
       averageSalary: "$90,000 - $140,000",
       requiredSkills: ["Components", "Hooks", "State Management"],
-      isUnlocked: false,
+      isAchieved: false,
       requiredNodes: ["3"],
     },
   },
@@ -128,7 +129,7 @@ const initialNodes: Node[] = [
       marketDemand: "Strong demand in enterprise environments.",
       averageSalary: "$95,000 - $145,000",
       requiredSkills: ["TypeScript", "RxJS", "Angular CLI"],
-      isUnlocked: false,
+      isAchieved: false,
       requiredNodes: ["3"],
     },
   },
@@ -143,7 +144,7 @@ const initialNodes: Node[] = [
       marketDemand: "Essential skill for all developers.",
       averageSalary: "$70,000 - $90,000",
       requiredSkills: ["Git", "GitHub", "Branching Strategies"],
-      isUnlocked: false,
+      isAchieved: false,
       requiredNodes: ["6", "7"],
     },
   },
@@ -158,7 +159,7 @@ const initialNodes: Node[] = [
       marketDemand: "Growing demand for full-stack knowledge.",
       averageSalary: "$100,000 - $150,000",
       requiredSkills: ["Next.js", "Performance Optimization", "SEO"],
-      isUnlocked: false,
+      isAchieved: false,
       requiredNodes: ["8"],
     },
   },
@@ -270,7 +271,7 @@ export default function RoadmapFlow() {
    const completedNodes = user?.progress?.[id || ""] || [];
 
    if (nodeData?.requiredNodes) {
-     nodeData.isUnlocked = nodeData.requiredNodes.every((requiredId) =>
+     nodeData.isAchieved = nodeData.requiredNodes.every((requiredId) =>
        completedNodes.includes(requiredId)
      );
    }

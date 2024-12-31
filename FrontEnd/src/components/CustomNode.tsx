@@ -13,7 +13,7 @@ interface NodeData {
   marketDemand: string;
   averageSalary: string;
   requiredSkills: string[];
-  isUnlocked: boolean;
+  isAchieved: boolean;
   requiredNodes?: string[];
   onShowDetails: (data: any) => void;
   jobs?: number;
@@ -24,7 +24,7 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
   const { id: roadmapId } = useParams();
   const isCompleted = user?.progress[roadmapId || ""]?.includes(id);
   const isFirstNode = id === "1";
-  const shouldBeActive = isCompleted || isFirstNode || data.isUnlocked;
+  const shouldBeActive = isCompleted || isFirstNode || data.isAchieved;
   const [showToolbar, setShowToolbar] = useState(false);
   const toolbarContainerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);

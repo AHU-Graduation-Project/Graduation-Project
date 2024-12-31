@@ -41,44 +41,9 @@ export default function NodeDetailsModal({ isOpen, onClose, node }: NodeDetailsM
               </div>
             </div>
 
-            <div className="p-4 rounded-lg bg-slate-50 dark:bg-slate-900/50">
-              <div className="flex items-start gap-3">
-                <TrendingUp className="w-5 h-5 text-green-500 mt-1" />
-                <div>
-                  <h3 className="font-medium mb-2">{t('roadmap.details.marketDemand')}</h3>
-                  <p className="text-slate-600 dark:text-slate-300">{node.marketDemand}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="p-4 rounded-lg bg-slate-50 dark:bg-slate-900/50">
-              <div className="flex items-start gap-3">
-                <DollarSign className="w-5 h-5 text-emerald-500 mt-1" />
-                <div>
-                  <h3 className="font-medium mb-2">{t('roadmap.details.salary')}</h3>
-                  <p className="text-slate-600 dark:text-slate-300">{node.averageSalary}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="p-4 rounded-lg bg-slate-50 dark:bg-slate-900/50">
-              <div className="flex items-start gap-3">
-                <Briefcase className="w-5 h-5 text-purple-500 mt-1" />
-                <div>
-                  <h3 className="font-medium mb-2">{t('roadmap.details.skills')}</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {node.requiredSkills?.map((skill: string) => (
-                      <span
-                        key={skill}
-                        className="px-3 py-1 text-sm rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400"
-                      >
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
+          
+           
+         
           </div>
         </div>
       </div>

@@ -1,10 +1,20 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Download, ChevronDown, ChevronUp } from 'lucide-react';
+
+interface RoadmapTopBarProps {
+  roadmap: {
+    id: string;
+    title: string;
+    description: string;
+  };
+  progress: number;
+  completedNodes: number;
+  totalNodes: number;
+}
 import { cn } from '../utils/cn';
 import { PDFDownloadLink, Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
-import ReactFlow, { ReactFlowProvider } from 'reactflow';
 import html2canvas from 'html2canvas';
 import ThemeIcon from './ThemeIcon';
 
@@ -51,15 +61,12 @@ const RoadmapPDF = ({ roadmap, flowImage }: { roadmap: any; flowImage: string })
   </Document>
 );
 
-// ... rest of your existing imports
 
 export default function RoadmapTopBar({ 
   roadmap, 
   progress, 
   completedNodes, 
   totalNodes,
-  nodes,
-  edges,
 }: RoadmapTopBarProps) {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -141,6 +148,7 @@ export default function RoadmapTopBar({
                 <button
                   onClick={captureFlow}
                   disabled={loading}
+                  className="flex items-center gap-1"
                 >
                   <Download className="w-4 h-4" />
                   <span className="hidden md:inline">

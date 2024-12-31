@@ -10,7 +10,7 @@ import { generateRoadmap } from "../utils/palm";
 import { CustomNodeGenerator } from "../components/CustomNodeGenerator";
 import NodeDetailsModal from "../components/NodeDetailsModal";
 import { useTranslation } from "react-i18next";
-import Slider from "../components/customrange";
+import Slider from "../components/customRange";
 const nodeTypes = {
   custom: CustomNodeGenerator,
 };
