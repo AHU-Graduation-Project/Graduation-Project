@@ -1,20 +1,21 @@
-import dotenv from "dotenv";
 dotenv.config();
+import dotenv from "dotenv";
 import axios from "axios";
+import pkg from "lodash";
 
-// Udemy API credentials
+const { shuffle } = pkg;
+
+// API credentials
 const clientId = process.env.UDEMY_CLIENT_ID;
 const clientSecret = process.env.UDEMY_CLIENT_SECRET;
-
-// Coursera API token from environment variable
-const ACCESS_TOKEN = process.env.COURSERA_ACCESS_TOKEN;
+const COURSERA_ACCESS_TOKEN = process.env.COURSERA_ACCESS_TOKEN;
 
 // Function to fetch top courses from Udemy
-export async function fetchUdemyCourses(keyword, limit = 10) {
+async function fetchUdemyCourses(keyword, limit = 6) {
   const base64Credentials = btoa(`${clientId}:${clientSecret}`);
   const url = `https://www.udemy.com/api-2.0/courses/?search=${encodeURIComponent(
     keyword
-  )}&page_size=${limit}&page=1&ordering=highest_rated`; // Fetching top-rated courses without pagination
+  )}&page_size=${limit}&page=1&ordering=highest_rated`;
 
   try {
     const response = await fetch(url, {
@@ -22,7 +23,6 @@ export async function fetchUdemyCourses(keyword, limit = 10) {
         Authorization: `Basic ${base64Credentials}`,
       },
     });
-
     if (!response.ok) {
       throw new Error(`Error: ${response.status} - ${response.statusText}`);
     }
@@ -43,19 +43,19 @@ export async function fetchUdemyCourses(keyword, limit = 10) {
 }
 
 // Function to fetch top courses from Coursera
-export const fetchCourseraCourses = async (searchTerm, limit = 10) => {
-  const encodedSearchTerm = encodeURIComponent(searchTerm);
-  const COURSES_API_URL = `https://api.coursera.org/api/courses.v1?q=search&query=${encodedSearchTerm}&fields=name,photoUrl,slug&page=1&limit=${limit}`; // Fetching top-rated courses without pagination
+const fetchCourseraCourses = async (keyword, limit = 6) => {
+  
+  const encodedSearchTerm = encodeURIComponent(keyword);
+  const COURSES_API_URL = `https://api.coursera.org/api/courses.v1?q=search&query=${encodedSearchTerm}&fields=name,photoUrl,slug`; // Fetching top-rated courses without pagination
 
   const headers = {
-    Authorization: `Bearer ${ACCESS_TOKEN}`,
+    Authorization: `Bearer ${COURSERA_ACCESS_TOKEN}`,
   };
 
   try {
     const response = await axios.get(COURSES_API_URL, { headers });
-
     return {
-      courses: response.data.elements.map((course) => ({
+      courses: response.data.elements.slice(0, limit).map((course) => ({
         id: course.id, // Add the course ID
         title: course.name,
         photoUrl: course.photoUrl,
@@ -69,7 +69,7 @@ export const fetchCourseraCourses = async (searchTerm, limit = 10) => {
 };
 
 // Function to search top courses on both platforms
-async function searchCourses(query, limit = 10) {
+async function searchCoursesService(query, limit = 10) {
   const udemyLimit = limit; // Limit for Udemy courses
   const courseraLimit = limit; // Limit for Coursera courses
 
@@ -81,13 +81,9 @@ async function searchCourses(query, limit = 10) {
   const combinedCourses = [...udemyCourses.courses, ...courseraCourses.courses];
 
   return {
-    combinedCourses,
+    courses: shuffle(combinedCourses),
     totalCourses: combinedCourses.length,
   };
 }
 
-// Example usage: Fetch 10 top courses from each platform
-searchCourses("AI", 10).then(({ combinedCourses, totalCourses }) => {
-  console.log("Combined Top Courses:", combinedCourses);
-  console.log("Total Courses:", totalCourses);
-});
+export default searchCoursesService;

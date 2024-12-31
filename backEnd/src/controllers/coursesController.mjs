@@ -1,8 +1,9 @@
-import { searchCoursesService } from "../services/coursesService.mjs";
+import searchCoursesService  from "../services/coursesService.mjs";
 
 export const searchCourses = async (req, res) => {
   try {
-    const { keyword, page = 1, limit = 10 } = req.query;
+    const { keyword } = req.query;
+    const NumberOfCourses = 6;
 
     if (!keyword) {
       throw new Error("Keyword is required");
@@ -11,18 +12,14 @@ export const searchCourses = async (req, res) => {
       throw new Error("Keyword must be a string");
     }
 
-    const courses = await searchCoursesService(
-      keyword,
-      Number(page),
-      Number(limit)
-    );
+    const courses = await searchCoursesService(keyword, NumberOfCourses);
     res
       .status(200)
       .json({
-        courses,
-        pagination: { page: Number(page), limit: Number(limit) },
+        courses
       });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
+
 };
