@@ -1,8 +1,10 @@
-import { useState, useCallback } from "react";
-import { Sparkles, ChevronDown, ChevronUp } from "lucide-react";
+import { useState, useCallback, useRef } from "react";
+import { Sparkles, ChevronDown, ChevronUp, StopCircle } from "lucide-react";
 import ReactFlow, {
   Background as FlowBackground,
   Controls as FlowControls,
+  OnNodesChange,
+  applyNodeChanges,
 } from "reactflow";
 import "reactflow/dist/style.css";
 import { cn } from "../utils/cn";
@@ -10,7 +12,11 @@ import { generateRoadmap } from "../utils/palm";
 import { CustomNodeGenerator } from "../components/CustomNodeGenerator";
 import NodeDetailsModal from "../components/NodeDetailsModal";
 import { useTranslation } from "react-i18next";
-import Slider from "../components/customRange";
+import Slider from "../components/customrange";
+import RoadmapToolbar from "../components/RoadmapToolbar";
+import EditNodeModal from "../components/EditNodeModal";
+
+
 const nodeTypes = {
   custom: CustomNodeGenerator,
 };
@@ -21,21 +27,38 @@ interface AdvancedOptions {
 }
 
 export default function GenerateRoadmap() {
+  const [selectedNode, setSelectedNode] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showNodeDetails, setShowNodeDetails] = useState(false);
+  const [nodeToDelete, setNodeToDelete] = useState(null);
+
   const { t } = useTranslation();
   const [prompt, setPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
-  const [nodes, setNodes] = useState([]);
-  const [edges, setEdges] = useState([]);
-  const [selectedNode, setSelectedNode] = useState(null);
+  const [nodes, setNodes] = useState<any[]>([]);
+  const [edges, setEdges] = useState<any[]>([]);
   const [error, setError] = useState("");
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [advancedOptions, setAdvancedOptions] = useState<AdvancedOptions>({
     minTopics: 15,
     minSubtopics: 2,
   });
+  const abortControllerRef = useRef<AbortController | null>(null);
 
-  const onNodesChange = useCallback(() => {}, []);
+  const onNodesChange: OnNodesChange = useCallback(
+    (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
+    []
+  );
   const onEdgesChange = useCallback(() => {}, []);
+
+  const stopGeneration = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+      setIsGenerating(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,26 +73,42 @@ export default function GenerateRoadmap() {
     setEdges([]);
 
     try {
-      const result = await generateRoadmap(prompt, advancedOptions);
+      abortControllerRef.current = new AbortController();
+      const result = await generateRoadmap(
+        prompt,
+        advancedOptions,
+        abortControllerRef.current.signal
+      );
 
       const processedNodes = result.nodes.map((node) => ({
         ...node,
+        draggable: true,
         data: {
           ...node.data,
-          onShowDetails: (data: any) => setSelectedNode(data),
-          t,
+          onShowDetails: (data: any) => {
+            setSelectedNode(data);
+            setShowNodeDetails(true);
+          },
+          
         },
       }));
 
       setNodes(processedNodes);
       setEdges(result.edges);
     } catch (err) {
-      console.error("Error:", err);
-      setError("Failed to generate roadmap. Please try again.");
+      if (err.name === "AbortError") {
+        setError("Generation was stopped");
+      } else {
+        console.error("Error:", err);
+        setError("Failed to generate roadmap. Please try again.");
+      }
     } finally {
       setIsGenerating(false);
+      abortControllerRef.current = null;
     }
   };
+
+
 
   const handleOptionChange = (key: keyof AdvancedOptions, value: number) => {
     setAdvancedOptions((prev) => ({
@@ -79,6 +118,66 @@ export default function GenerateRoadmap() {
         Math.min(key === "minTopics" ? 30 : 5, value)
       ),
     }));
+  };
+
+  const handleNodeClick = (event: any, node: any) => {
+    setNodes((nds) =>
+      nds.map((n) => ({
+        ...n,
+        data: {
+          ...n.data,
+          isSelected: n.id === node.id,
+        },
+      }))
+    );
+    setSelectedNode(node);
+  };
+
+  const handleCloseDetails = () => {
+    setSelectedNode(null);
+    setShowNodeDetails(false);
+    setNodes((nds) =>
+      nds.map((n) => ({
+        ...n,
+        data: {
+          ...n.data,
+          isSelected: false,
+        },
+      }))
+    );
+  };
+
+  const handleEditNode = () => {
+    if (selectedNode) {
+      setShowEditModal(true);
+    }
+  };
+
+  const handleSaveEditNode = (nodeData: any) => {
+    setNodes((nds: any[]) =>
+      nds.map((node: any) => (node.id === nodeData.id ? nodeData : node))
+    );
+    setSelectedNode(null);
+  };
+
+  const handleDeleteNode = () => {
+    setNodeToDelete(selectedNode);
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDelete = () => {
+    if (!nodeToDelete) return;
+
+    setNodes((nds) => nds.filter((node) => node.id !== nodeToDelete.id));
+    setEdges((eds) =>
+      eds.filter(
+        (edge) =>
+          edge.source !== nodeToDelete.id && edge.target !== nodeToDelete.id
+      )
+    );
+    setSelectedNode(null);
+    setShowDeleteConfirm(false);
+    setNodeToDelete(null);
   };
 
   return (
@@ -102,11 +201,13 @@ export default function GenerateRoadmap() {
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 placeholder={t("generate.placeholder")}
+                disabled={isGenerating}
                 className={cn(
                   "w-full h-32 px-4 py-3 rounded-lg transition-all resize-none",
                   "bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700",
                   "focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none",
-                  error && "border-red-500 focus:ring-red-500"
+                  error && "border-red-500 focus:ring-red-500",
+                  isGenerating && "opacity-50"
                 )}
               />
             </div>
@@ -173,28 +274,40 @@ export default function GenerateRoadmap() {
 
           {error && <p className="text-sm text-red-500 text-center">{error}</p>}
 
-          <button
-            type="submit"
-            disabled={isGenerating || !prompt.trim()}
-            className={cn(
-              "w-full flex items-center justify-center gap-2 px-6 py-3 rounded-lg",
-              "text-white font-medium transition-all",
-              "bg-theme hover:opacity-90",
-              "disabled:opacity-50 disabled:cursor-not-allowed",
-              "group relative overflow-hidden"
+          <div className="flex gap-3">
+            <button
+              type="submit"
+              disabled={isGenerating || !prompt.trim()}
+              className={cn(
+                "flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-lg",
+                "text-white font-medium transition-all",
+                "bg-theme hover:opacity-90",
+                "disabled:opacity-50 disabled:cursor-not-allowed",
+                "group relative overflow-hidden"
+              )}
+            >
+              <Sparkles
+                className={cn("w-5 h-5", isGenerating && "animate-spin")}
+              />
+              <span>
+                {isGenerating ? t("generate.generating") : t("generate.button")}
+              </span>
+            </button>
+
+            {isGenerating && (
+              <button
+                type="button"
+                onClick={stopGeneration}
+                className="px-6 py-3 rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors flex items-center gap-2"
+              >
+                <StopCircle className="w-5 h-5" />
+                <span>Stop</span>
+              </button>
             )}
-          >
-            <Sparkles
-              className={cn("w-5 h-5", isGenerating && "animate-spin")}
-            />
-            <span>
-              {isGenerating ? t("generate.generating") : t("generate.button")}
-            </span>
-          </button>
+          </div>
         </div>
       </form>
 
-      {/* Loading State */}
       {isGenerating && (
         <div className="w-full h-[600px] rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
           <div className="text-center space-y-4">
@@ -209,7 +322,6 @@ export default function GenerateRoadmap() {
         </div>
       )}
 
-      {/* Roadmap Display */}
       {!isGenerating && nodes.length > 0 && (
         <div className="w-full h-[600px] rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700">
           <ReactFlow
@@ -217,21 +329,65 @@ export default function GenerateRoadmap() {
             edges={edges}
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
+            onNodeClick={handleNodeClick}
             nodeTypes={nodeTypes}
             fitView
             className="bg-slate-50 dark:bg-slate-900"
           >
+            
             <FlowBackground className="bg-slate-50 dark:bg-slate-900" />
             <FlowControls className="!bg-white/10 !rounded-lg" />
+            <RoadmapToolbar
+              isNodeSelected={!!selectedNode}
+              onEditNode={handleEditNode}
+              onAddNode={() => setShowAddModal(true)}
+              onDeleteNode={handleDeleteNode}
+            />
           </ReactFlow>
         </div>
       )}
 
+      {/* Node Details Modal */}
       <NodeDetailsModal
-        isOpen={!!selectedNode}
-        onClose={() => setSelectedNode(null)}
-        node={selectedNode}
+        isOpen={showNodeDetails}
+        onClose={handleCloseDetails}
+        node={selectedNode?.data}
       />
+
+      {/* Edit Node Modal */}
+      <EditNodeModal
+        isOpen={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        node={selectedNode}
+        onSave={handleSaveEditNode}
+      />
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white dark:bg-slate-800 rounded-lg p-6 max-w-md w-full">
+            <h3 className="text-lg font-bold mb-4">Confirm Delete</h3>
+            <p className="text-slate-600 dark:text-slate-400 mb-6">
+              Are you sure you want to delete this node? This action cannot be
+              undone.
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                className="px-4 py-2 rounded-lg bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

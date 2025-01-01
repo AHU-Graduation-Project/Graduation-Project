@@ -2,11 +2,12 @@ import React, { useState } from "react";
 
 interface SliderProps {
   advancedOptions: {
-  minTopics: number;
-  minSubtopics: number;
-}
-  handleOptionChange: (option: string, value: number) => void;
-  option : string;
+    minTopics: number;
+    minSubtopics: number;
+    pathComplexity: string;
+  };
+  handleOptionChange: (option: string, value: number | string) => void;
+  option: string;
   max: number;
   min: number;
 }
@@ -18,9 +19,8 @@ const Slider: React.FC<SliderProps> = ({
   max,
   min = 0,
 }) => {
-  
   const [sliderValue, setSliderValue] = useState<number>(
-   option == 'minTopics' ? advancedOptions.minTopics : advancedOptions.minSubtopics
+    option === "minTopics" ? advancedOptions.minTopics : advancedOptions.minSubtopics
   );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,13 +48,11 @@ const Slider: React.FC<SliderProps> = ({
                 [&::-webkit-slider-thumb]:h-4 
                 [&::-webkit-slider-thumb]:rounded-full 
                 [&::-webkit-slider-thumb]:shadow-md 
-              [&::-webkit-slider-thumb]:border-slate-400
+                [&::-webkit-slider-thumb]:border-slate-400
                 [&::-webkit-slider-thumb]:cursor-pointer
                 [&::-webkit-slider-thumb]:bg-theme
                 hover:[&::-webkit-slider-thumb]:scale-[1.17]
-                [&::-webkit-slider-thumb]:transition-all
-                
-                 "
+                [&::-webkit-slider-thumb]:transition-all"
       style={{
         background: calculateBackground(),
       }}

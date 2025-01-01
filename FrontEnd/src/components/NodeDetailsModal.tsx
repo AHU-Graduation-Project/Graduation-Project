@@ -42,8 +42,10 @@ export default function NodeDetailsModal({ isOpen, onClose, node }: NodeDetailsM
             </div>
 
           
-           
          
+           
+       
+      
           </div>
         </div>
       </div>

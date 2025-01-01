@@ -57,8 +57,7 @@ const initialNodes: Node[] = [
       requiredNodes: ["1"],
       jobs: 200,
     },
-  },
-  {
+  },{
     id: "3",
     type: "custom",
     position: { x: 400, y: 200 },
@@ -286,7 +285,6 @@ export default function RoadmapFlow() {
    };
  });
 
-console.log(user);
   const completedNodes = user?.progress[id || ""]?.length || 0;
   const totalNodes = nodes.length;
   const progress = Math.round((completedNodes / totalNodes) * 100);

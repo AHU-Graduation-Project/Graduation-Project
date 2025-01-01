@@ -8,6 +8,7 @@ interface GenerateOptions {
 }
 
 
+
 const EXAMPLE_STRUCTURE = `{
   "nodes": [
   {
@@ -272,7 +273,12 @@ const createSystemPrompt = (options: GenerateOptions) => `You are a learning pat
 
 Use this exact structure and follow the example provided. Ensure all nodes and edges match the format precisely.`;
 
-export async function generateRoadmap(prompt: string, options: GenerateOptions = { minTopics: 15, minSubtopics: 2 }) {
+
+export async function generateRoadmap(
+  prompt: string, 
+  options: GenerateOptions = { minTopics: 15, minSubtopics: 2 },
+  signal?: AbortSignal
+) {
   try {
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     
@@ -280,10 +286,9 @@ export async function generateRoadmap(prompt: string, options: GenerateOptions =
       createSystemPrompt(options),
       EXAMPLE_STRUCTURE,
       `Generate a learning roadmap for: ${prompt}. Follow the example structure to take idea of how it will be, and give a full roadmap to the requested topic including all possible topics ensuring proper node positioning and connections as shown in the example. Make sure to include at least ${options.minTopics} main topics and ${options.minSubtopics} subtopics per main topic.`,
-    ]);
+    ], { signal });
     
     const response = await result.response;
-    console.log('Response:', response);
     const text = response.text();
     
     // Extract JSON content
@@ -302,6 +307,11 @@ export async function generateRoadmap(prompt: string, options: GenerateOptions =
 
     return parsedData;
   } catch (error) {
+    if (signal?.aborted) {
+      const abortError = new Error('Generation aborted');
+      abortError.name = 'AbortError';
+      throw abortError;
+    }
     console.error('Error generating roadmap:', error);
     throw error;
   }
