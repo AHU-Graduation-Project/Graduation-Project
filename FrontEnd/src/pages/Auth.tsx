@@ -48,23 +48,20 @@ export default function Auth() {
 
           {/* Login Form */}
           <div
-            className={`w-full md:w-1/2 p-12  md:p-8 transition-transform duration-700 ease-in-out bg-gray-800 bg-opacity-75 rounded-xl md:bg-gray-800 ${
+            className={`w-full md:w-1/2 p-12 mt-32 sm:mt-0 md:py-28 transition-transform duration-700 ease-in-out bg-gray-800 bg-opacity-90 rounded-xl md:bg-gray-800 ${
               isSignUp ? "-translate-x-full" : "translate-x-0"
             }`}
           >
-            <LoginForm onSignUpClick={() => setIsSignUp(true)} />
+            <LoginForm />
           </div>
 
           {/* Sign-Up Form */}
           <div
-            className={`w-full md:w-1/2 p-12  md:p-8 transition-transform duration-700 ease-in-out bg-gray-800 bg-opacity-75 rounded-xl md:bg-gray-800  ${
+            className={`w-full md:w-1/2 p-12  md:p-8 transition-transform duration-700 ease-in-out bg-gray-800 bg-opacity-90 rounded-xl md:bg-gray-800  ${
               isSignUp ? "translate-x-0" : "translate-x-full"
             }`}
           >
-            <SignupForm
-              // onSubmit={handleSubmitSignUp}
-              onLoginClick={() => setIsSignUp(false)}
-            />
+            <SignupForm />
           </div>
         </div>
       </div>

@@ -3,11 +3,7 @@ import { InputField } from "./TextInput";
 import { useAuthStore } from "../store/authStore";
 import { useNavigate } from "react-router-dom";
 
-interface SignupFormProps {
-  onLoginClick: () => void;
-}
-
-export function SignupForm({ onLoginClick }: SignupFormProps) {
+export function SignupForm() {
   const { updateUser } = useAuthStore();
   const navigate = useNavigate();
   const [fname, setfName] = useState("");
@@ -70,13 +66,9 @@ export function SignupForm({ onLoginClick }: SignupFormProps) {
           showToggle
           inputClickHandler={() => setShowPassword(!showPassword)}
         />
-        <div className="text-sm text-center text-gray-400 mt-4">
+        <div className=" hidden text-sm text-center text-gray-400 mt-4">
           <span>Already have an account? </span>
-          <button
-            type="button"
-            onClick={onLoginClick}
-            className="text-theme  transition"
-          >
+          <button type="button" className="text-theme  transition">
             Login
           </button>
         </div>
