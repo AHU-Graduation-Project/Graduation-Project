@@ -1,16 +1,17 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import img from "../assets/images/dummy-user-img-1.png";
+import img from "../assets/images/mike_wazowski_meme_png_by_kylewithem_dg65n12-fullview.png";
 
 interface User {
   id: string;
   email: string;
   fname: string;
   lname: string;
+  password: string;
   profilePicture: string;
-  position: string; // New field
-  level: string; // New field
-  country: string; // New field
+  position: string;
+  level: string;
+  country: string;
   selectedRoadmaps: string[];
   completedRoadmaps: string[];
   selectedSkills: string[];
@@ -64,10 +65,11 @@ export const useAuthStore = create<AuthState>()(
             email,
             fname: "ahmad",
             lname: "alshamary",
+            password,
             profilePicture: img,
-            position: "Front end", // Example value
-            level: "Intermediate", // Example value
-            country: "Jordan", // Example value
+            position: "Front end",
+            level: "Intermediate",
+            country: "Jordan",
             selectedRoadmaps: [],
             completedRoadmaps: [],
             selectedSkills: ["CSS", "HTML"],
@@ -84,6 +86,7 @@ export const useAuthStore = create<AuthState>()(
             email,
             fname,
             lname,
+            password,
             profilePicture: img,
             position,
             level,

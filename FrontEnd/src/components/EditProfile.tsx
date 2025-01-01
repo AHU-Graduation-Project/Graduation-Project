@@ -3,6 +3,7 @@ import { useAuthStore } from "../store/authStore";
 import { Camera } from "lucide-react";
 import SelectDropDown from "./SelectDropDown";
 import Skills from "./Skills";
+import ChangePassword from "./ChangePassword";
 
 const countries = [
   "Jordan",
@@ -25,6 +26,7 @@ const levels = ["Junior", "Middle", "Senior"];
 
 const EditProfile = () => {
   const { user, updateUser } = useAuthStore();
+  const [showChangePassword, setShowChangePassword] = useState(false);
   const [fname, setFirstName] = useState(user?.fname || "");
   const [lname, setLastName] = useState(user?.lname || "");
   const [email, setEmail] = useState(user?.email || "");
@@ -197,10 +199,19 @@ const EditProfile = () => {
       </div>
 
       {/* Save Button */}
-      <div className="flex justify-end mt-6">
+      {showChangePassword && (
+        <ChangePassword onClose={() => setShowChangePassword(false)} />
+      )}
+      <div className="flex justify-between items-center mt-6">
+        <button
+          onClick={() => setShowChangePassword(!showChangePassword)}
+          className="py-2 px-2 bg-gray-400 text-white rounded-lg hover:bg-gray-600"
+        >
+          Change Password
+        </button>
         <button
           onClick={handleSaveChanges}
-          className="py-2 px-10 bg-theme text-white rounded-lg hover:bg-blue-600"
+          className="py-2 px-2 bg-theme text-white rounded-lg hover:bg-blue-600"
         >
           Save Changes
         </button>
