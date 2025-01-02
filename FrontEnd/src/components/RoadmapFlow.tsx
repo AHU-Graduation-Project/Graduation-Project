@@ -273,7 +273,6 @@ export default function RoadmapFlow() {
      data: {
        ...nodeData,
        onShowDetails: (nodeData: any) => setSelectedNode(nodeData),
-       t,
      },
    };
  });
