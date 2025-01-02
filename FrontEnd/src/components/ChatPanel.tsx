@@ -27,6 +27,7 @@ export default function ChatPanel({
       timestamp: new Date(),
     },
   ]);
+  console.log("messages", messages);
   const [input, setInput] = useState("");
   const [showSaved, setShowSaved] = useState(false);
   const { isStreaming, streamResponse } = useStreamingResponse();
