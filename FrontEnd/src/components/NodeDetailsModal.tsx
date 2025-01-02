@@ -1,6 +1,4 @@
-import { X, TrendingUp, DollarSign, BookOpen, Briefcase } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
-import { cn } from '../utils/cn';
+import { X, BookOpen } from "lucide-react";
 
 interface NodeDetailsModalProps {
   isOpen: boolean;
@@ -8,9 +6,13 @@ interface NodeDetailsModalProps {
   node: any;
 }
 
-export default function NodeDetailsModal({ isOpen, onClose, node }: NodeDetailsModalProps) {
-  const { t } = useTranslation();
-  
+export default function NodeDetailsModal({
+  isOpen,
+  onClose,
+  node,
+}: NodeDetailsModalProps) {
+
+
   if (!isOpen || !node) return null;
 
   return (
@@ -24,28 +26,26 @@ export default function NodeDetailsModal({ isOpen, onClose, node }: NodeDetailsM
             <X className="w-4 h-4" />
           </button>
         </div>
-        
+
         <div className="p-6">
           <h2 className="text-2xl font-bold mb-4 bg-gradient-to-r from-blue-500 to-purple-500 text-transparent bg-clip-text">
             {node.label}
           </h2>
-          
+
           <div className="space-y-6">
             <div className="p-4 rounded-lg bg-slate-50 dark:bg-slate-900/50">
               <div className="flex items-start gap-3">
                 <BookOpen className="w-5 h-5 text-blue-500 mt-1" />
                 <div>
-                  <h3 className="font-medium mb-2">{t('roadmap.details.description')}</h3>
-                  <p className="text-slate-600 dark:text-slate-300">{node.description}</p>
+                  <h3 className="font-medium mb-2">
+                    {"Description"}
+                  </h3>
+                  <p className="text-slate-600 dark:text-slate-300">
+                    {node.description}
+                  </p>
                 </div>
               </div>
             </div>
-
-          
-         
-           
-       
-      
           </div>
         </div>
       </div>

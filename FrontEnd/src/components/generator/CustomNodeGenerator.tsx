@@ -1,8 +1,9 @@
 import { NodeProps, Handle, Position, NodeToolbar } from "reactflow";
-import { cn } from "../utils/cn";
+import { cn } from "../../utils/cn";
 import { MoreHorizontal } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import "reactflow/dist/style.css";
+
 
 interface NodeData {
   label: string;
@@ -13,12 +14,12 @@ interface NodeData {
   requiredSkills: string[];
   isAchieved: boolean;
   requiredNodes?: string[];
-  onShowDetails: (data: boolean) => void;
+  onShowDetails: (data: any) => void;
   jobs?: number;
   isSelected?: boolean;
 }
 
-export function CustomNodeGenerator({ data, id }: NodeProps<NodeData>) {
+export function CustomNodeGenerator({ data}: NodeProps<NodeData>) {
   const [showToolbar, setShowToolbar] = useState(false);
   const toolbarContainerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -63,6 +64,7 @@ export function CustomNodeGenerator({ data, id }: NodeProps<NodeData>) {
 
   return (
     <>
+
       <div ref={toolbarContainerRef}>
         <NodeToolbar
           isVisible={showToolbar}

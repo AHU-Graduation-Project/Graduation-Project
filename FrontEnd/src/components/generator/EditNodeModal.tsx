@@ -22,7 +22,6 @@ export default function EditNodeModal({
     requiredSkills: "",
   });
 
-  // Synchronize formData when the modal is opened or `node` changes
   useEffect(() => {
     if (isOpen && node) {
       setFormData({

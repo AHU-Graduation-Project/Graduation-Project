@@ -1,10 +1,8 @@
-import { Edit, Plus, Trash2 } from 'lucide-react';
-import { cn } from '../utils/cn';
+import { Edit} from 'lucide-react';
+import { cn } from '../../utils/cn';
 
 interface RoadmapToolbarProps {
-  onAddNode: () => void;
   onEditNode: () => void;
-  onDeleteNode: () => void;
   isNodeSelected: boolean;
 }
 

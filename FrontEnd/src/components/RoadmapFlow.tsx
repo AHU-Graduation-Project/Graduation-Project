@@ -23,9 +23,6 @@ import { CustomNode } from "./CustomNode";
 const nodeTypes = {
   custom: CustomNode,
 };
-
-
-{/* Update the initialNodes array to include jobs data */}
 const initialNodes: Node[] = [
   {
     id: "1",
@@ -164,8 +161,6 @@ const initialNodes: Node[] = [
   },
 ];
 
-
-// Update the edges array to use different styles for topic and subtopic connections
 const initialEdges: Edge[] = [
   {
     id: "e1-2",

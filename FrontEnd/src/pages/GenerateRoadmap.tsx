@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef } from "react";
-import { Sparkles, ChevronDown, ChevronUp, StopCircle } from "lucide-react";
+import { Sparkles, Save, StopCircle } from "lucide-react";
 import ReactFlow, {
   Background as FlowBackground,
   Controls as FlowControls,
@@ -9,13 +9,17 @@ import ReactFlow, {
 import "reactflow/dist/style.css";
 import { cn } from "../utils/cn";
 import { generateRoadmap } from "../utils/palm";
-import { CustomNodeGenerator } from "../components/CustomNodeGenerator";
+import { CustomNodeGenerator } from "../components/generator/CustomNodeGenerator";
 import NodeDetailsModal from "../components/NodeDetailsModal";
 import { useTranslation } from "react-i18next";
-import Slider from "../components/customrange";
-import RoadmapToolbar from "../components/RoadmapToolbar";
-import EditNodeModal from "../components/EditNodeModal";
-
+import RoadmapToolbar from "../components/generator/RoadmapToolbar";
+import EditNodeModal from "../components/generator/EditNodeModal";
+import { useAuthStore } from "../store/authStore";
+import SaveRoadmapModal from "../components/SaveRoadmapModal";
+import { useNavigate } from "react-router-dom";
+import GeneratorHeader from "../components/generator/GeneratorHeader";
+import PromptInput from "../components/generator/PromptInput";
+import AdvancedOptions from "../components/generator/AdvancedOptions";
 
 const nodeTypes = {
   custom: CustomNodeGenerator,
@@ -24,14 +28,15 @@ const nodeTypes = {
 interface AdvancedOptions {
   minTopics: number;
   minSubtopics: number;
+  isOpen: boolean;
+  onToggle: () => void;
+  onOptionChange: (option: "minTopics" | "minSubtopics", value: number) => void;
 }
 
 export default function GenerateRoadmap() {
   const [selectedNode, setSelectedNode] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showNodeDetails, setShowNodeDetails] = useState(false);
-  const [nodeToDelete, setNodeToDelete] = useState(null);
 
   const { t } = useTranslation();
   const [prompt, setPrompt] = useState("");
@@ -40,16 +45,18 @@ export default function GenerateRoadmap() {
   const [edges, setEdges] = useState<any[]>([]);
   const [error, setError] = useState("");
   const [showAdvanced, setShowAdvanced] = useState(false);
+
+  const [showSaveModal, setShowSaveModal] = useState(false);
+  const { user, saveGeneratedRoadmap } = useAuthStore();
+  const navigate = useNavigate();
+
   const [advancedOptions, setAdvancedOptions] = useState<AdvancedOptions>({
     minTopics: 15,
     minSubtopics: 2,
   });
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  const onNodesChange: OnNodesChange = useCallback(
-    (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
-    []
-  );
+  const onNodesChange = useCallback(() => {}, []);
   const onEdgesChange = useCallback(() => {}, []);
 
   const stopGeneration = () => {
@@ -89,7 +96,6 @@ export default function GenerateRoadmap() {
             setSelectedNode(data);
             setShowNodeDetails(true);
           },
-          
         },
       }));
 
@@ -108,7 +114,15 @@ export default function GenerateRoadmap() {
     }
   };
 
+  const handleSaveRoadmap = (title: string, description: string) => {
+    if (!user) {
+      navigate("/auth");
+      return;
+    }
 
+    saveGeneratedRoadmap(title, description, nodes, edges);
+    navigate("/profile");
+  };
 
   const handleOptionChange = (key: keyof AdvancedOptions, value: number) => {
     setAdvancedOptions((prev) => ({
@@ -160,119 +174,25 @@ export default function GenerateRoadmap() {
     setSelectedNode(null);
   };
 
-  const handleDeleteNode = () => {
-    setNodeToDelete(selectedNode);
-    setShowDeleteConfirm(true);
-  };
-
-  const confirmDelete = () => {
-    if (!nodeToDelete) return;
-
-    setNodes((nds) => nds.filter((node) => node.id !== nodeToDelete.id));
-    setEdges((eds) =>
-      eds.filter(
-        (edge) =>
-          edge.source !== nodeToDelete.id && edge.target !== nodeToDelete.id
-      )
-    );
-    setSelectedNode(null);
-    setShowDeleteConfirm(false);
-    setNodeToDelete(null);
-  };
-
   return (
     <div className="container mx-auto px-4 py-12">
-      <div className="max-w-3xl mx-auto text-center mb-12">
-        <h1 className="text-4xl font-bold mb-4 text-theme text-transparent bg-clip-text">
-          {t("generate.title")}
-        </h1>
-        <p className="text-lg text-slate-600 dark:text-white/80">
-          {t("generate.subtitle")}
-        </p>
-      </div>
+      <GeneratorHeader isGenerating={isGenerating} />
 
       <form onSubmit={handleSubmit} className="max-w-2xl mx-auto mb-12">
-        <div className="space-y-4">
-          {/* Main Input */}
-          <div className="relative">
-            <div className="absolute inset-0 bg-theme rounded-lg blur opacity-20 animate-pulse"></div>
-            <div className="relative">
-              <textarea
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                placeholder={t("generate.placeholder")}
-                disabled={isGenerating}
-                className={cn(
-                  "w-full h-32 px-4 py-3 rounded-lg transition-all resize-none",
-                  "bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700",
-                  "focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none",
-                  error && "border-red-500 focus:ring-red-500",
-                  isGenerating && "opacity-50"
-                )}
-              />
-            </div>
-          </div>
+        <div className="space-y-6">
+          <PromptInput
+            value={prompt}
+            onChange={setPrompt}
+            isGenerating={isGenerating}
+            error={error}
+          />
 
-          {/* Advanced Options Toggle */}
-          <div className="flex justify-center">
-            <button
-              type="button"
-              onClick={() => setShowAdvanced(!showAdvanced)}
-              className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 hover:text-theme transition-colors"
-            >
-              Advanced Options
-              {showAdvanced ? (
-                <ChevronUp className="w-4 h-4" />
-              ) : (
-                <ChevronDown className="w-4 h-4" />
-              )}
-            </button>
-          </div>
-
-          {/* Advanced Options Panel */}
-          {showAdvanced && (
-            <div className="p-4 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    Minimum Main Topics
-                  </label>
-                  <div className="flex items-center gap-2">
-                    <Slider
-                      advancedOptions={advancedOptions}
-                      handleOptionChange={handleOptionChange}
-                      option="minTopics"
-                      max={30}
-                      min={5}
-                    />
-                    <span className="w-12 text-center">
-                      {advancedOptions.minTopics}
-                    </span>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    Minimum Subtopics per Topic
-                  </label>
-                  <div className="flex items-center gap-2">
-                    <Slider
-                      advancedOptions={advancedOptions}
-                      handleOptionChange={handleOptionChange}
-                      option="minSubtopics"
-                      max={5}
-                      min={1}
-                    />
-                    <span className="w-12 text-center">
-                      {advancedOptions.minSubtopics}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {error && <p className="text-sm text-red-500 text-center">{error}</p>}
+          <AdvancedOptions
+            isOpen={showAdvanced}
+            onToggle={() => setShowAdvanced(!showAdvanced)}
+            options={advancedOptions}
+            onOptionChange={handleOptionChange}
+          />
 
           <div className="flex gap-3">
             <button
@@ -308,6 +228,19 @@ export default function GenerateRoadmap() {
         </div>
       </form>
 
+      {/* Save Button */}
+      {nodes.length > 0 && (
+        <div className="flex justify-center mb-6">
+          <button
+            onClick={() => setShowSaveModal(true)}
+            className="px-6 py-3 rounded-lg bg-theme text-white hover:opacity-90 transition-colors flex items-center gap-2"
+          >
+            <Save className="w-5 h-5" />
+            <span>Save Roadmap</span>
+          </button>
+        </div>
+      )}
+
       {isGenerating && (
         <div className="w-full h-[600px] rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
           <div className="text-center space-y-4">
@@ -322,6 +255,7 @@ export default function GenerateRoadmap() {
         </div>
       )}
 
+      {/*  roadmap flow */}
       {!isGenerating && nodes.length > 0 && (
         <div className="w-full h-[600px] rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700">
           <ReactFlow
@@ -334,14 +268,11 @@ export default function GenerateRoadmap() {
             fitView
             className="bg-slate-50 dark:bg-slate-900"
           >
-            
             <FlowBackground className="bg-slate-50 dark:bg-slate-900" />
             <FlowControls className="!bg-white/10 !rounded-lg" />
             <RoadmapToolbar
               isNodeSelected={!!selectedNode}
               onEditNode={handleEditNode}
-              onAddNode={() => setShowAddModal(true)}
-              onDeleteNode={handleDeleteNode}
             />
           </ReactFlow>
         </div>
@@ -362,32 +293,11 @@ export default function GenerateRoadmap() {
         onSave={handleSaveEditNode}
       />
 
-      {/* Delete Confirmation Modal */}
-      {showDeleteConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-white dark:bg-slate-800 rounded-lg p-6 max-w-md w-full">
-            <h3 className="text-lg font-bold mb-4">Confirm Delete</h3>
-            <p className="text-slate-600 dark:text-slate-400 mb-6">
-              Are you sure you want to delete this node? This action cannot be
-              undone.
-            </p>
-            <div className="flex justify-end gap-3">
-              <button
-                onClick={() => setShowDeleteConfirm(false)}
-                className="px-4 py-2 rounded-lg bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={confirmDelete}
-                className="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <SaveRoadmapModal
+        isOpen={showSaveModal}
+        onClose={() => setShowSaveModal(false)}
+        onSave={handleSaveRoadmap}
+      />
     </div>
   );
 }
