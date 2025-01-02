@@ -1,6 +1,5 @@
 import { useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import ReactFlow, { 
   Node, 
   Edge, 
@@ -248,7 +247,6 @@ export default function RoadmapFlow() {
   const [showChat, setShowChat] = useState(false);
   const [showCourses, setShowCourses] = useState(false);
 
-  const { t } = useTranslation();
   const { user } = useAuthStore();
 
   const onNodesChange = useCallback(() => {}, []);
@@ -286,7 +284,7 @@ export default function RoadmapFlow() {
 
 
   return (
-    <div className="relative ">
+    <div className="relative">
         {/* Top Bar */}
       <RoadmapTopBar
         roadmap={roadmap}

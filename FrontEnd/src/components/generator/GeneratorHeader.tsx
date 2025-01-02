@@ -37,7 +37,7 @@ export default function GeneratorHeader({ isGenerating }: GeneratorHeaderProps) 
             
             </button>
              */}
-            {showTooltip && (
+            {/* {showTooltip && (
               <div className="absolute left-1/2 top-full mt-2 -translate-x-1/2 w-80 p-4 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 z-50">
                 <h3 className="font-medium mb-2 text-theme">Example Prompts:</h3>
                 <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400 text-left">
@@ -52,24 +52,23 @@ export default function GeneratorHeader({ isGenerating }: GeneratorHeaderProps) 
                   Be specific about your goals, experience level, and preferred technologies!
                 </div>
               </div>
-            )}
+            )} */}
           </div>
-        </div>
-        
-        <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mb-4">
-          {t("generate.subtitle")}
-        </p>
-        
-        <div className="text-sm text-slate-500 dark:text-slate-400">
-          <span className="px-2 py-1 rounded-md bg-theme/10 text-theme">Pro Tip:</span>
-          <span className="ml-2">Tell AI exactly what you want to learn and your experience level</span>
         </div>
 
-        {isGenerating && (
-          <div className="absolute top-0 right-0 p-4">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-theme" />
-          </div>
-        )}
+        <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mb-4">
+          Enter your learning goals and let AI create a personalized roadmap for
+          you
+        </p>
+
+        <div className="text-sm text-slate-500 dark:text-slate-400">
+          <span className="px-2 py-1 rounded-md bg-theme/10 text-theme">
+            Pro Tip:
+          </span>
+          <span className="ml-2">
+            Tell AI exactly what you want to learn and your experience level
+          </span>
+        </div>
       </div>
     </div>
   );

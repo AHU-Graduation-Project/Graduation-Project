@@ -3,15 +3,12 @@ import { Sparkles, Save, StopCircle } from "lucide-react";
 import ReactFlow, {
   Background as FlowBackground,
   Controls as FlowControls,
-  OnNodesChange,
   applyNodeChanges,
 } from "reactflow";
 import "reactflow/dist/style.css";
 import { cn } from "../utils/cn";
 import { generateRoadmap } from "../utils/palm";
 import { CustomNodeGenerator } from "../components/generator/CustomNodeGenerator";
-import NodeDetailsModal from "../components/NodeDetailsModal";
-import { useTranslation } from "react-i18next";
 import RoadmapToolbar from "../components/generator/RoadmapToolbar";
 import EditNodeModal from "../components/generator/EditNodeModal";
 import { useAuthStore } from "../store/authStore";
@@ -20,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import GeneratorHeader from "../components/generator/GeneratorHeader";
 import PromptInput from "../components/generator/PromptInput";
 import AdvancedOptions from "../components/generator/AdvancedOptions";
+import GeneratorNodeDetail from "../components/generator/GeneratorNodeDetail";
 
 const nodeTypes = {
   custom: CustomNodeGenerator,
@@ -38,7 +36,6 @@ export default function GenerateRoadmap() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showNodeDetails, setShowNodeDetails] = useState(false);
 
-  const { t } = useTranslation();
   const [prompt, setPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [nodes, setNodes] = useState<any[]>([]);
@@ -56,8 +53,10 @@ export default function GenerateRoadmap() {
   });
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  const onNodesChange = useCallback(() => {}, []);
-  const onEdgesChange = useCallback(() => {}, []);
+const onNodesChange = useCallback(
+  (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
+  []
+);  const onEdgesChange = useCallback(() => {}, []);
 
   const stopGeneration = () => {
     if (abortControllerRef.current) {
@@ -134,7 +133,7 @@ export default function GenerateRoadmap() {
     }));
   };
 
-  const handleNodeClick = (event: any, node: any) => {
+  const handleNodeClick = (event, node) => {
     setNodes((nds) =>
       nds.map((n) => ({
         ...n,
@@ -209,9 +208,7 @@ export default function GenerateRoadmap() {
               <Sparkles
                 className={cn("w-5 h-5", isGenerating && "animate-spin")}
               />
-              <span>
-                {isGenerating ? t("generate.generating") : t("generate.button")}
-              </span>
+              <span>{isGenerating ? "Generating..." : "Generate Roadmap"}</span>
             </button>
 
             {isGenerating && (
@@ -273,18 +270,23 @@ export default function GenerateRoadmap() {
             <RoadmapToolbar
               isNodeSelected={!!selectedNode}
               onEditNode={handleEditNode}
+              onShowDetails={() => {
+                if (selectedNode) {
+                  setSelectedNode(selectedNode.data);
+                  setShowNodeDetails(true);
+                }
+              }}
             />
           </ReactFlow>
         </div>
       )}
 
       {/* Node Details Modal */}
-      <NodeDetailsModal
+      <GeneratorNodeDetail
         isOpen={showNodeDetails}
         onClose={handleCloseDetails}
-        node={selectedNode?.data}
+        node={selectedNode}
       />
-
       {/* Edit Node Modal */}
       <EditNodeModal
         isOpen={showEditModal}

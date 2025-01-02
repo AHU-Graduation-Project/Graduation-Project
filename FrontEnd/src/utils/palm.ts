@@ -58,7 +58,7 @@ const EXAMPLE_STRUCTURE = `{
   {
     id: "4",
     type: "custom",
-    position: { x: 200, y: 200 },
+    position: { x: 100, y: 200 },
     data: {
       label: "JS Syntax",
       type: "subtopic",
@@ -73,7 +73,7 @@ const EXAMPLE_STRUCTURE = `{
   {
     id: "5",
     type: "custom",
-    position: { x: 600, y: 200 },
+    position: { x: 700, y: 200 },
     data: {
       label: "DOM",
       type: "subtopic",
@@ -225,13 +225,15 @@ const EXAMPLE_STRUCTURE = `{
 }`;
 
 
-const createSystemPrompt = (options: GenerateOptions) => `You are a learning path generator. Generate a detailed roadmap in JSON format following these EXACT rules:
+const createSystemPrompt = (
+  options: GenerateOptions
+) => `You are a learning path generator. Generate a detailed roadmap in JSON format following these EXACT rules:
 
 1. Node Structure:
    - All nodes must use type: "custom"
    - Main topics must be positioned at x: 400 with y incrementing by 100
-   - Left subtopics must be at x: 200
-   - Right subtopics must be at x: 600
+   - Left subtopics must be at x: 100 (increased spacing)
+   - Right subtopics must be at x: 700 (increased spacing)
    - Data object must include:
      * type: "topic" for main nodes, "subtopic" for side nodes
      * label: concise name
@@ -257,8 +259,8 @@ const createSystemPrompt = (options: GenerateOptions) => `You are a learning pat
 3. Layout Rules:
    - Main topics MUST flow vertically at x: 400
    - Subtopics MUST alternate between:
-     * Left side at x: 200
-     * Right side at x: 600
+     * Left side at x: 100 (increased spacing)
+     * Right side at x: 700 (increased spacing)
    - Y coordinates must increment by 100 for each level
    - Minimum ${options.minTopics} main topics
    - Maximum 50 nodes total
@@ -269,9 +271,7 @@ const createSystemPrompt = (options: GenerateOptions) => `You are a learning pat
    - Main topics connect vertically (bottom to top)
    - Subtopics connect horizontally (left/right)
    - Each subtopic must connect to its parent topic
-   - Multiple nodes can connect to the same target
-
-Use this exact structure and follow the example provided. Ensure all nodes and edges match the format precisely.`;
+   - Multiple nodes can connect to the same target`;
 
 
 export async function generateRoadmap(
