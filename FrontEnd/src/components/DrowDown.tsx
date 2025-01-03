@@ -59,7 +59,7 @@ function DropdownToggle({
               </li>
               {/* Color Themes enable over flow */}
 
-              <div className=" h-36 overflow-auto"> {isColors && <ThemeSelector />}</div>
+        {isColors && <ThemeSelector />}
             </ul>
           </nav>
         </div>

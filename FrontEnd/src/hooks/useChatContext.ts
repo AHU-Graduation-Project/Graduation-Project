@@ -1,6 +1,8 @@
 import { useCallback } from 'react';
 
 export function useChatContext(roadmap: any, userProgress: string[]) {
+
+  
   const getSystemPrompt = useCallback((userInput: string) => {
     return `You are an AI learning assistant helping someone learn ${roadmap?.title}.
     Current progress: ${userProgress?.length || 0} topics completed.

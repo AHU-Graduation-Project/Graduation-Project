@@ -5,6 +5,8 @@ import { Message } from "../types/chat";
 import { useStreamingResponse } from "../hooks/useStreamingResponse";
 import { useChatContext } from "../hooks/useChatContext";
 import ChatMessage from "./ChatMessage";
+import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "../store/authStore";
 
 interface ChatPanelProps {
   isOpen: boolean;
@@ -19,6 +21,10 @@ export default function ChatPanel({
   roadmap,
   userProgress,
 }: ChatPanelProps) {
+  const navigate = useNavigate();
+
+  const { user } = useAuthStore();
+
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
@@ -28,6 +34,7 @@ export default function ChatPanel({
     },
   ]);
   console.log("messages", messages);
+
   const [input, setInput] = useState("");
   const [showSaved, setShowSaved] = useState(false);
   const { isStreaming, streamResponse } = useStreamingResponse();
@@ -109,8 +116,8 @@ export default function ChatPanel({
         isOpen
           ? "translate-x-0"
           : isRtl
-          ? "-translate-x-full"
-          : "translate-x-full",
+            ? "-translate-x-full"
+            : "translate-x-full",
         isRtl ? "left-0" : "right-0"
       )}
     >
@@ -131,21 +138,31 @@ export default function ChatPanel({
         </div>
       </div>
 
-      {/* Messages */}
-      <div className="h-[calc(100%-8rem)] overflow-y-auto p-4 space-y-4">
-        {messages.map((message, index) => (
-          <ChatMessage
-            key={message.id}
-            message={message}
-            isTyping={
-              isStreaming &&
-              index === messages.length - 1 &&
-              message.type === "bot"
-            }
-          />
-        ))}
-        <div ref={messagesEndRef} />
-      </div>
+      {!user && messages.length >= 4 ? (
+        <div className="flex items-center justify-center h-screen  pb-24">
+          <div className="text-center">
+            <p className="text-2xl font-bold">You have reached the limit!</p>
+            <p className="mt-2">
+              Please <span className="text-theme">login</span> to continue.
+            </p>
+          </div>
+        </div>
+      ) : (
+        <div className="h-[calc(100%-8rem)] overflow-y-auto p-4 space-y-4">
+          {messages.map((message, index) => (
+            <ChatMessage
+              key={message.id}
+              message={message}
+              isTyping={
+                isStreaming &&
+                index === messages.length - 1 &&
+                message.type === "bot"
+              }
+            />
+          ))}
+          <div ref={messagesEndRef} />
+        </div>
+      )}
 
       {/* Input */}
       {!showSaved && (

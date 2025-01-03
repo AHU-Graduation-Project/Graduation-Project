@@ -50,8 +50,6 @@ const RoadmapPDF = ({ roadmap, flowImage }: { roadmap: any; flowImage: string })
   </Document>
 );
 
-// ... rest of your existing imports
-
 export default function RoadmapTopBar({ 
   roadmap, 
   progress, 
@@ -96,7 +94,7 @@ export default function RoadmapTopBar({
 
   const handleAddToRoadmap = () => {
     if (!user) {
-      navigate('/login');
+      navigate('/auth');
       return;
     }
     selectRoadmap(roadmap.id);
@@ -136,7 +134,7 @@ export default function RoadmapTopBar({
                 "bg-theme text-white hover:opacity-90 transition-colors"
               )}
             >
-              {({ loading }) => (
+              {({ loading }: { loading: boolean }) => (
                 <button
                   onClick={captureFlow}
                   disabled={loading}

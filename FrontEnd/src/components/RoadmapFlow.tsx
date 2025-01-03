@@ -15,8 +15,14 @@ import ChatPanel from "./ChatPanel";
 import CoursesSidebar from "./CoursesSidebar";
 import RoadmapTopBar from "./RoadmapTopBar";
 import { cn } from "../utils/cn";
-import { AlertCircle, MessageCircle, BookOpen } from "lucide-react";
+import {
+  AlertCircle,
+  MessageCircle,
+  BookOpen,
+  MoreVertical,
+} from "lucide-react";
 import { CustomNode } from "./CustomNode";
+import { AnimatePresence, motion } from "framer-motion";
 
 
 const nodeTypes = {
@@ -237,6 +243,43 @@ const initialEdges: Edge[] = [
    
   },
 ];
+const floatingButtonVariants = {
+  hidden: {
+    opacity: 0,
+    y: 20,
+    scale: 0.8,
+  },
+  visible: (custom: number) => ({
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      delay: custom * 0.1,
+      type: "spring",
+      stiffness: 260,
+      damping: 20,
+    },
+  }),
+  exit: {
+    opacity: 0,
+    y: -20,
+    scale: 0.8,
+    transition: {
+      duration: 0.2,
+    },
+  },
+};
+
+const tooltipVariants = {
+  hidden: { opacity: 0, x: 20 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.2,
+    },
+  },
+};
 
 
 export default function RoadmapFlow() {
@@ -246,6 +289,7 @@ export default function RoadmapFlow() {
   const [showInfo, setShowInfo] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [showCourses, setShowCourses] = useState(false);
+  const [showFloatingMenu, setShowFloatingMenu] = useState(false);
 
   const { user } = useAuthStore();
 
@@ -281,10 +325,18 @@ export default function RoadmapFlow() {
   const totalNodes = nodes.length;
   const progress = Math.round((completedNodes / totalNodes) * 100);
 
+ const toggleFloatingMenu = () => {
+   setShowFloatingMenu(!showFloatingMenu);
+   if (!showFloatingMenu) {
+     setShowInfo(false);
+     setShowChat(false);
+     setShowCourses(false);
+   }
+ };
 
   return (
     <div className="relative">
-        {/* Top Bar */}
+      {/* Top Bar */}
       <RoadmapTopBar
         roadmap={roadmap}
         progress={progress}
@@ -310,43 +362,120 @@ export default function RoadmapFlow() {
         </ReactFlow>
       </div>
 
-      {/* Interactive Buttons */}
-      <div className="fixed bottom-6 right-6 flex flex-col gap-4 z-50">
-        <button
-          onClick={() => setShowInfo(!showInfo)}
-          className={cn(
-            "p-4 rounded-full shadow-lg transition-all",
-            "bg-theme text-white",
-            "hover:scale-110",
-            showInfo && "ring-4 ring-purple-500/20"
-          )}
-        >
-          <AlertCircle className="w-6 h-6" />
-        </button>
-        <button
-          onClick={() => setShowChat(!showChat)}
-          className={cn(
-            "p-4 rounded-full shadow-lg transition-all",
-            "bg-theme text-white",
-            "hover:scale-110",
-            showChat && "ring-4 ring-purple-500/20"
-          )}
-        >
-          <MessageCircle className="w-6 h-6" />
-        </button>
-        <button
-          onClick={() => setShowCourses(!showCourses)}
-          className={cn(
-            "p-4 rounded-full shadow-lg transition-all",
-            "bg-theme text-white",
-            "hover:scale-110",
-            showCourses && "ring-4 ring-purple-500/20"
-          )}
-        >
-          <BookOpen className="w-6 h-6" />
-        </button>
-      </div>
+      <div className="fixed bottom-6 right-6 flex flex-col gap-3 z-50">
+        <AnimatePresence mode="popLayout">
+          {showFloatingMenu && (
+            <>
+              <motion.div
+                className="relative group"
+                variants={floatingButtonVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                custom={2}
+                key="courses-button"
+              >
+                <button
+                  onClick={() => setShowCourses(!showCourses)}
+                  className={cn(
+                    "p-4 rounded-full shadow-lg transition-all",
+                    "bg-theme text-white",
+                    "hover:scale-110",
+                    showCourses && "ring-4 ring-purple-500/20"
+                  )}
+                >
+                  <BookOpen className="w-6 h-6" />
+                </button>
+                <motion.div
+                  className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-slate-800 text-white px-3 py-1.5 rounded-lg text-sm whitespace-nowrap pointer-events-none"
+                  variants={tooltipVariants}
+                  initial="hidden"
+                  whileHover="visible"
+                >
+                  View Courses
+                </motion.div>
+              </motion.div>
 
+              <motion.div
+                className="relative group"
+                variants={floatingButtonVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                custom={1}
+                key="chat-button"
+              >
+                <button
+                  onClick={() => setShowChat(!showChat)}
+                  className={cn(
+                    "p-4 rounded-full shadow-lg transition-all",
+                    "bg-theme text-white",
+                    "hover:scale-110",
+                    showChat && "ring-4 ring-purple-500/20"
+                  )}
+                >
+                  <MessageCircle className="w-6 h-6" />
+                </button>
+                <motion.div
+                  className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-slate-800 text-white px-3 py-1.5 rounded-lg text-sm whitespace-nowrap pointer-events-none"
+                  variants={tooltipVariants}
+                  initial="hidden"
+                  whileHover="visible"
+                >
+                  AI Assistant
+                </motion.div>
+              </motion.div>
+
+              <motion.div
+                className="relative group"
+                variants={floatingButtonVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                custom={0}
+                key="info-button"
+              >
+                <button
+                  onClick={() => setShowInfo(!showInfo)}
+                  className={cn(
+                    "p-4 rounded-full shadow-lg transition-all",
+                    "bg-theme text-white",
+                    "hover:scale-110",
+                    showInfo && "ring-4 ring-purple-500/20"
+                  )}
+                >
+                  <AlertCircle className="w-6 h-6" />
+                </button>
+                <motion.div
+                  className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-slate-800 text-white px-3 py-1.5 rounded-lg text-sm whitespace-nowrap pointer-events-none"
+                  variants={tooltipVariants}
+                  initial="hidden"
+                  whileHover="visible"
+                >
+                  Roadmap Info
+                </motion.div>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
+
+        <motion.button
+          onClick={toggleFloatingMenu}
+          className={cn(
+            "p-4 rounded-full shadow-lg transition-all",
+            "bg-theme text-white",
+            "hover:scale-110",
+            showFloatingMenu && "ring-4 ring-purple-500/20"
+          )}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+          animate={{
+            rotate: showFloatingMenu ? 180 : 0,
+          }}
+        >
+          <MoreVertical className="w-6 h-6" />
+        </motion.button>
+      </div>
       {/* Modals and Panels */}
       <NodeDetailsModal
         isOpen={!!selectedNode}

@@ -14,7 +14,6 @@ interface CoursesSidebarProps {
 type Platform = 'all' | 'udemy' | 'coursera';
 
 export default function CoursesSidebar({ isOpen, onClose, topic }: CoursesSidebarProps) {
-  const { t } = useTranslation();
   const [platform, setPlatform] = useState<Platform>('all');
 
   if (!isOpen) return null;
@@ -48,7 +47,6 @@ export default function CoursesSidebar({ isOpen, onClose, topic }: CoursesSideba
 
           {/* Platform Filter */}
           <div className="flex items-center gap-4 mt-4">
-            <Filter className="w-4 h-4 text-slate-400" />
             <div className="flex gap-2">
               {(['all', 'udemy', 'coursera'] as const).map((p) => (
                 <button
