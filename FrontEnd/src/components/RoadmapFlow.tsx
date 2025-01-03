@@ -386,12 +386,7 @@ export default function RoadmapFlow() {
                 >
                   <BookOpen className="w-6 h-6" />
                 </button>
-                <motion.div
-                  className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-slate-800 text-white px-3 py-1.5 rounded-lg text-sm whitespace-nowrap pointer-events-none"
-                  variants={tooltipVariants}
-                  initial="hidden"
-                  whileHover="visible"
-                >
+                <motion.div className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-slate-800 text-white px-3 py-1.5 rounded-lg text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity">
                   View Courses
                 </motion.div>
               </motion.div>
@@ -416,12 +411,7 @@ export default function RoadmapFlow() {
                 >
                   <MessageCircle className="w-6 h-6" />
                 </button>
-                <motion.div
-                  className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-slate-800 text-white px-3 py-1.5 rounded-lg text-sm whitespace-nowrap pointer-events-none"
-                  variants={tooltipVariants}
-                  initial="hidden"
-                  whileHover="visible"
-                >
+                <motion.div className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-slate-800 text-white px-3 py-1.5 rounded-lg text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity">
                   AI Assistant
                 </motion.div>
               </motion.div>
@@ -446,12 +436,7 @@ export default function RoadmapFlow() {
                 >
                   <AlertCircle className="w-6 h-6" />
                 </button>
-                <motion.div
-                  className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-slate-800 text-white px-3 py-1.5 rounded-lg text-sm whitespace-nowrap pointer-events-none"
-                  variants={tooltipVariants}
-                  initial="hidden"
-                  whileHover="visible"
-                >
+                <motion.div className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-slate-800 text-white px-3 py-1.5 rounded-lg text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity">
                   Roadmap Info
                 </motion.div>
               </motion.div>

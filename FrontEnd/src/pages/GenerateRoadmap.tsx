@@ -18,6 +18,7 @@ import GeneratorHeader from "../components/generator/GeneratorHeader";
 import PromptInput from "../components/generator/PromptInput";
 import AdvancedOptions from "../components/generator/AdvancedOptions";
 import GeneratorNodeDetail from "../components/generator/GeneratorNodeDetail";
+import { motion, AnimatePresence } from "framer-motion";
 
 const nodeTypes = {
   custom: CustomNodeGenerator,
@@ -225,50 +226,76 @@ const onNodesChange = useCallback(
         </div>
       </form>
 
-    
       {isGenerating && (
-        <div className="w-full h-[600px] rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
+        <motion.div
+          className="w-full h-[600px] rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 flex items-center justify-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+        >
           <div className="text-center space-y-4">
-            <div className="w-16 h-16 border-4 border-theme border-t-transparent rounded-full animate-spin mx-auto" />
-            <p className="text-lg font-medium text-slate-600 dark:text-slate-400">
+            <motion.div
+              className="w-16 h-16 border-4 border-theme border-t-transparent rounded-full mx-auto"
+              animate={{ rotate: 360 }}
+              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+            />
+            <motion.p
+              className="text-lg font-medium text-slate-600 dark:text-slate-400"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+            >
               Generating your personalized learning roadmap...
-            </p>
-            <p className="text-sm text-slate-500 dark:text-slate-500">
+            </motion.p>
+            <motion.p
+              className="text-sm text-slate-500 dark:text-slate-500"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+            >
               This may take a few moments
-            </p>
+            </motion.p>
           </div>
-        </div>
+        </motion.div>
       )}
 
       {/*  roadmap flow */}
-      {!isGenerating && nodes.length > 0 && (
-        <div className="w-full h-[600px] rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700">
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            onNodeClick={handleNodeClick}
-            nodeTypes={nodeTypes}
-            fitView
-            className="bg-slate-50 dark:bg-slate-900"
+      <AnimatePresence>
+        {!isGenerating && nodes.length > 0 && (
+          <motion.div
+            className="w-full h-[600px] rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
           >
-            <FlowBackground className="bg-slate-50 dark:bg-slate-900" />
-            <FlowControls className="!bg-white/10 !rounded-lg" />
-            <RoadmapToolbar
-              isNodeSelected={!!selectedNode}
-              onEditNode={handleEditNode}
-              onShowDetails={() => {
-                if (selectedNode) {
-                  setSelectedNode(selectedNode.data);
-                  setShowNodeDetails(true);
-                }
-              }}
-              setShowSaveModal={setShowSaveModal}
-            />
-          </ReactFlow>
-        </div>
-      )}
+            <ReactFlow
+              nodes={nodes}
+              edges={edges}
+              onNodesChange={onNodesChange}
+              onEdgesChange={onEdgesChange}
+              onNodeClick={handleNodeClick}
+              nodeTypes={nodeTypes}
+              fitView
+              className="bg-slate-50 dark:bg-slate-900"
+            >
+              <FlowBackground className="bg-slate-50 dark:bg-slate-900" />
+              <FlowControls className="!bg-white/10 !rounded-lg" />
+              <RoadmapToolbar
+                isNodeSelected={!!selectedNode}
+                onEditNode={handleEditNode}
+                onShowDetails={() => {
+                  if (selectedNode) {
+                    setSelectedNode(selectedNode.data);
+                    setShowNodeDetails(true);
+                  }
+                }}
+                setShowSaveModal={setShowSaveModal}
+              />
+            </ReactFlow>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Node Details Modal */}
       <GeneratorNodeDetail
