@@ -225,19 +225,7 @@ const onNodesChange = useCallback(
         </div>
       </form>
 
-      {/* Save Button */}
-      {nodes.length > 0 && (
-        <div className="flex justify-center mb-6">
-          <button
-            onClick={() => setShowSaveModal(true)}
-            className="px-6 py-3 rounded-lg bg-theme text-white hover:opacity-90 transition-colors flex items-center gap-2"
-          >
-            <Save className="w-5 h-5" />
-            <span>Save Roadmap</span>
-          </button>
-        </div>
-      )}
-
+    
       {isGenerating && (
         <div className="w-full h-[600px] rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
           <div className="text-center space-y-4">
@@ -276,6 +264,7 @@ const onNodesChange = useCallback(
                   setShowNodeDetails(true);
                 }
               }}
+              setShowSaveModal={setShowSaveModal}
             />
           </ReactFlow>
         </div>

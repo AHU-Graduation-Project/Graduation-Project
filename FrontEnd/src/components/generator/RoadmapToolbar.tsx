@@ -1,19 +1,29 @@
-import { Edit, Info } from 'lucide-react';
+import { Edit, Info  , Save} from 'lucide-react';
 import { cn } from '../../utils/cn';
 
 interface RoadmapToolbarProps {
   onEditNode: () => void;
   onShowDetails: () => void;
   isNodeSelected: boolean;
+  setShowSaveModal: (value: boolean) => void;
 }
 
-export default function RoadmapToolbar({ 
-  onEditNode, 
+export default function RoadmapToolbar({
+  onEditNode,
   onShowDetails,
-  isNodeSelected 
+  isNodeSelected,
+  setShowSaveModal,
 }: RoadmapToolbarProps) {
   return (
     <div className="absolute top-4 left-4 z-10 flex gap-2">
+        <button
+          onClick={() => setShowSaveModal(true)}
+          className="px-6 py-3 rounded-lg bg-theme text-white hover:opacity-90 transition-colors flex items-center gap-2"
+        >
+          <Save className="w-5 h-5" />
+          <span>Save Roadmap</span>
+        </button>
+  
       <button
         onClick={onEditNode}
         disabled={!isNodeSelected}

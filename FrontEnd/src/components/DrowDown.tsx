@@ -57,8 +57,9 @@ function DropdownToggle({
                 <ThemeIcon icon={Palette} className="w-5 h-5" />
                 <button onClick={handleColors}>Color Themes</button>
               </li>
+              {/* Color Themes enable over flow */}
 
-              {isColors && <ThemeSelector />}
+              <div className=" h-36 overflow-auto"> {isColors && <ThemeSelector />}</div>
             </ul>
           </nav>
         </div>
