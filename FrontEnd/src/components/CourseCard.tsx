@@ -14,14 +14,14 @@ export default function CourseCard({ course }: CourseCardProps) {
       rel="noopener noreferrer"
       className="block group hover:no-underline"
     >
-      <div className="relative bg-white dark:bg-slate-800 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1">
+      <div className="relative bg-white dark:bg-slate-800 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 hover:scale-105">
         {/* Platform Badge */}
         <div
           className={cn(
             "absolute top-3 left-3 text-xs font-medium px-2 py-1 rounded-full z-10",
             course.platform === "udemy"
-              ? "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300"
-              : "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
+              ? "bg-purple-100 text-purple-700"
+              : "bg-blue-100 text-blue-700 "
           )}
         >
           {course.platform.toUpperCase()}

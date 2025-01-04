@@ -355,6 +355,8 @@ export default function RoadmapFlow() {
           onEdgesChange={onEdgesChange}
           nodeTypes={nodeTypes}
           fitView
+          fitViewOptions={{ padding: 20 }}
+          
           className="bg-slate-50 dark:bg-slate-900"
         >
           <Background className="bg-slate-50 dark:bg-slate-900" />
@@ -450,7 +452,7 @@ export default function RoadmapFlow() {
             "p-4 rounded-full shadow-lg transition-all",
             "bg-theme text-white",
             "hover:scale-110",
-            showFloatingMenu && "ring-4 ring-purple-500/20"
+            showFloatingMenu && "ring-4 ring-slate-800/20  dark:ring-white/20"
           )}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
