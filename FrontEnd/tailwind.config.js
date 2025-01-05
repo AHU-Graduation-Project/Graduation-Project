@@ -102,6 +102,7 @@ export default {
           "background-clip": "text",
           color: "transparent",
         },
+        
       });
     },
   ],

@@ -14,7 +14,11 @@ export default function CourseCard({ course }: CourseCardProps) {
       rel="noopener noreferrer"
       className="block group hover:no-underline"
     >
-      <div className="relative bg-white dark:bg-slate-800 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 hover:scale-105">
+      <div
+        className="relative bg-white dark:bg-slate-800 rounded-lg
+       overflow-hidden shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 hover:scale-105
+       min-h-[265px] flex flex-col"
+      >
         {/* Platform Badge */}
         <div
           className={cn(
@@ -40,12 +44,16 @@ export default function CourseCard({ course }: CourseCardProps) {
         </div>
 
         {/* Content */}
-        <div className="p-4">
+        <div className="p-4 flex flex-grow flex-col justify-between">
+          {/* Title */}
           <h3 className="font-medium text-sm mb-2 line-clamp-2 group-hover:text-theme transition-colors">
-            {course.title}
+            {course.title.length > 50
+              ? course.title.slice(0, 50) + "..."
+              : course.title}
           </h3>
 
-          <div className="flex items-center justify-between mt-2">
+          {/* Rating and Price */}
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-1">
               <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
               <span className="text-sm text-slate-600 dark:text-slate-400">

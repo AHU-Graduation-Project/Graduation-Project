@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { X, Send, Bookmark } from "lucide-react";
+import { X, Send } from "lucide-react";
 import { cn } from "../utils/cn";
 import { Message } from "../types/chat";
 import { useStreamingResponse } from "../hooks/useStreamingResponse";
@@ -33,7 +33,6 @@ export default function ChatPanel({
       timestamp: new Date(),
     },
   ]);
-  console.log("messages", messages);
 
   const [input, setInput] = useState("");
   const [showSaved, setShowSaved] = useState(false);

@@ -140,8 +140,8 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
           "px-6 py-3 shadow-lg rounded-xl border-2 relative hover:scale-105 transition-transform",
           "min-w-[200px]",
           data.type === "topic"
-            ? "rounded-2xl text-lg font-bold tracking-wide shadow-xl"
-            : "rounded-md text-sm font-medium tracking-normal shadow-md ",
+            ? "rounded-2xl text-lg font-bold tracking-wide shadow-xl border-theme"
+            : "rounded-md text-sm font-medium tracking-normal shadow-md scale-90 border-dashed",
           !shouldBeActive && "opacity-50 bg-slate-800/50",
           shouldBeActive &&
             (isCompleted
