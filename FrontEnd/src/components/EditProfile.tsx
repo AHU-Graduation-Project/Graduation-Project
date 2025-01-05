@@ -68,13 +68,13 @@ const EditProfile = () => {
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 w-full mx-auto">
-      <h2 className="text-center text-theme text-2xl font-bold mb-2">
-        Edit Profile
+      <h2 className="text-center text-theme text-2xl font-bold mb-6">
+        Profile
       </h2>
 
       <div className="flex flex-col sm:flex-row sm:items-start sm:gap-6">
         {/* Profile Picture Section */}
-        <div className="flex-shrink-0 flex justify-center sm:justify-start">
+        <div className="flex-shrink-0 flex flex-col items-center sm:items-start">
           <label htmlFor="profilePicture" className="cursor-pointer">
             <div className="w-32 h-32 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center">
               {profilePicture ? (
@@ -95,6 +95,14 @@ const EditProfile = () => {
             accept="image/*"
             onChange={handleProfilePictureChange}
           />
+          {profilePicture && (
+            <button
+              onClick={() => setProfilePicture("")}
+              className="mt-2 sm:ml-9 text-sm text-red-600 hover:underline"
+            >
+              Remove
+            </button>
+          )}
         </div>
 
         {/* Input Fields Section */}
@@ -162,47 +170,54 @@ const EditProfile = () => {
                 items={countries}
                 selectedValue={country}
                 onChange={setCountry}
+                className="border border-gray-300 rounded-md text-sm"
               />
             </div>
           </div>
         </div>
       </div>
-      <div className="my-3">
-        <label
-          htmlFor="country"
-          className="block text-sm font-medium text-theme mb-1"
-        >
-          Position
-        </label>
-        <SelectDropDown
-          items={positions}
-          selectedValue={position}
-          onChange={setPosition}
-        />
-      </div>
 
-      <div className="my-3">
-        <label
-          htmlFor="level"
-          className="block text-sm font-medium text-theme mb-1"
-        >
-          Level
-        </label>
-        <SelectDropDown
-          items={levels}
-          selectedValue={level}
-          onChange={setLevel}
-        />
-      </div>
-      <div className="my-3">
-        <Skills />
+      <div className="flex flex-col lg:flex-row lg:gap-9 pt-1 w-full">
+        <div className="my-3 min-w-48">
+          <label
+            htmlFor="position"
+            className="block text-sm font-medium text-theme mb-1"
+          >
+            Position
+          </label>
+          <SelectDropDown
+            items={positions}
+            selectedValue={position}
+            onChange={setPosition}
+            className="w-60 p-2 border border-gray-300 rounded-md text-sm"
+          />
+        </div>
+
+        <div className="my-3 min-w-48">
+          <label
+            htmlFor="level"
+            className="block text-sm font-medium text-theme mb-1"
+          >
+            Level
+          </label>
+          <SelectDropDown
+            items={levels}
+            selectedValue={level}
+            onChange={setLevel}
+            className=" w-60 p-2 border border-gray-300 rounded-md text-sm"
+          />
+        </div>
+
+        <div className="my-3 w-full">
+          <Skills />
+        </div>
       </div>
 
       {/* Save Button */}
       {showChangePassword && (
         <ChangePassword onClose={() => setShowChangePassword(false)} />
       )}
-      <div className="flex justify-between items-center mt-6">
+      <div className="flex justify-start gap-5 items-center mt-2">
         <button
           onClick={() => setShowChangePassword(!showChangePassword)}
           className="py-2 px-2 bg-gray-400 text-white rounded-lg hover:bg-gray-600"
@@ -219,7 +234,7 @@ const EditProfile = () => {
 
       {/* Success Message */}
       {successMessage && (
-        <div className="text-green-600 text-center font-semibold">
+        <div className="text-green-600 text-center font-semibold pt-4">
           {successMessage}
         </div>
       )}

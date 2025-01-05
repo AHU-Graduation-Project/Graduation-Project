@@ -7,6 +7,7 @@ import ThemeIcon from "../components/ThemeIcon";
 import { roadmaps } from "../data/roadmaps";
 import { useAuthStore } from "../store/authStore";
 import ConfirmationModal from "../components/ConformationModel";
+import Pagination from "../components/Pagination";
 
 function SearchBar({ value, onChange, placeholder }) {
   return (
@@ -93,6 +94,12 @@ export default function BrowseRoadmaps() {
   const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
   const { user, selectRoadmap } = useAuthStore();
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = 10;
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
   const filteredRoadmaps = roadmaps.filter((roadmap) =>
     [roadmap.title, roadmap.description].some((field) =>
@@ -122,12 +129,12 @@ export default function BrowseRoadmaps() {
         <div className="mb-12">
           <h2 className="text-2xl font-bold mb-6 text-theme">Your Roadmaps</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {user.selectedRoadmaps.map((roadmapId) => {
+            {user?.selectedRoadmaps.map((roadmapId) => {
               const roadmap = roadmaps.find((r) => r.id === roadmapId);
               if (!roadmap) return null;
 
               const progress = Math.round(
-                ((user.progress[roadmapId]?.length || 0) / 4) * 100
+                ((user?.progress[roadmapId]?.length || 0) / 4) * 100
               );
 
               return (
@@ -156,6 +163,14 @@ export default function BrowseRoadmaps() {
             </p>
           </div>
         )}
+      </div>
+
+      <div className=" pt-6">
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
       </div>
     </div>
   );

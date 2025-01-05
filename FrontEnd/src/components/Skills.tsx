@@ -55,20 +55,13 @@ const SkillSelector: React.FC = () => {
   );
 
   return (
-    <div className="w-full">
-      <label className="block text-theme text-sm font-bold">
+    <div className="w-full ">
+      <label className="block text-sm font-medium text-theme pb-1">
         Add Your Skills
       </label>
 
       <div className="">
         <div className="mb-2">
-          {/* <input
-            type="text"
-            placeholder="Search for a skill"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full border bg-transparent border-gray-300 rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-theme mb-2"
-          /> */}
           <select
             onChange={(e) => handleSelectChange(e.target.value)}
             className="w-full border bg-transparent border-gray-300 rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-theme"

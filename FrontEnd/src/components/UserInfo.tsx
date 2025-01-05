@@ -1,9 +1,9 @@
 import { Star, Clock, Trophy } from "lucide-react";
 import { useAuthStore } from "../store/authStore";
+import UserRoadmaps from "./UserRoadmaps";
 
 const UserInfo = () => {
   const { user } = useAuthStore(); // Ensure `user` exists
-  const completedRoadmaps = user?.completedRoadmaps || []; // Fallback for undefined values
 
   if (!user) {
     console.warn(
@@ -21,8 +21,8 @@ const UserInfo = () => {
     },
     {
       icon: Clock,
-      label: "Completed Roadmaps",
-      value: user.completedRoadmaps?.length || 0,
+      label: "User Skills",
+      value: user.selectedSkills?.length || 0,
       color: "text-blue-500",
     },
     {
@@ -61,22 +61,12 @@ const UserInfo = () => {
         ))}
       </div>
 
-      {/* Completed Roadmaps Section */}
-      <div className="mt-8">
-        <h2 className="text-2xl font-bold mb-4 text-theme">
-          Completed Roadmaps
-        </h2>
-        {completedRoadmaps.length > 0 ? (
-          <ul className="list-disc list-inside text-slate-600 dark:text-slate-400">
-            {completedRoadmaps.map((roadmapId, index) => (
-              <li key={index} className="text-lg">
-                Roadmap ID: {roadmapId}
-              </li>
-            ))}
-          </ul>
+      <div className="mt-6">
+        {user?.selectedRoadmaps?.length > 0 ? (
+          <UserRoadmaps />
         ) : (
           <p className="text-slate-600 dark:text-slate-400">
-            No completed roadmaps yet.
+            You don't have any roadmaps yet.
           </p>
         )}
       </div>

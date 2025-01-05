@@ -3,41 +3,46 @@ import { Code2, Map, Sparkles, BarChart2, Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import ThemeToggle from "./ThemeToggle";
 import ThemeIcon from "./ThemeIcon";
-import DropDown from "./DrowDown";
+import DropdownToggle from "./DrowDown";
 
 export default function Header() {
   const [activeDropdown, setActiveDropdown] = useState<
     "header" | "dropdown" | null
   >(null);
 
+  const headerRef = useRef<HTMLDivElement | null>(null);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const closeDropdown = () => setActiveDropdown(null);
 
-  // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(e.target as Node)
+        (headerRef.current && headerRef.current.contains(e.target as Node)) ||
+        (dropdownRef.current && dropdownRef.current.contains(e.target as Node))
       ) {
-        closeDropdown();
+        return; // Click is inside, do nothing.
       }
+      closeDropdown();
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const toggleHeaderMenu = () => {
+    setActiveDropdown((prev) => (prev === "header" ? null : "header"));
+  };
+
+  const handleDropdownToggle = () => {
+    setActiveDropdown((prev) => (prev === "dropdown" ? null : "dropdown"));
+  };
+
   const menuItems = [
     { to: "/", icon: BarChart2, label: "Overview" },
     { to: "/roadmaps", icon: Code2, label: "Roadmaps" },
     { to: "/generate", icon: Sparkles, label: "Generate" },
   ];
-
-  const toggleHeaderMenu = () => {
-    setActiveDropdown((prev) => (prev === "header" ? null : "header"));
-  };
 
   return (
     <header className="border-b border-slate-200 dark:border-white/10 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm sticky top-0 z-50">
@@ -62,20 +67,22 @@ export default function Header() {
             </Link>
           ))}
           <ThemeToggle />
-          <DropDown
+          <DropdownToggle
             isOpen={activeDropdown === "dropdown"}
-            onOpen={() => setActiveDropdown("dropdown")}
+            onOpen={handleDropdownToggle}
             onClose={closeDropdown}
+            dropdownRef={dropdownRef}
           />
         </nav>
 
         {/* Mobile Menu Button */}
-        <div className="md:hidden flex items-center gap-4">
+        <div className="md:hidden flex items-center gap-4 ">
           <ThemeToggle />
-          <DropDown
+          <DropdownToggle
             isOpen={activeDropdown === "dropdown"}
-            onOpen={() => setActiveDropdown("dropdown")}
+            onOpen={handleDropdownToggle}
             onClose={closeDropdown}
+            dropdownRef={dropdownRef}
           />
 
           <button
@@ -95,8 +102,8 @@ export default function Header() {
         {/* Mobile Menu */}
         {activeDropdown === "header" && (
           <div
-            ref={dropdownRef}
-            className="md:hidden fixed inset-x-0 top-20 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 p-4"
+            ref={headerRef}
+            className="md:hidden fixed inset-x-0 top-20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-b border-slate-200 dark:border-slate-700 p-4"
           >
             <nav className="flex flex-col gap-4">
               {menuItems.map((item) => (
