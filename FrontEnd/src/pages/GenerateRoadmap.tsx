@@ -43,6 +43,7 @@ export default function GenerateRoadmap() {
   const [edges, setEdges] = useState<any[]>([]);
   const [error, setError] = useState("");
   const [showAdvanced, setShowAdvanced] = useState(false);
+const [wasStopped, setWasStopped] = useState(false);
 
   const [showSaveModal, setShowSaveModal] = useState(false);
   const { user, saveGeneratedRoadmap } = useAuthStore();
@@ -59,13 +60,15 @@ const onNodesChange = useCallback(
   []
 );  const onEdgesChange = useCallback(() => {}, []);
 
-  const stopGeneration = () => {
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-      abortControllerRef.current = null;
-      setIsGenerating(false);
-    }
-  };
+const stopGeneration = () => {
+  if (abortControllerRef.current) {
+    abortControllerRef.current.abort();
+    abortControllerRef.current = null;
+    setIsGenerating(false);
+    setWasStopped(true); // Set the stopped flag
+  }
+};
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,6 +81,7 @@ const onNodesChange = useCallback(
     setError("");
     setNodes([]);
     setEdges([]);
+    setWasStopped(false); // Reset the stopped flag
 
     try {
       abortControllerRef.current = new AbortController();
@@ -261,7 +265,7 @@ const onNodesChange = useCallback(
 
       {/*  roadmap flow */}
       <AnimatePresence>
-        {!isGenerating && nodes.length > 0 && (
+        {!isGenerating && nodes.length > 0 && !wasStopped && (
           <motion.div
             className="w-full h-[600px] rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700"
             initial={{ opacity: 0, scale: 0.95 }}

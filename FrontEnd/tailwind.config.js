@@ -102,7 +102,23 @@ export default {
           "background-clip": "text",
           color: "transparent",
         },
-        
+        ".bg-theme-shadow": {
+          boxShadow: `0 4px 15px var(--theme-from), 0 8px 30px var(--theme-to)`,
+        },
+        ".bg-theme-blur": {
+          position: "relative", // Make sure the element has a position for the pseudo-element
+        },
+        ".bg-theme-blur::before": {
+          content: '""',
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: "var(--theme-gradient)",
+          filter: "blur(3px)", // Apply the background blur
+          zIndex: -1, // Ensure it stays behind the content
+        },
       });
     },
   ],

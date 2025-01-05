@@ -141,15 +141,15 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
           "min-w-[200px]",
           data.type === "topic"
             ? "rounded-2xl text-lg font-bold tracking-wide shadow-xl border-theme"
-            : "rounded-md text-sm font-medium tracking-normal shadow-md scale-90 border-dashed",
+            : " text-sm font-medium tracking-normal shadow-md scale-90 border-dashed",
           !shouldBeActive && "opacity-50 bg-slate-800/50",
           shouldBeActive &&
             (isCompleted
               ? data.type === "topic"
-                ? "bg-theme text-white "
-                : "bg-theme text-white"
+                ? "bg-theme  "
+                : "bg-transparent bg-theme-shadow bg-theme-blur "
               : data.type === "topic"
-              ? ""
+              ? "bg-theme-shadow"
               : ""),
           !shouldBeActive && "cursor-not-allowed"
         )}

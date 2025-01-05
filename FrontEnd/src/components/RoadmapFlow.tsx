@@ -1,11 +1,6 @@
-import { useState, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
-import ReactFlow, { 
-  Node, 
-  Edge, 
-  Background, 
-  Controls 
-} from 'reactflow';
+import { useState, useCallback } from "react";
+import { useParams } from "react-router-dom";
+import ReactFlow, { Node, Edge, Background, Controls } from "reactflow";
 import "reactflow/dist/style.css";
 import { roadmaps } from "../data/roadmaps";
 import { useAuthStore } from "../store/authStore";
@@ -23,12 +18,86 @@ import {
 } from "lucide-react";
 import { CustomNode } from "./CustomNode";
 import { AnimatePresence, motion } from "framer-motion";
-
+import { Star } from "lucide-react";
+import RatingModal from "./RatingModel";
 
 const nodeTypes = {
   custom: CustomNode,
 };
+
+// Legend nodes with a parent group node
+const legendNodes: Node[] = [
+  {
+    id: "legend-group",
+    type: "group",
+    position: { x: -400, y: 100 },
+    style: {
+      width: 250,
+      height: 400,
+      padding: "20px",
+      borderRadius: "8px",
+      backgroundColor: "rgba(255, 255, 255, 0.1)",
+      border: "1px solid rgba(255, 255, 255, 0.2)",
+    },
+    data: { label: "Legend" },
+  },
+  {
+    id: "legend-1",
+    type: "custom",
+    position: { x: 70, y: 90 },
+    parentNode: "legend-group",
+    extent: "parent",
+    data: {
+      label: "Active Topic",
+      type: "topic",
+      description: "Main topic that is currently available to learn",
+      isAchieved: true,
+    },
+  },
+  {
+    id: "legend-2",
+    type: "custom",
+    position: { x: 70, y: 170 },
+    parentNode: "legend-group",
+    extent: "parent",
+    data: {
+      label: "Active Subtopic",
+      type: "subtopic",
+      description: "Subtopic that is currently available to learn",
+      isAchieved: true,
+    },
+  },
+  {
+    id: "legend-3",
+    type: "custom",
+    position: { x: 70, y: 250 },
+    parentNode: "legend-group",
+    extent: "parent",
+    data: {
+      label: "Locked Topic",
+      type: "topic",
+      description: "Topic that requires prerequisites",
+      isAchieved: false,
+    },
+  },
+  {
+    id: "legend-4",
+    type: "custom",
+    position: { x: 70, y: 330 },
+    parentNode: "legend-group",
+    extent: "parent",
+    data: {
+      label: "Completed Topic",
+      type: "topic",
+      description: "Topic that has been marked as completed",
+      isAchieved: true,
+      completed: true,
+    },
+  },
+];
+
 const initialNodes: Node[] = [
+  ...legendNodes,
   {
     id: "1",
     type: "custom",
@@ -59,7 +128,8 @@ const initialNodes: Node[] = [
       requiredNodes: ["1"],
       jobs: 200,
     },
-  },{
+  },
+  {
     id: "3",
     type: "custom",
     position: { x: 400, y: 200 },
@@ -173,8 +243,6 @@ const initialEdges: Edge[] = [
     target: "2",
     sourceHandle: "bottom",
     targetHandle: "top",
-   
-
   },
   {
     id: "e2-3",
@@ -182,7 +250,6 @@ const initialEdges: Edge[] = [
     target: "3",
     sourceHandle: "bottom",
     targetHandle: "top",
-   
   },
   {
     id: "e3-4",
@@ -200,7 +267,7 @@ const initialEdges: Edge[] = [
     sourceHandle: "right",
     targetHandle: "left",
     type: "smoothstep",
-    style: { strokeWidth: 2,strokeDasharray: "5,5" },
+    style: { strokeWidth: 2, strokeDasharray: "5,5" },
   },
   {
     id: "e3-6",
@@ -208,7 +275,6 @@ const initialEdges: Edge[] = [
     target: "6",
     sourceHandle: "bottom",
     targetHandle: "top",
-    
   },
   {
     id: "e3-7",
@@ -216,7 +282,6 @@ const initialEdges: Edge[] = [
     target: "7",
     sourceHandle: "bottom",
     targetHandle: "top",
-    
   },
   {
     id: "e6-8",
@@ -224,7 +289,6 @@ const initialEdges: Edge[] = [
     target: "8",
     sourceHandle: "bottom",
     targetHandle: "top",
-    
   },
   {
     id: "e7-8",
@@ -232,7 +296,6 @@ const initialEdges: Edge[] = [
     target: "8",
     sourceHandle: "bottom",
     targetHandle: "top",
-    
   },
   {
     id: "e8-9",
@@ -240,7 +303,6 @@ const initialEdges: Edge[] = [
     target: "9",
     sourceHandle: "bottom",
     targetHandle: "top",
-   
   },
 ];
 const floatingButtonVariants = {
@@ -270,8 +332,6 @@ const floatingButtonVariants = {
   },
 };
 
-
-
 export default function RoadmapFlow() {
   const { id } = useParams();
   const roadmap = roadmaps.find((r) => r.id === id);
@@ -280,50 +340,53 @@ export default function RoadmapFlow() {
   const [showChat, setShowChat] = useState(false);
   const [showCourses, setShowCourses] = useState(false);
   const [showFloatingMenu, setShowFloatingMenu] = useState(false);
+  const [showRating, setShowRating] = useState(false);
 
   const { user } = useAuthStore();
 
   const onNodesChange = useCallback(() => {}, []);
   const onEdgesChange = useCallback(() => {}, []);
 
- const nodes = initialNodes.map((node) => {
+  const nodes = initialNodes.map((node) => {
+    if (!node?.data) {
+      console.error("Node data is missing:", node);
+      return node; // Skip this node if data is missing
+    }
 
-   if (!node?.data) {
-     console.error("Node data is missing:", node);
-     return node; // Skip this node if data is missing
-   }
+    const nodeData = { ...node.data };
+    const completedNodes = user?.progress?.[id || ""] || [];
 
-   const nodeData = { ...node.data };
-   const completedNodes = user?.progress?.[id || ""] || [];
+    if (nodeData?.requiredNodes) {
+      nodeData.isAchieved = nodeData.requiredNodes.every((requiredId) =>
+        completedNodes.includes(requiredId)
+      );
+    }
 
-   if (nodeData?.requiredNodes) {
-     nodeData.isAchieved = nodeData.requiredNodes.every((requiredId) =>
-       completedNodes.includes(requiredId)
-     );
-   }
-
-   return {
-     ...node,
-     data: {
-       ...nodeData,
-       onShowDetails: (nodeData: any) => setSelectedNode(nodeData),
-     },
-   };
- });
+    return {
+      ...node,
+      data: {
+        ...nodeData,
+        onShowDetails: (nodeData: any) => setSelectedNode(nodeData),
+      },
+    };
+  });
 
   const completedNodes = user?.progress[id || ""]?.length || 0;
   const totalNodes = nodes.length;
   const progress = Math.round((completedNodes / totalNodes) * 100);
 
- const toggleFloatingMenu = () => {
-   setShowFloatingMenu(!showFloatingMenu);
-   if (!showFloatingMenu) {
-     setShowInfo(false);
-     setShowChat(false);
-     setShowCourses(false);
-   }
- };
-
+  const toggleFloatingMenu = () => {
+    setShowFloatingMenu(!showFloatingMenu);
+    if (!showFloatingMenu) {
+      setShowInfo(false);
+      setShowChat(false);
+      setShowCourses(false);
+    }
+  };
+  const handleRatingSubmit = (rating: number, comment: string) => {
+    console.log("Rating:", rating, "Comment:", comment);
+    // Here you would typically send this to your backend
+  };
   return (
     <div className="relative">
       {/* Top Bar */}
@@ -346,7 +409,6 @@ export default function RoadmapFlow() {
           nodeTypes={nodeTypes}
           fitView
           fitViewOptions={{ padding: 20 }}
-          
           className="bg-slate-50 dark:bg-slate-900"
         >
           <Background className="bg-slate-50 dark:bg-slate-900" />
@@ -358,6 +420,29 @@ export default function RoadmapFlow() {
         <AnimatePresence mode="popLayout">
           {showFloatingMenu && (
             <>
+              <motion.div
+                className="relative group"
+                variants={floatingButtonVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                custom={3}
+                key="rating-button"
+              >
+                <button
+                  onClick={() => setShowRating(true)}
+                  className={cn(
+                    "p-4 rounded-full shadow-lg transition-all",
+                    "bg-theme text-white",
+                    "hover:scale-110"
+                  )}
+                >
+                  <Star className="w-6 h-6" />
+                </button>
+                <motion.div className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-slate-800 text-white px-3 py-1.5 rounded-lg text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity">
+                  Rate Roadmap
+                </motion.div>
+              </motion.div>
               <motion.div
                 className="relative group"
                 variants={floatingButtonVariants}
@@ -474,6 +559,11 @@ export default function RoadmapFlow() {
         isOpen={showCourses}
         onClose={() => setShowCourses(false)}
         topic={selectedNode?.label}
+      />
+      <RatingModal
+        isOpen={showRating}
+        onClose={() => setShowRating(false)}
+        onSubmit={handleRatingSubmit}
       />
     </div>
   );

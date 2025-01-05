@@ -22,9 +22,7 @@ export default function ChatPanel({
   userProgress,
 }: ChatPanelProps) {
   const navigate = useNavigate();
-
   const { user } = useAuthStore();
-
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
@@ -33,18 +31,31 @@ export default function ChatPanel({
       timestamp: new Date(),
     },
   ]);
-
   const [input, setInput] = useState("");
   const [showSaved, setShowSaved] = useState(false);
   const { isStreaming, streamResponse } = useStreamingResponse();
   const { getSystemPrompt } = useChatContext(roadmap, userProgress);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [userScrolled, setUserScrolled] = useState(false);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (!userScrolled && messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
-  useEffect(scrollToBottom, [messages]);
+  // Handle scroll events
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
+    const isAtBottom = Math.abs(scrollHeight - clientHeight - scrollTop) < 10;
+    setUserScrolled(!isAtBottom);
+  };
+
+  useEffect(() => {
+    if (!userScrolled) {
+      scrollToBottom();
+    }
+  }, [messages, userScrolled]);
 
   if (!isOpen || !roadmap) return null;
 
@@ -69,6 +80,7 @@ export default function ChatPanel({
 
     setMessages((prev) => [...prev, userMessage, botMessage]);
     setInput("");
+    setUserScrolled(false); // Reset user scroll when sending new message
 
     await streamResponse(
       getSystemPrompt(input),
@@ -115,8 +127,8 @@ export default function ChatPanel({
         isOpen
           ? "translate-x-0"
           : isRtl
-            ? "-translate-x-full"
-            : "translate-x-full",
+          ? "-translate-x-full"
+          : "translate-x-full",
         isRtl ? "left-0" : "right-0"
       )}
     >
@@ -138,7 +150,7 @@ export default function ChatPanel({
       </div>
 
       {!user && messages.length >= 4 ? (
-        <div className="flex items-center justify-center h-screen  pb-24">
+        <div className="flex items-center justify-center h-screen pb-24">
           <div className="text-center">
             <p className="text-2xl font-bold">You have reached the limit!</p>
             <p className="mt-2">
@@ -147,7 +159,10 @@ export default function ChatPanel({
           </div>
         </div>
       ) : (
-        <div className="h-[calc(100%-8rem)] overflow-y-auto p-4 space-y-4">
+        <div
+          className="h-[calc(100%-8rem)] overflow-y-auto p-4 space-y-4"
+          onScroll={handleScroll}
+        >
           {messages.map((message, index) => (
             <ChatMessage
               key={message.id}
@@ -172,7 +187,11 @@ export default function ChatPanel({
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Type your message..."
-              className="flex-1 p-2 rounded-lg bg-slate-100 dark:bg-slate-700 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={cn(
+                "flex-1 p-2 rounded-lg transition-all resize-none",
+                "bg-slate-100 dark:bg-slate-700",
+                "focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+              )}
               rows={1}
               disabled={isStreaming}
             />
