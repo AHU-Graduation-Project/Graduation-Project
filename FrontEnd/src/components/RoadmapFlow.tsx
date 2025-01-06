@@ -26,7 +26,6 @@ const nodeTypes = {
 };
 
 
-
 const initialNodes: Node[] = [
 
   {
@@ -281,12 +280,35 @@ export default function RoadmapFlow() {
   const nodes = initialNodes.map((node) => {
     if (!node?.data) {
       console.error("Node data is missing:", node);
-      return node; // Skip this node if data is missing
+      return node;
     }
 
     const nodeData = { ...node.data };
     const completedNodes = user?.progress?.[id || ""] || [];
 
+    // Check if this is a main topic and if all its subtopics are completed
+    if (nodeData.type === "topic") {
+      const subtopics = initialNodes.filter(
+        (n) =>
+          n.data?.type === "subtopic" &&
+          n.data?.requiredNodes?.includes(node.id)
+      );
+
+      if (subtopics.length > 0) {
+        const allSubtopicsCompleted = subtopics.every((subtopic) =>
+          completedNodes.includes(subtopic.id)
+        );
+        if (allSubtopicsCompleted) {
+          nodeData.isAchieved = true;
+          // Add the main topic to completed nodes if not already there
+          if (!completedNodes.includes(node.id)) {
+            completedNodes.push(node.id);
+          }
+        }
+      }
+    }
+
+    // Original achievement logic for dependencies
     if (nodeData?.requiredNodes) {
       nodeData.isAchieved = nodeData.requiredNodes.every((requiredId) =>
         completedNodes.includes(requiredId)
