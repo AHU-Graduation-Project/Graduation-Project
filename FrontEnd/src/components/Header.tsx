@@ -11,23 +11,29 @@ export default function Header() {
   >(null);
 
   const headerRef = useRef<HTMLDivElement | null>(null);
-  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const closeDropdown = () => setActiveDropdown(null);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (
-        (headerRef.current && headerRef.current.contains(e.target as Node)) ||
-        (dropdownRef.current && dropdownRef.current.contains(e.target as Node))
-      ) {
-        return; // Click is inside, do nothing.
+      if (headerRef.current && !headerRef.current.contains(e.target as Node)) {
+        closeDropdown();
       }
-      closeDropdown();
+    };
+
+    const handleEscapeKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        closeDropdown();
+      }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscapeKey);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscapeKey);
+    };
   }, []);
 
   const toggleHeaderMenu = () => {
@@ -45,7 +51,10 @@ export default function Header() {
   ];
 
   return (
-    <header className="border-b border-slate-200 dark:border-white/10 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm sticky top-0 z-50">
+    <header
+      ref={headerRef}
+      className="border-b border-slate-200 dark:border-white/10 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm sticky top-0 z-50"
+    >
       <div className="container mx-auto px-4 h-20 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
           <div className="relative">
@@ -55,7 +64,7 @@ export default function Header() {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-6">
+        <nav className="hidden md:flex items-center gap-6 relative">
           {menuItems.map((item) => (
             <Link
               key={item.to}
@@ -71,7 +80,6 @@ export default function Header() {
             isOpen={activeDropdown === "dropdown"}
             onOpen={handleDropdownToggle}
             onClose={closeDropdown}
-            dropdownRef={dropdownRef}
           />
         </nav>
 
@@ -82,9 +90,7 @@ export default function Header() {
             isOpen={activeDropdown === "dropdown"}
             onOpen={handleDropdownToggle}
             onClose={closeDropdown}
-            dropdownRef={dropdownRef}
           />
-
           <button
             onClick={toggleHeaderMenu}
             aria-expanded={activeDropdown === "header"}
@@ -101,10 +107,7 @@ export default function Header() {
 
         {/* Mobile Menu */}
         {activeDropdown === "header" && (
-          <div
-            ref={headerRef}
-            className="md:hidden fixed inset-x-0 top-20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-b border-slate-200 dark:border-slate-700 p-4"
-          >
+          <div className="md:hidden fixed inset-x-0 top-20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-b border-slate-200 dark:border-slate-700 p-4">
             <nav className="flex flex-col gap-4">
               {menuItems.map((item) => (
                 <Link

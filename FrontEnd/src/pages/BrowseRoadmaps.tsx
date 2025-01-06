@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -95,7 +95,7 @@ export default function BrowseRoadmaps() {
   const [searchQuery, setSearchQuery] = useState("");
   const { user, selectRoadmap } = useAuthStore();
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = 10;
+  const roadmapsPerPage = 9; // Limit the number of roadmaps per page
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -106,6 +106,20 @@ export default function BrowseRoadmaps() {
       field.toLowerCase().includes(searchQuery.toLowerCase())
     )
   );
+
+  // Pagination logic to limit the number of roadmaps per page
+  const totalPages = Math.ceil(filteredRoadmaps.length / roadmapsPerPage);
+
+  // Get the roadmaps for the current page by slicing the filtered roadmaps
+  const currentRoadmaps = filteredRoadmaps.slice(
+    (currentPage - 1) * roadmapsPerPage,
+    currentPage * roadmapsPerPage
+  );
+
+  useEffect(() => {
+    // Reset to the first page if the search query changes
+    setCurrentPage(1);
+  }, [searchQuery]);
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -152,8 +166,8 @@ export default function BrowseRoadmaps() {
 
       <h2 className="text-2xl font-bold mb-6 text-theme">Other Roadmaps</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredRoadmaps.length > 0 ? (
-          filteredRoadmaps.map((roadmap) => (
+        {currentRoadmaps.length > 0 ? (
+          currentRoadmaps.map((roadmap) => (
             <RoadmapCard key={roadmap.id} {...roadmap} />
           ))
         ) : (
@@ -165,7 +179,7 @@ export default function BrowseRoadmaps() {
         )}
       </div>
 
-      <div className=" pt-6">
+      <div className="pt-6">
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
