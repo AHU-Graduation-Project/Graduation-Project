@@ -11,13 +11,10 @@ export default function ChatActions({ message }: ChatActionsProps) {
 
   const copyToClipboard = async () => {
     // Extract code blocks from the message
-    const codeBlocks = message.content.match(/```[\s\S]*?```/g);
+    const codeBlocks = message.content
     if (codeBlocks) {
-      // Clean the code blocks (remove ``` markers and language identifier)
-      const cleanCode = codeBlocks
-        .map((block) => block.replace(/```\w*\n?|\`\`\`/g, ""))
-        .join("\n\n");
-      await navigator.clipboard.writeText(cleanCode);
+     
+      await navigator.clipboard.writeText(codeBlocks);
     } else {
       await navigator.clipboard.writeText(message.content);
     }

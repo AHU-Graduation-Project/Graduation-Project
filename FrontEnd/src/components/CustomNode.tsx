@@ -3,6 +3,7 @@ import { cn } from "../utils/cn";
 import { useParams } from "react-router-dom";
 import { MoreHorizontal } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
+import { motion } from "framer-motion";
 import "reactflow/dist/style.css";
 import { useAuthStore } from "../store/authStore";
 
@@ -28,29 +29,28 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
   const [showToolbar, setShowToolbar] = useState(false);
   const toolbarContainerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const [isAnimating, setIsAnimating] = useState(false);
 
- useEffect(() => {
-   const handleClickOutside = (event: MouseEvent | TouchEvent) => {
-     const toolbarClicked = toolbarContainerRef.current?.contains(
-       event.target as Node
-     );
-     const buttonClicked = buttonRef.current?.contains(event.target as Node);
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+      const toolbarClicked = toolbarContainerRef.current?.contains(
+        event.target as Node
+      );
+      const buttonClicked = buttonRef.current?.contains(event.target as Node);
 
-     // Close only if the click is outside both the toolbar and button
-     if (!toolbarClicked && !buttonClicked) {
-       setTimeout(() => setShowToolbar(false), 0); // Delay to let click events on dropdown propagate
-     }
-   };
+      if (!toolbarClicked && !buttonClicked) {
+        setTimeout(() => setShowToolbar(false), 0);
+      }
+    };
 
-   document.addEventListener("mousedown", handleClickOutside);
-   document.addEventListener("touchstart", handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
 
-   return () => {
-     document.removeEventListener("mousedown", handleClickOutside);
-     document.removeEventListener("touchstart", handleClickOutside);
-   };
- }, []);
-
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
+  }, []);
 
   const handleAction = (action: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -62,7 +62,9 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
         break;
       case "complete":
         if (user && shouldBeActive) {
+          setIsAnimating(true);
           updateProgress(roadmapId || "", id, !isCompleted);
+          setTimeout(() => setIsAnimating(false), 1000);
         }
         break;
       case "jobs":
@@ -72,12 +74,7 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
         );
         break;
       case "courses":
-        
-  // data.onShowDetails(data);
-  // setShowCourses(true);
-    break;
-
-        
+        break;
     }
   };
 
@@ -134,22 +131,31 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
         </NodeToolbar>
       </div>
 
-      <div
+      <motion.div
         onClick={handleNodeClick}
+        animate={
+          isAnimating
+            ? {
+                scale: [1, 1.1, 1],
+                rotate: [0, 5, -5, 0],
+              }
+            : {}
+        }
+        transition={{ duration: 0.5 }}
         className={cn(
           "px-6 py-3 shadow-lg rounded-xl border-2 relative hover:scale-105 transition-transform",
           "min-w-[200px]",
           data.type === "topic"
             ? "rounded-2xl text-lg font-bold tracking-wide shadow-xl border-theme"
-            : " text-sm font-medium tracking-normal shadow-md scale-90 border-dashed",
+            : "text-sm font-medium tracking-normal shadow-md scale-90 border-dashed",
           !shouldBeActive && "opacity-50 bg-slate-800/50",
           shouldBeActive &&
             (isCompleted
               ? data.type === "topic"
-                ? "bg-theme  "
-                : "bg-transparent bg-theme-shadow bg-theme-blur "
+                ? "bg-theme animate-completion"
+                : "bg-transparent bg-theme-shadow bg-theme-blur"
               : data.type === "topic"
-              ? "bg-theme-shadow"
+              ? "bg-theme-shadow animate-breath"
               : ""),
           !shouldBeActive && "cursor-not-allowed"
         )}
@@ -221,7 +227,7 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
             className="border-none bg-transparent"
           />
         )}
-      </div>
+      </motion.div>
     </>
   );
 }

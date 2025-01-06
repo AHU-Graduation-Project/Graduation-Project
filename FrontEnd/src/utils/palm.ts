@@ -7,8 +7,6 @@ interface GenerateOptions {
   minSubtopics: number;
 }
 
-
-
 const EXAMPLE_STRUCTURE = `{
   "nodes": [
   {
@@ -224,7 +222,6 @@ const EXAMPLE_STRUCTURE = `{
 ]
 }`;
 
-
 const createSystemPrompt = (
   options: GenerateOptions
 ) => `You are a learning path generator. Generate a detailed roadmap in JSON format following these EXACT rules:
@@ -271,48 +268,86 @@ const createSystemPrompt = (
    - Main topics connect vertically (bottom to top)
    - Subtopics connect horizontally (left/right)
    - Each subtopic must connect to its parent topic
-   - Multiple nodes can connect to the same target`;
+   - Multiple nodes can connect to the same target
 
+5. Sources and References:
+   - Include a "sources" array in the response containing:
+     * title: name of the resource
+     * url: link to the resource
+     * type: "documentation" | "course" | "article" | "book"
+     * description: brief description of what this resource covers
+
+Ensure all information provided is backed by reputable sources and include them in the response.`;
 
 export async function generateRoadmap(
-  prompt: string, 
+  prompt: string,
   options: GenerateOptions = { minTopics: 15, minSubtopics: 2 },
   signal?: AbortSignal
 ) {
   try {
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-    
-    const result = await model.generateContent([
-      createSystemPrompt(options),
-      EXAMPLE_STRUCTURE,
-      `Generate a learning roadmap for: ${prompt}. Follow the example structure to take idea of how it will be, and give a full roadmap to the requested topic including all possible topics ensuring proper node positioning and connections as shown in the example. Make sure to include at least ${options.minTopics} main topics and ${options.minSubtopics} subtopics per main topic.`,
-    ], { signal });
-    
+
+    const result = await model.generateContent(
+      [
+        createSystemPrompt(options),
+        EXAMPLE_STRUCTURE,
+        `Generate a learning roadmap for: ${prompt}. Follow the example structure exactly and provide a complete roadmap for the requested topic, ensuring proper node positioning and connections. Include at least ${options.minTopics} main topics and ${options.minSubtopics} subtopics per main topic. Make sure to include relevant sources and references.`,
+      ],
+      { signal }
+    );
+
     const response = await result.response;
     const text = response.text();
-    
+
     // Extract JSON content
+
     const match = text.match(/\{[\s\S]*\}/);
     if (!match) {
-      throw new Error('Invalid response format');
+      throw new Error("Invalid AI response format - no JSON structure found");
     }
+    console.log(JSON.parse(match[0]));
+    try {
+      const parsedData = JSON.parse(match[0]);
 
-    const parsedData = JSON.parse(match[0]);
+      // Validate response structure
+      if (!parsedData.nodes || !Array.isArray(parsedData.nodes)) {
+        throw new Error(
+          "Invalid roadmap data - nodes array is missing or invalid"
+        );
+      }
+      if (!parsedData.edges || !Array.isArray(parsedData.edges)) {
+        throw new Error(
+          "Invalid roadmap data - edges array is missing or invalid"
+        );
+      }
 
-    // Validate response structure
-    if (!parsedData.nodes || !parsedData.edges || 
-        !Array.isArray(parsedData.nodes) || !Array.isArray(parsedData.edges)) {
-      throw new Error('Invalid roadmap data structure');
+      // Extract sources if present
+      if (parsedData.sources) {
+        try {
+          const sourcesJson = parsedData.sources;
+          if (!Array.isArray(sourcesJson)) {
+            console.warn("Invalid sources array - expected an array");
+          }
+        } catch (e) {
+          console.warn("Error parsing sources:", e);
+          parsedData.sources = [];
+        }
+      }
+
+      return parsedData;
+    } catch (parseError) {
+      const errorMessage =
+        parseError instanceof Error
+          ? parseError.message
+          : "Unknown error occurred";
+      throw new Error("Failed to parse AI response: " + errorMessage);
     }
-
-    return parsedData;
   } catch (error) {
     if (signal?.aborted) {
-      const abortError = new Error('Generation aborted');
-      abortError.name = 'AbortError';
+      const abortError = new Error("Generation was stopped by user");
+      abortError.name = "AbortError";
       throw abortError;
     }
-    console.error('Error generating roadmap:', error);
     throw error;
   }
 }

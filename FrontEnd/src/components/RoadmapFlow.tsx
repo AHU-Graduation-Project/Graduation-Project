@@ -25,79 +25,10 @@ const nodeTypes = {
   custom: CustomNode,
 };
 
-// Legend nodes with a parent group node
-const legendNodes: Node[] = [
-  {
-    id: "legend-group",
-    type: "group",
-    position: { x: -400, y: 100 },
-    style: {
-      width: 250,
-      height: 400,
-      padding: "20px",
-      borderRadius: "8px",
-      backgroundColor: "rgba(255, 255, 255, 0.1)",
-      border: "1px solid rgba(255, 255, 255, 0.2)",
-    },
-    data: { label: "Legend" },
-  },
-  {
-    id: "legend-1",
-    type: "custom",
-    position: { x: 70, y: 90 },
-    parentNode: "legend-group",
-    extent: "parent",
-    data: {
-      label: "Active Topic",
-      type: "topic",
-      description: "Main topic that is currently available to learn",
-      isAchieved: true,
-    },
-  },
-  {
-    id: "legend-2",
-    type: "custom",
-    position: { x: 70, y: 170 },
-    parentNode: "legend-group",
-    extent: "parent",
-    data: {
-      label: "Active Subtopic",
-      type: "subtopic",
-      description: "Subtopic that is currently available to learn",
-      isAchieved: true,
-    },
-  },
-  {
-    id: "legend-3",
-    type: "custom",
-    position: { x: 70, y: 250 },
-    parentNode: "legend-group",
-    extent: "parent",
-    data: {
-      label: "Locked Topic",
-      type: "topic",
-      description: "Topic that requires prerequisites",
-      isAchieved: false,
-    },
-  },
-  {
-    id: "legend-4",
-    type: "custom",
-    position: { x: 70, y: 330 },
-    parentNode: "legend-group",
-    extent: "parent",
-    data: {
-      label: "Completed Topic",
-      type: "topic",
-      description: "Topic that has been marked as completed",
-      isAchieved: true,
-      completed: true,
-    },
-  },
-];
+
 
 const initialNodes: Node[] = [
-  ...legendNodes,
+
   {
     id: "1",
     type: "custom",
