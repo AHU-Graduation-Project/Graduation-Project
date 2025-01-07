@@ -11,7 +11,7 @@ import {
 export const roadmaps = [
   {
     id: "frontend",
-    title: "Frontend Development1111",
+    title: "Frontend Development",
     description:
       "Learn to build modern web interfaces with HTML, CSS, JavaScript, and React",
     icon: Code2,
@@ -21,7 +21,7 @@ export const roadmaps = [
   },
   {
     id: "backend",
-    title: "Backend Development111",
+    title: "Backend Development",
     description:
       "Master server-side programming, APIs, and database management",
     icon: Server,
@@ -31,7 +31,7 @@ export const roadmaps = [
   },
   {
     id: "ui-design",
-    title: "UI/UX Design11111",
+    title: "UI/UX Design",
     description: "Learn design principles, user research, and prototyping",
     icon: Palette,
     color: "from-pink-500 to-rose-500",
@@ -40,7 +40,7 @@ export const roadmaps = [
   },
   {
     id: "mobile",
-    title: "Mobile Development11111",
+    title: "Mobile Development",
     description: "Build native and cross-platform mobile applications",
     icon: Smartphone,
     color: "from-orange-500 to-red-500",
@@ -49,7 +49,7 @@ export const roadmaps = [
   },
   {
     id: "ai-ml",
-    title: "AI & Machine Learning11",
+    title: "AI & Machine Learning",
     description:
       "Explore artificial intelligence and machine learning concepts",
     icon: Brain,
@@ -59,205 +59,7 @@ export const roadmaps = [
   },
   {
     id: "devops",
-    title: "DevOps & Cloud1111",
-    description: "Learn cloud platforms, CI/CD, and infrastructure management",
-    icon: Database,
-    color: "from-cyan-500 to-blue-500",
-    image:
-      "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: "ai-ml",
-    title: "AI & Machine Learning1111",
-    description:
-      "Explore artificial intelligence and machine learning concepts",
-    icon: Brain,
-    color: "from-violet-500 to-purple-500",
-    image:
-      "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: "devops",
-    title: "DevOps & Cloud1111",
-    description: "Learn cloud platforms, CI/CD, and infrastructure management",
-    icon: Database,
-    color: "from-cyan-500 to-blue-500",
-    image:
-      "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: "ai-ml",
-    title: "AI & Machine Learning111",
-    description:
-      "Explore artificial intelligence and machine learning concepts",
-    icon: Brain,
-    color: "from-violet-500 to-purple-500",
-    image:
-      "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: "devops",
-    title: "DevOps & Cloud22222",
-    description: "Learn cloud platforms, CI/CD, and infrastructure management",
-    icon: Database,
-    color: "from-cyan-500 to-blue-500",
-    image:
-      "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: "ai-ml",
-    title: "AI & Machine Learning2222",
-    description:
-      "Explore artificial intelligence and machine learning concepts",
-    icon: Brain,
-    color: "from-violet-500 to-purple-500",
-    image:
-      "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: "devops",
-    title: "DevOps & Cloud2222",
-    description: "Learn cloud platforms, CI/CD, and infrastructure management",
-    icon: Database,
-    color: "from-cyan-500 to-blue-500",
-    image:
-      "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: "ai-ml",
-    title: "AI & Machine Learning2222",
-    description:
-      "Explore artificial intelligence and machine learning concepts",
-    icon: Brain,
-    color: "from-violet-500 to-purple-500",
-    image:
-      "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: "devops",
-    title: "DevOps & Cloud222",
-    description: "Learn cloud platforms, CI/CD, and infrastructure management",
-    icon: Database,
-    color: "from-cyan-500 to-blue-500",
-    image:
-      "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: "ai-ml",
-    title: "AI & Machine Learning222",
-    description:
-      "Explore artificial intelligence and machine learning concepts",
-    icon: Brain,
-    color: "from-violet-500 to-purple-500",
-    image:
-      "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: "devops",
-    title: "DevOps & Cloud222",
-    description: "Learn cloud platforms, CI/CD, and infrastructure management",
-    icon: Database,
-    color: "from-cyan-500 to-blue-500",
-    image:
-      "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: "ai-ml",
-    title: "AI & Machine Learning222",
-    description:
-      "Explore artificial intelligence and machine learning concepts",
-    icon: Brain,
-    color: "from-violet-500 to-purple-500",
-    image:
-      "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: "devops",
-    title: "DevOps & Cloud222222",
-    description: "Learn cloud platforms, CI/CD, and infrastructure management",
-    icon: Database,
-    color: "from-cyan-500 to-blue-500",
-    image:
-      "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: "ai-ml",
-    title: "AI & Machine Learning3333",
-    description:
-      "Explore artificial intelligence and machine learning concepts",
-    icon: Brain,
-    color: "from-violet-500 to-purple-500",
-    image:
-      "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: "devops",
-    title: "DevOps & Cloud333",
-    description: "Learn cloud platforms, CI/CD, and infrastructure management",
-    icon: Database,
-    color: "from-cyan-500 to-blue-500",
-    image:
-      "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: "ai-ml",
-    title: "AI & Machine Learning333",
-    description:
-      "Explore artificial intelligence and machine learning concepts",
-    icon: Brain,
-    color: "from-violet-500 to-purple-500",
-    image:
-      "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: "devops",
-    title: "DevOps & Cloud33333",
-    description: "Learn cloud platforms, CI/CD, and infrastructure management",
-    icon: Database,
-    color: "from-cyan-500 to-blue-500",
-    image:
-      "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: "ai-ml",
-    title: "AI & Machine Learning3333",
-    description:
-      "Explore artificial intelligence and machine learning concepts",
-    icon: Brain,
-    color: "from-violet-500 to-purple-500",
-    image:
-      "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: "devops",
-    title: "DevOps & Cloud33333",
-    description: "Learn cloud platforms, CI/CD, and infrastructure management",
-    icon: Database,
-    color: "from-cyan-500 to-blue-500",
-    image:
-      "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: "devops",
-    title: "DevOps & Cloud33333",
-    description: "Learn cloud platforms, CI/CD, and infrastructure management",
-    icon: Database,
-    color: "from-cyan-500 to-blue-500",
-    image:
-      "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: "devops",
-    title: "DevOps & Cloud33333",
-    description: "Learn cloud platforms, CI/CD, and infrastructure management",
-    icon: Database,
-    color: "from-cyan-500 to-blue-500",
-    image:
-      "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: "devops",
-    title: "DevOps & Cloud33333",
+    title: "DevOps & Cloud",
     description: "Learn cloud platforms, CI/CD, and infrastructure management",
     icon: Database,
     color: "from-cyan-500 to-blue-500",

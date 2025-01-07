@@ -7,7 +7,7 @@ import ThemeIcon from "../components/ThemeIcon";
 import { roadmaps } from "../data/roadmaps";
 import { useAuthStore } from "../store/authStore";
 import ConfirmationModal from "../components/ConformationModel";
-import Pagination from "../components/Pagination";
+import P from "../components/P";
 
 function SearchBar({ value, onChange, placeholder }) {
   return (
@@ -95,11 +95,11 @@ export default function BrowseRoadmaps() {
   const [searchQuery, setSearchQuery] = useState("");
   const { user, selectRoadmap } = useAuthStore();
   const [currentPage, setCurrentPage] = useState(1);
-  const roadmapsPerPage = 9; // Limit the number of roadmaps per page
+  const [postsPerPage, setPostsPerPage] = useState(6);
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
+  const lastPostIndex = currentPage * postsPerPage;
+  const firstPostIndex = lastPostIndex - postsPerPage;
+  const currentPost = roadmaps.slice(firstPostIndex, lastPostIndex);
 
   const filteredRoadmaps = roadmaps.filter((roadmap) =>
     [roadmap.title, roadmap.description].some((field) =>
@@ -107,17 +107,7 @@ export default function BrowseRoadmaps() {
     )
   );
 
-  // Pagination logic to limit the number of roadmaps per page
-  const totalPages = Math.ceil(filteredRoadmaps.length / roadmapsPerPage);
-
-  // Get the roadmaps for the current page by slicing the filtered roadmaps
-  const currentRoadmaps = filteredRoadmaps.slice(
-    (currentPage - 1) * roadmapsPerPage,
-    currentPage * roadmapsPerPage
-  );
-
   useEffect(() => {
-    // Reset to the first page if the search query changes
     setCurrentPage(1);
   }, [searchQuery]);
 
@@ -166,8 +156,8 @@ export default function BrowseRoadmaps() {
 
       <h2 className="text-2xl font-bold mb-6 text-theme">Other Roadmaps</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {currentRoadmaps.length > 0 ? (
-          currentRoadmaps.map((roadmap) => (
+        {currentPost.length > 0 ? (
+          currentPost.map((roadmap) => (
             <RoadmapCard key={roadmap.id} {...roadmap} />
           ))
         ) : (
@@ -180,10 +170,11 @@ export default function BrowseRoadmaps() {
       </div>
 
       <div className="pt-6">
-        <Pagination
+        <P
+          totalPosts={filteredRoadmaps.length}
+          postsPerPage={postsPerPage}
           currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
+          setCurrentPage={setCurrentPage}
         />
       </div>
     </div>
