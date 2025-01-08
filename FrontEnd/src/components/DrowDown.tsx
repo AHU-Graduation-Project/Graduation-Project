@@ -51,7 +51,7 @@ function DropdownToggle({
                       <span>Logout</span>
                     </>
                   ) : (
-                    <Link to="/login" className="flex items-center gap-3">
+                    <Link to="/auth" className="flex items-center gap-3">
                       <ThemeIcon icon={LogIn} className="w-5 h-5" />
                       <span>Sign in</span>
                     </Link>

@@ -38,11 +38,6 @@ interface AuthState {
     nodeId: string,
     completed: boolean
   ) => void;
-  updateProgress: (
-    roadmapId: string,
-    nodeId: string,
-    completed: boolean
-  ) => void;
   selectRoadmap: (roadmapId: string) => void;
   addSkill: (skill: string) => void;
   removeSkill: (skill: string) => void;
@@ -87,7 +82,6 @@ export const useAuthStore = create<AuthState>()(
       signup: (email, password, fname, lname, position, level, country) => {
         set({
           user: {
-            id: "1",
             id: "1",
             email,
             fname,
@@ -141,9 +135,6 @@ export const useAuthStore = create<AuthState>()(
           const selectedRoadmaps = state.user.selectedRoadmaps.includes(
             roadmapId
           )
-          const selectedRoadmaps = state.user.selectedRoadmaps.includes(
-            roadmapId
-          )
             ? state.user.selectedRoadmaps.filter((id) => id !== roadmapId)
             : [...state.user.selectedRoadmaps, roadmapId];
 
@@ -187,54 +178,17 @@ export const useAuthStore = create<AuthState>()(
           };
         });
       },
-      updateUser: (updatedData) => {
-        set((state) => {
-          if (!state.user) return state;
-          return {
-            user: { ...state.user, selectedRoadmaps },
-          };
-        });
-      },
-      addSkill: (skill) => {
-        set((state) => {
-          if (!state.user) return state;
-
-          const selectedSkills = state.user.selectedSkills.includes(skill)
-            ? state.user.selectedSkills
-            : [...state.user.selectedSkills, skill];
-
-          return {
-            user: { ...state.user, selectedSkills },
-          };
-        });
-      },
-      removeSkill: (skill) => {
-        set((state) => {
-          if (!state.user) return state;
-
-          const selectedSkills = state.user.selectedSkills.filter(
-            (s) => s !== skill
-          );
-
-          return {
-            user: { ...state.user, selectedSkills },
-          };
-        });
-      },
-      updateUser: (updatedData) => {
-        set((state) => {
-          if (!state.user) return state;
-
-          return {
-            user: { ...state.user, ...updatedData },
-          };
-        });
-      },
+      // updateUser: (updatedData) => {
+      //   set((state) => {
+      //     if (!state.user) return state;
+      //     return {
+      //       user: { ...state.user, selectedRoadmaps },
+      //     };
+      //   });
+      // },
     }),
     {
-      name: "auth-storage",
       name: "auth-storage",
     }
   )
 );
-

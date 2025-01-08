@@ -22,8 +22,8 @@ export default function LoginForm() {
     e.preventDefault();
     try {
       await login(email, password);
+      navigate("/Profile");
       setError(null);
-      navigate("/BrowseRoadmaps");
     } catch (err: any) {
       setError(err.message || "Login failed. Please try again.");
     }
