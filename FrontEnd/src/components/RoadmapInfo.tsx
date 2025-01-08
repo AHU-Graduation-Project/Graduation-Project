@@ -5,6 +5,7 @@ import { useAuthStore } from "../store/authStore";
 import { useNavigate } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 
+
 interface RoadmapInfoProps {
   isOpen: boolean;
   onClose: () => void;
@@ -22,6 +23,7 @@ export default function RoadmapInfo({
   const isRtl = document.documentElement.dir === "rtl";
 
   if (!isOpen || !roadmap) return null;
+
 
   const resources = [
     {
@@ -44,6 +46,7 @@ export default function RoadmapInfo({
       icon: Globe,
       color: "text-purple-500",
       url: "https://dev.to/",
+
     },
   ];
 
@@ -101,10 +104,12 @@ export default function RoadmapInfo({
                   <div
                     className={cn(
                       "p-2 rounded-lg bg-slate-100 dark:bg-slate-800",
+
                       resource.color
                     )}
                   >
                     <resource.icon className="w-5 h-5" />
+
                   </div>
                   <div>
                     <h4 className="font-medium">{resource.label}</h4>

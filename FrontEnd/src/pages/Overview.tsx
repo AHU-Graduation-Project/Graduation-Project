@@ -1,6 +1,6 @@
-import { TrendingUp, Users, Code2, Briefcase, Brain, Target, ArrowRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { useAuthStore } from '../store/authStore';
+import { TrendingUp, Brain, Target, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useAuthStore } from "../store/authStore";
 
 export default function Overview() {
   const { isAuthenticated } = useAuthStore();
@@ -20,25 +20,13 @@ export default function Overview() {
               stroke="currentColor"
               strokeWidth="0.5"
               strokeDasharray="2,2"
-              style={{ color: 'rgba(255,255,255,0.1)' }}
+              style={{ color: "rgba(255,255,255,0.1)" }}
             >
               {[...Array(10)].map((_, i) => (
-                <line
-                  key={i}
-                  x1="0"
-                  y1={i * 10}
-                  x2="100"
-                  y2={i * 10}
-                />
+                <line key={i} x1="0" y1={i * 10} x2="100" y2={i * 10} />
               ))}
               {[...Array(10)].map((_, i) => (
-                <line
-                  key={i}
-                  x1={i * 10}
-                  y1="0"
-                  x2={i * 10}
-                  y2="100"
-                />
+                <line key={i} x1={i * 10} y1="0" x2={i * 10} y2="100" />
               ))}
             </svg>
           </div>
@@ -48,14 +36,15 @@ export default function Overview() {
           <div className="container mx-auto px-4 py-24">
             <div className="max-w-3xl">
               <h1 className="text-6xl font-bold mb-6 text-white">
-                Your Path to{' '}
+                Your Path to{" "}
                 <span className="text-theme text-transparent bg-clip-text">
                   Tech Excellence
                 </span>
               </h1>
               <p className="text-xl text-slate-300 mb-8">
-                Discover personalized learning roadmaps powered by industry insights and real-world data.
-                Track your progress and achieve your goals.
+                Discover personalized learning roadmaps powered by industry
+                insights and real-world data. Track your progress and achieve
+                your goals.
               </p>
               {!isAuthenticated && (
                 <div className="flex gap-4">
@@ -83,7 +72,7 @@ export default function Overview() {
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto">
             <h2 className="text-4xl font-bold mb-16 text-center">
-              Everything you need to{' '}
+              Everything you need to{" "}
               <span className="text-theme text-transparent bg-clip-text">
                 succeed
               </span>
@@ -93,10 +82,12 @@ export default function Overview() {
               <div className="flex items-center gap-12">
                 <div className="flex-1">
                   <Target className="w-12 h-12 text-blue-500 mb-4" />
-                  <h3 className="text-2xl font-bold mb-4">Personalized Learning Paths</h3>
+                  <h3 className="text-2xl font-bold mb-4">
+                    Personalized Learning Paths
+                  </h3>
                   <p className="text-slate-600 dark:text-slate-400 mb-6">
-                    AI-powered roadmaps tailored to your goals and experience level. Track your progress
-                    and stay motivated.
+                    AI-powered roadmaps tailored to your goals and experience
+                    level. Track your progress and stay motivated.
                   </p>
                   <Link
                     to="/generate"
@@ -120,8 +111,8 @@ export default function Overview() {
                   <Brain className="w-12 h-12 text-purple-500 mb-4" />
                   <h3 className="text-2xl font-bold mb-4">Skill Analysis</h3>
                   <p className="text-slate-600 dark:text-slate-400 mb-6">
-                    Get detailed insights about required skills, market demand, and salary expectations
-                    for each career path.
+                    Get detailed insights about required skills, market demand,
+                    and salary expectations for each career path.
                   </p>
                   <Link
                     to="/"
@@ -145,8 +136,8 @@ export default function Overview() {
                   <TrendingUp className="w-12 h-12 text-emerald-500 mb-4" />
                   <h3 className="text-2xl font-bold mb-4">Market Insights</h3>
                   <p className="text-slate-600 dark:text-slate-400 mb-6">
-                    Stay updated with real-time job market trends and make informed decisions about
-                    your career path.
+                    Stay updated with real-time job market trends and make
+                    informed decisions about your career path.
                   </p>
                   <Link
                     to="/"

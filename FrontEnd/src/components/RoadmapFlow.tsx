@@ -1,12 +1,15 @@
+
 import { useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import ReactFlow, { Node, Edge, Background, Controls } from "reactflow";
+
 import "reactflow/dist/style.css";
 import { roadmaps } from "../data/roadmaps";
 import { useAuthStore } from "../store/authStore";
 import NodeDetailsModal from "./NodeDetailsModal";
 import RoadmapInfo from "./RoadmapInfo";
 import ChatPanel from "./ChatPanel";
+
 import CoursesSidebar from "./CoursesSidebar";
 import RoadmapTopBar from "./RoadmapTopBar";
 import { cn } from "../utils/cn";
@@ -31,6 +34,7 @@ const initialNodes: Node[] = [
   {
     id: "1",
     type: "custom",
+
     position: { x: 400, y: 0 },
     data: {
       label: "HTML",
@@ -162,11 +166,13 @@ const initialNodes: Node[] = [
       requiredSkills: ["Next.js", "Performance Optimization", "SEO"],
       isAchieved: false,
       requiredNodes: ["8"],
+
     },
   },
 ];
 
 const initialEdges: Edge[] = [
+
   {
     id: "e1-2",
     source: "1",
@@ -234,6 +240,7 @@ const initialEdges: Edge[] = [
     sourceHandle: "bottom",
     targetHandle: "top",
   },
+
 ];
 const floatingButtonVariants = {
   hidden: {
@@ -277,6 +284,7 @@ export default function RoadmapFlow() {
   const onNodesChange = useCallback(() => {}, []);
   const onEdgesChange = useCallback(() => {}, []);
 
+
   const nodes = initialNodes.map((node) => {
     if (!node?.data) {
       console.error("Node data is missing:", node);
@@ -311,6 +319,7 @@ export default function RoadmapFlow() {
     // Original achievement logic for dependencies
     if (nodeData?.requiredNodes) {
       nodeData.isAchieved = nodeData.requiredNodes.every((requiredId) =>
+
         completedNodes.includes(requiredId)
       );
     }
@@ -507,6 +516,7 @@ export default function RoadmapFlow() {
         onClose={() => setShowChat(false)}
         roadmap={roadmap}
         userProgress={user?.progress[id || ""]}
+
       />
       <CoursesSidebar
         isOpen={showCourses}
@@ -517,6 +527,7 @@ export default function RoadmapFlow() {
         isOpen={showRating}
         onClose={() => setShowRating(false)}
         onSubmit={handleRatingSubmit}
+
       />
     </div>
   );
