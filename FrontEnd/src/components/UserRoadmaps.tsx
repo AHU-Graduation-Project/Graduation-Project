@@ -83,7 +83,7 @@ const UserRoadmaps = () => {
           if (!roadmap) return null;
 
           const progress = Math.round(
-            ((user.progress[roadmapId]?.length || 0) / 4) * 100
+            ((user.progress[roadmapId]?.length || 0) / 9) * 100
           );
 
           return (

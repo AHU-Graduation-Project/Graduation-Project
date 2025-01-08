@@ -4,6 +4,7 @@ import { User, Info, Palette, LogOut, LogIn } from "lucide-react";
 import ThemeIcon from "./ThemeIcon";
 import ThemeSelector from "./ThemeSelector";
 import { useAuthStore } from "../store/authStore";
+import { useNavigate } from "react-router-dom";
 
 function DropdownToggle({
   isOpen,
@@ -17,11 +18,13 @@ function DropdownToggle({
   const [isColors, setIsColors] = useState(false);
   const logout = useAuthStore((state) => state.logout);
   const { user } = useAuthStore();
+  const navigate = useNavigate();
 
   const handleToggle = () => (isOpen ? onClose() : onOpen());
   const handleColors = () => setIsColors(!isColors);
   const handleLogout = () => {
     if (user) logout();
+    navigate("/");
   };
 
   return (
@@ -69,8 +72,7 @@ function DropdownToggle({
                 </button>
               </li>
               {/* Color Themes enable over flow */}
-        {isColors && <ThemeSelector />}
-
+              {isColors && <ThemeSelector />}
             </ul>
           </nav>
         </div>
