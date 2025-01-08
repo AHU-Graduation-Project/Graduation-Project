@@ -70,7 +70,6 @@ export default function Profile() {
           </div>
         </div>
 
-        {/* Theme Customization Section */}
         <div className="mb-12">
           <div className="flex items-center gap-3 mb-6">
             <Palette className="w-6 h-6 text-blue-500" />

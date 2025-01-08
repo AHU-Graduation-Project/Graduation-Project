@@ -1,35 +1,38 @@
-import { useState } from "react";
-import {
-  Code2,
-  Map,
-  Sparkles,
-  BarChart2,
-  User,
-  Menu,
-  X,
-  Languages,
-} from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Code2, Map, Sparkles, BarChart2, Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import ThemeToggle from "./ThemeToggle";
 import ThemeIcon from "./ThemeIcon";
+import DropDown from "./DrowDown";
 
 export default function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { t, i18n } = useTranslation();
+  const [activeDropdown, setActiveDropdown] = useState<
+    "header" | "dropdown" | null
+  >(null);
 
-  const toggleLanguage = () => {
-    i18n.changeLanguage(i18n.language === "en" ? "ar" : "en");
-    document.documentElement.dir = i18n.language === "ar" ? "rtl" : "ltr";
-  };
+  const closeDropdown = () => setActiveDropdown(null);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (!(e.target as HTMLElement).closest(".dropdown-toggle-button")) {
+        closeDropdown();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const menuItems = [
-    { to: "/overview", icon: BarChart2, label: t("nav.overview") },
-
-    { to: "/", icon: Code2, label: t("nav.roadmaps") },
-    { to: "/generate", icon: Sparkles, label: t("nav.generate") },
-    { to: "/profile", icon: User, label: t("nav.profile") },
+    { to: "/overview", icon: BarChart2, label: "Overview" },
+    { to: "/", icon: Code2, label: "Roadmaps" },
+    { to: "/generate", icon: Sparkles, label: "Generate" },
   ];
+
+  const toggleHeaderMenu = () => {
+    setActiveDropdown(activeDropdown === "header" ? null : "header");
+  };
 
   return (
     <header className="border-b border-slate-200 dark:border-white/10 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm sticky top-0 z-50">
@@ -53,29 +56,28 @@ export default function Header() {
               <span>{item.label}</span>
             </Link>
           ))}
-          <button
-            onClick={toggleLanguage}
-            className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-          >
-            <ThemeIcon icon={Languages} className="w-5 h-5" />
-          </button>
           <ThemeToggle />
+          <DropDown
+            isOpen={activeDropdown === "dropdown"}
+            onOpen={() => setActiveDropdown("dropdown")}
+            onClose={closeDropdown}
+          />
         </nav>
 
         {/* Mobile Menu Button */}
         <div className="md:hidden flex items-center gap-4">
-          <button
-            onClick={toggleLanguage}
-            className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-          >
-            <ThemeIcon icon={Languages} className="w-5 h-5" />
-          </button>
           <ThemeToggle />
+          <DropDown
+            isOpen={activeDropdown === "dropdown"}
+            onOpen={() => setActiveDropdown("dropdown")}
+            onClose={closeDropdown}
+          />
+
           <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            onClick={toggleHeaderMenu}
             className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
-            {isMenuOpen ? (
+            {activeDropdown === "header" ? (
               <ThemeIcon icon={X} className="w-6 h-6" />
             ) : (
               <ThemeIcon icon={Menu} className="w-6 h-6" />
@@ -84,14 +86,14 @@ export default function Header() {
         </div>
 
         {/* Mobile Menu */}
-        {isMenuOpen && (
+        {activeDropdown === "header" && (
           <div className="md:hidden fixed inset-x-0 top-20 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 p-4">
             <nav className="flex flex-col gap-4">
               {menuItems.map((item) => (
                 <Link
                   key={item.to}
                   to={item.to}
-                  onClick={() => setIsMenuOpen(false)}
+                  onClick={closeDropdown}
                   className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors group"
                 >
                   <ThemeIcon icon={item.icon} className="w-5 h-5" />
