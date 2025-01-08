@@ -3,7 +3,6 @@ import { persist } from "zustand/middleware";
 
 import img from "../assets/images/mike_wazowski_meme_png_by_kylewithem_dg65n12-fullview.png";
 
-
 interface User {
   id: string;
   email: string;
@@ -15,8 +14,6 @@ interface User {
   level: string;
   country: string;
   selectedRoadmaps: string[];
-
-  progress: Record<string, string[]>;
   generatedRoadmaps: Array<{
     id: string;
     title: string;
@@ -28,7 +25,7 @@ interface User {
   completedRoadmaps: string[];
   selectedSkills: string[];
   progress: Record<string, string[]>; // roadmapId -> completed node IDs
-
+}
 
 interface AuthState {
   user: User | null;
@@ -58,11 +55,10 @@ interface AuthState {
     edges: any[]
   ) => void;
   deleteGeneratedRoadmap: (roadmapId: string) => void;
- 
+
   addSkill: (skill: string) => void;
   removeSkill: (skill: string) => void;
   updateUser: (updatedData: Partial<User>) => void;
-
 }
 
 // Mock data for total nodes in each roadmap
@@ -159,53 +155,9 @@ export const useAuthStore = create<AuthState>()(
           const selectedRoadmaps = state.user.selectedRoadmaps.includes(
             roadmapId
           )
-
             ? state.user.selectedRoadmaps.filter((id) => id !== roadmapId)
             : [...state.user.selectedRoadmaps, roadmapId];
 
-          return {
-            user: { ...state.user, selectedRoadmaps },
-          };
-        });
-      },
-      addSkill: (skill) => {
-        set((state) => {
-          if (!state.user) return state;
-
-          const selectedSkills = state.user.selectedSkills.includes(skill)
-            ? state.user.selectedSkills
-            : [...state.user.selectedSkills, skill];
-
-          return {
-            user: { ...state.user, selectedSkills },
-          };
-        });
-      },
-      removeSkill: (skill) => {
-        set((state) => {
-          if (!state.user) return state;
-
-          const selectedSkills = state.user.selectedSkills.filter(
-            (s) => s !== skill
-          );
-
-          return {
-            user: { ...state.user, selectedSkills },
-          };
-        });
-      },
-      updateUser: (updatedData) => {
-        set((state) => {
-          if (!state.user) return state;
-
-          return {
-            user: { ...state.user, ...updatedData },
-          };
-        });
-      },
-      updateUser: (updatedData) => {
-        set((state) => {
-          if (!state.user) return state;
           return {
             user: { ...state.user, selectedRoadmaps },
           };
@@ -290,4 +242,3 @@ export const useAuthStore = create<AuthState>()(
     }
   )
 );
-

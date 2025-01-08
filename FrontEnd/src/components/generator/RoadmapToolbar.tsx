@@ -21,7 +21,7 @@ export default function RoadmapToolbar({
   return (
     <>
       {/* Old Toolbar (Mobile) */}
-      <div className="absolute top-4 left-4 z-10 flex gap-2 hidden lg:flex">
+      <div className="absolute top-4 left-4 z-10 gap-2 hidden lg:flex">
         <button
           onClick={() => setShowSaveModal(true)}
           className="px-6 py-3 rounded-lg bg-theme text-white hover:opacity-90 transition-colors flex items-center gap-2"
