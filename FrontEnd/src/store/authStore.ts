@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+
 import img from "../assets/images/mike_wazowski_meme_png_by_kylewithem_dg65n12-fullview.png";
 
 interface User {
@@ -13,6 +14,14 @@ interface User {
   level: string;
   country: string;
   selectedRoadmaps: string[];
+  generatedRoadmaps: Array<{
+    id: string;
+    title: string;
+    description: string;
+    nodes: any[];
+    edges: any[];
+    createdAt: string;
+  }>;
   completedRoadmaps: string[];
   selectedSkills: string[];
   progress: Record<string, string[]>; // roadmapId -> completed node IDs
@@ -38,12 +47,15 @@ interface AuthState {
     nodeId: string,
     completed: boolean
   ) => void;
-  updateProgress: (
-    roadmapId: string,
-    nodeId: string,
-    completed: boolean
-  ) => void;
   selectRoadmap: (roadmapId: string) => void;
+  saveGeneratedRoadmap: (
+    title: string,
+    description: string,
+    nodes: any[],
+    edges: any[]
+  ) => void;
+  deleteGeneratedRoadmap: (roadmapId: string) => void;
+
   addSkill: (skill: string) => void;
   removeSkill: (skill: string) => void;
   updateUser: (updatedData: Partial<User>) => void;
@@ -77,6 +89,8 @@ export const useAuthStore = create<AuthState>()(
               country: "",
               selectedRoadmaps: [],
               completedRoadmaps: [],
+              generatedRoadmaps: [], // Initialize empty array
+
               selectedSkills: [],
               progress: {},
             },
@@ -87,7 +101,6 @@ export const useAuthStore = create<AuthState>()(
       signup: (email, password, fname, lname, position, level, country) => {
         set({
           user: {
-            id: "1",
             id: "1",
             email,
             fname,
@@ -101,6 +114,7 @@ export const useAuthStore = create<AuthState>()(
             completedRoadmaps: [],
             selectedSkills: [],
             progress: {},
+            generatedRoadmaps: [], // Initialize empty array
           },
           isAuthenticated: true,
         });
@@ -138,9 +152,6 @@ export const useAuthStore = create<AuthState>()(
         set((state) => {
           if (!state.user) return state;
 
-          const selectedRoadmaps = state.user.selectedRoadmaps.includes(
-            roadmapId
-          )
           const selectedRoadmaps = state.user.selectedRoadmaps.includes(
             roadmapId
           )
@@ -187,54 +198,47 @@ export const useAuthStore = create<AuthState>()(
           };
         });
       },
-      updateUser: (updatedData) => {
+      saveGeneratedRoadmap: (title, description, nodes, edges) => {
         set((state) => {
           if (!state.user) return state;
+
+          const newRoadmap = {
+            id: `generated-${Date.now()}`,
+            title,
+            description,
+            nodes,
+            edges,
+            createdAt: new Date().toISOString(),
+          };
+
           return {
-            user: { ...state.user, selectedRoadmaps },
+            user: {
+              ...state.user,
+              generatedRoadmaps: [
+                ...(state.user.generatedRoadmaps || []),
+                newRoadmap,
+              ],
+            },
           };
         });
       },
-      addSkill: (skill) => {
-        set((state) => {
-          if (!state.user) return state;
-
-          const selectedSkills = state.user.selectedSkills.includes(skill)
-            ? state.user.selectedSkills
-            : [...state.user.selectedSkills, skill];
-
-          return {
-            user: { ...state.user, selectedSkills },
-          };
-        });
-      },
-      removeSkill: (skill) => {
-        set((state) => {
-          if (!state.user) return state;
-
-          const selectedSkills = state.user.selectedSkills.filter(
-            (s) => s !== skill
-          );
-
-          return {
-            user: { ...state.user, selectedSkills },
-          };
-        });
-      },
-      updateUser: (updatedData) => {
+      deleteGeneratedRoadmap: (roadmapId) => {
         set((state) => {
           if (!state.user) return state;
 
           return {
-            user: { ...state.user, ...updatedData },
+            user: {
+              ...state.user,
+              generatedRoadmaps: state.user.generatedRoadmaps.filter(
+                (roadmap) => roadmap.id !== roadmapId
+              ),
+            },
           };
         });
       },
     }),
     {
-      name: "auth-storage",
-      name: "auth-storage",
+      name: "auth-storage-dev-path",
     }
   )
 );
-

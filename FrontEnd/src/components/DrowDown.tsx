@@ -68,7 +68,9 @@ function DropdownToggle({
                   Color Themes
                 </button>
               </li>
-              {isColors && <ThemeSelector />}
+              {/* Color Themes enable over flow */}
+        {isColors && <ThemeSelector />}
+
             </ul>
           </nav>
         </div>
