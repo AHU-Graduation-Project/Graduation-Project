@@ -1,7 +1,10 @@
-import { X, Briefcase, TrendingUp, Target } from "lucide-react";
+import { X, BookOpen, Video, Globe } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { cn } from "../utils/cn";
 import { useAuthStore } from "../store/authStore";
 import { useNavigate } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
+
 
 interface RoadmapInfoProps {
   isOpen: boolean;
@@ -21,6 +24,32 @@ export default function RoadmapInfo({
 
   if (!isOpen || !roadmap) return null;
 
+
+  const resources = [
+    {
+      label: "Documentation",
+      description: "Official documentation and guides",
+      icon: BookOpen,
+      color: "text-blue-500",
+      url: "https://developer.mozilla.org/",
+    },
+    {
+      label: "Video Tutorials",
+      description: "Curated video courses and tutorials",
+      icon: Video,
+      color: "text-green-500",
+      url: "https://www.youtube.com/",
+    },
+    {
+      label: "Online Resources",
+      description: "Articles, blogs, and community resources",
+      icon: Globe,
+      color: "text-purple-500",
+      url: "https://dev.to/",
+
+    },
+  ];
+
   const handleAddToRoadmap = () => {
     if (!user) {
       navigate("/login");
@@ -28,30 +57,6 @@ export default function RoadmapInfo({
     }
     selectRoadmap(roadmap.id);
   };
-
-  const marketStats = [
-    {
-      label: "Market Growth",
-      value: "+25%",
-      description: "Annual growth in job opportunities",
-      icon: TrendingUp,
-      color: "text-green-500",
-    },
-    {
-      label: "Average Salary",
-      value: "$95,000",
-      description: "Based on current market data",
-      icon: Briefcase,
-      color: "text-blue-500",
-    },
-    {
-      label: "Time to Master",
-      value: "6-12 months",
-      description: "With dedicated learning",
-      icon: Target,
-      color: "text-purple-500",
-    },
-  ];
 
   return (
     <div
@@ -79,45 +84,48 @@ export default function RoadmapInfo({
         </div>
 
         <div className="space-y-6">
-          <div>
-            <p className="text-slate-600 dark:text-slate-300">
-              {roadmap.description}
-            </p>
+          <div className="prose dark:prose-invert prose-sm max-w-none">
+            <ReactMarkdown>{roadmap.description}</ReactMarkdown>
           </div>
 
           <div className="space-y-4">
-            {marketStats.map((stat, index) => (
-              <div
+            <h3 className="text-lg font-semibold text-theme">
+              Learning Resources
+            </h3>
+            {resources.map((resource, index) => (
+              <a
                 key={index}
-                className="p-4 rounded-lg bg-slate-50 dark:bg-slate-900/50"
+                href={resource.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block p-4 rounded-lg bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors"
               >
                 <div className="flex items-start gap-3">
                   <div
                     className={cn(
                       "p-2 rounded-lg bg-slate-100 dark:bg-slate-800",
-                      stat.color
+
+                      resource.color
                     )}
                   >
-                    <stat.icon className="w-5 h-5" />
+                    <resource.icon className="w-5 h-5" />
+
                   </div>
                   <div>
-                    <div className="flex items-baseline gap-2">
-                      <h3 className="font-medium">{stat.label}</h3>
-                      <span className="text-lg font-bold">{stat.value}</span>
-                    </div>
+                    <h4 className="font-medium">{resource.label}</h4>
                     <p className="text-sm text-slate-500 dark:text-slate-400">
-                      {stat.description}
+                      {resource.description}
                     </p>
                   </div>
                 </div>
-              </div>
+              </a>
             ))}
           </div>
 
           {!isSelected && (
             <button
               onClick={handleAddToRoadmap}
-              className="w-full px-4 py-2 rounded-lg bg-theme text-white hover:bg-blue-600 transition-colors"
+              className="w-full px-4 py-2 rounded-lg bg-theme text-white hover:opacity-90 transition-colors"
             >
               Add to My Roadmaps
             </button>

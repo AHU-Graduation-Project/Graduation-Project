@@ -39,21 +39,32 @@ export default {
         icon: "transparent",
       },
       backgroundClip: {
-        text: "text",
+        'text': 'text',
       },
-      animation: {
-        "gradient-x": "gradient-x 6s ease infinite",
-        particle: "particle 4s ease-in-out infinite",
-      },
-      keyframes: {
-        "gradient-x": {
-          "0%, 100%": { backgroundPosition: "0% 50%" },
-          "50%": { backgroundPosition: "100% 50%" },
-        },
-        particle: {
-          "0%": { transform: "translateY(0) scale(1)", opacity: "1" },
-          "50%": { transform: "translateY(-20px) scale(1.2)", opacity: "0.7" },
-          "100%": { transform: "translateY(0) scale(1)", opacity: "1" },
+      typography: {
+        DEFAULT: {
+          css: {
+            maxWidth: 'none',
+            color: 'inherit',
+            a: {
+              color: 'inherit',
+              textDecoration: 'underline',
+              fontWeight: '500',
+            },
+            code: {
+              color: 'inherit',
+              background: 'hsl(var(--muted))',
+              padding: '0.2em 0.4em',
+              borderRadius: '0.25rem',
+              fontWeight: '400',
+            },
+            'code::before': {
+              content: '""',
+            },
+            'code::after': {
+              content: '""',
+            },
+          },
         },
       },
     },
@@ -62,7 +73,8 @@ export default {
     require("tailwindcss"),
     require("autoprefixer"),
     require("tailwindcss-animate"),
-    function ({ addBase, addUtilities }) {
+    require('@tailwindcss/typography'),
+    function({ addBase, addUtilities }) {
       addBase({
         ":root": {
           "--theme-gradient":
@@ -89,6 +101,23 @@ export default {
           "-webkit-text-fill-color": "transparent",
           "background-clip": "text",
           color: "transparent",
+        },
+        ".bg-theme-shadow": {
+          boxShadow: `0 4px 15px var(--theme-from), 0 8px 30px var(--theme-to)`,
+        },
+        ".bg-theme-blur": {
+          position: "relative", // Make sure the element has a position for the pseudo-element
+        },
+        ".bg-theme-blur::before": {
+          content: '""',
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: "var(--theme-gradient)",
+          filter: "blur(3px)", // Apply the background blur
+          zIndex: -1, // Ensure it stays behind the content
         },
       });
     },

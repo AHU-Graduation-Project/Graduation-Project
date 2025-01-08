@@ -20,6 +20,7 @@ function AppContent() {
 
   // Check if current route is "/Auth"
   const isAuthPage = location.pathname === "/auth";
+
   const isRoadMap = location.pathname === "/roadmap";
 
   // Initialize theme on app load
@@ -64,6 +65,7 @@ function AppContent() {
         <Route path="/profile" element={<Profile />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
+      {!isAuthPage && <FooterComponent />}
       {!(isAuthPage || isRoadMap) && <FooterComponent />}
     </div>
   );

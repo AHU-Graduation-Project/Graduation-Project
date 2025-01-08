@@ -1,19 +1,12 @@
-import { useState, useEffect, useCallback } from "react";
-import { Download, ChevronDown, ChevronUp } from "lucide-react";
-import { cn } from "../utils/cn";
-import {
-  PDFDownloadLink,
-  Document,
-  Page,
-  Text,
-  View,
-  StyleSheet,
-  Image,
-} from "@react-pdf/renderer";
-import { useNavigate } from "react-router-dom";
-import { useAuthStore } from "../store/authStore";
-import html2canvas from "html2canvas";
-import ThemeIcon from "./ThemeIcon";
+import { useState, useEffect, useCallback } from 'react';
+import { Download, ChevronDown, ChevronUp } from 'lucide-react';
+import { cn } from '../utils/cn';
+import { PDFDownloadLink, Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
+import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../store/authStore';
+import html2canvas from 'html2canvas';
+import ThemeIcon from './ThemeIcon';
+
 
 const styles = StyleSheet.create({
   page: {
@@ -64,12 +57,11 @@ const RoadmapPDF = ({
   </Document>
 );
 
-// ... rest of your existing imports
 
-export default function RoadmapTopBar({
-  roadmap,
-  progress,
-  completedNodes,
+export default function RoadmapTopBar({ 
+  roadmap, 
+  progress, 
+  completedNodes, 
   totalNodes,
   nodes,
   edges,
@@ -110,7 +102,7 @@ export default function RoadmapTopBar({
 
   const handleAddToRoadmap = () => {
     if (!user) {
-      navigate("/login");
+      navigate('/auth');
       return;
     }
     selectRoadmap(roadmap.id);
@@ -154,8 +146,14 @@ export default function RoadmapTopBar({
                 "bg-theme text-white hover:opacity-90 transition-colors"
               )}
             >
-              {({ loading }) => (
-                <button onClick={captureFlow} disabled={loading}>
+
+              {({ loading }: { loading: boolean }) => (
+                <button
+                  onClick={captureFlow}
+                  disabled={loading}
+                  className="flex items-center gap-2"
+                >
+
                   <Download className="w-4 h-4" />
                   <span className="hidden md:inline">
                     {loading ? "Preparing PDF..." : "Download PDF"}
