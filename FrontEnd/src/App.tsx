@@ -23,9 +23,20 @@ function AppContent() {
   // Check if current route is "/Auth"
   const isAuthPage = location.pathname === "/auth";
 
+  // Check if current route is "/Auth"
+  const isAuthPage = location.pathname === "/auth";
+
   // Initialize theme on app load
   useEffect(() => {
     if (currentTheme) {
+      document.documentElement.style.setProperty(
+        "--theme-from",
+        currentTheme.colors.from
+      );
+      document.documentElement.style.setProperty(
+        "--theme-to",
+        currentTheme.colors.to
+      );
       document.documentElement.style.setProperty(
         "--theme-from",
         currentTheme.colors.from
@@ -39,6 +50,7 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
+      {!isAuthPage && <Header />}
       {!isAuthPage && <Header />}
       <Routes>
         <Route path="/" element={<Overview />} />
@@ -54,9 +66,19 @@ function AppContent() {
             </div>
           }
         />
+        <Route
+          path="/Auth"
+          element={
+            <div className="relative w-full h-screen">
+              <Background />
+              <Auth />
+            </div>
+          }
+        />
         <Route path="/profile" element={<Profile />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
+      {!isAuthPage && <FooterComponent />}
       {!isAuthPage && <FooterComponent />}
     </div>
   );
@@ -71,3 +93,4 @@ export default function App() {
     </ThemeProvider>
   );
 }
+
