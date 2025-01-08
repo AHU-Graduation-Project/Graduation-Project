@@ -42,7 +42,7 @@ function SelectedRoadmapCard({ roadmap, progress, onRemove }) {
         className="absolute inset-0 bg-cover bg-center opacity-10"
         style={{ backgroundImage: `url(${roadmap.image})` }}
       />
-      <div className="relative p-6">
+      <div className="relative p-5">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-3">
             <ThemeIcon icon={roadmap.icon} className="w-6 h-6" />

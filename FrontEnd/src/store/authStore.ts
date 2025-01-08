@@ -9,6 +9,7 @@ interface User {
   fname: string;
   lname: string;
   password: string;
+  isEmailConformed: boolean;
   profilePicture: string;
   position: string;
   level: string;
@@ -37,6 +38,7 @@ interface AuthState {
     password: string,
     fname: string,
     lname: string,
+    isEmailConformed: boolean,
     position: string,
     level: string,
     country: string
@@ -82,8 +84,9 @@ export const useAuthStore = create<AuthState>()(
             fname: "Ahmad",
             lname: "Alshamary",
             password,
+            isEmailConformed: false,
             profilePicture: img,
-            position: "",
+            position: "Full Stack",
             level: "",
             country: "",
             selectedRoadmaps: [],
@@ -95,7 +98,16 @@ export const useAuthStore = create<AuthState>()(
           isAuthenticated: true,
         });
       },
-      signup: (email, password, fname, lname, position, level, country) => {
+      signup: (
+        email,
+        password,
+        fname,
+        lname,
+        isEmailConformed,
+        position,
+        level,
+        country
+      ) => {
         set({
           user: {
             id: "1",
@@ -103,6 +115,7 @@ export const useAuthStore = create<AuthState>()(
             fname,
             lname,
             password,
+            isEmailConformed,
             profilePicture: img,
             position,
             level,

@@ -21,8 +21,7 @@ const countries = [
   "Mexico",
 ];
 
-const positions = ["Front end", "Backend", "DevOps", "Software Enginner"];
-const levels = ["Junior", "Middle", "Senior"];
+const levels = ["Junior", "Middle", "Senior", "Team Leader", "Project Manager"];
 
 const EditProfile = () => {
   const { user, updateUser } = useAuthStore();
@@ -30,6 +29,9 @@ const EditProfile = () => {
   const [fname, setFirstName] = useState(user?.fname || "");
   const [lname, setLastName] = useState(user?.lname || "");
   const [email, setEmail] = useState(user?.email || "");
+  const [isEmailConf, setIsEmailConf] = useState(
+    user?.isEmailConformed || false
+  );
   const [position, setPosition] = useState(user?.position || "");
   const [level, setLevel] = useState(user?.level || "");
   const [country, setCountry] = useState(user?.country || "");
@@ -156,21 +158,26 @@ const EditProfile = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full border bg-transparent border-gray-300 rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-theme"
               />
+              {!isEmailConf && (
+                <p className="text-red-500 text-base mt-1">
+                  Please confirm your email !
+                </p>
+              )}
             </div>
 
             <div className="flex-1">
               <label
-                htmlFor="country"
+                htmlFor="position"
                 className="block text-sm font-medium text-theme mb-1"
               >
-                Country
+                Position
               </label>
-              {/* <Country /> */}
-              <SelectDropDown
-                items={countries}
-                selectedValue={country}
-                onChange={setCountry}
-                className="border border-gray-300 rounded-md text-sm"
+              <input
+                type="text"
+                id="position"
+                value={position}
+                onChange={(e) => setPosition(e.target.value)}
+                className="w-full border bg-transparent border-gray-300 rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-theme"
               />
             </div>
           </div>
@@ -180,16 +187,17 @@ const EditProfile = () => {
       <div className="flex flex-col lg:flex-row lg:gap-9 pt-1 w-full">
         <div className="my-3 min-w-48">
           <label
-            htmlFor="position"
+            htmlFor="country"
             className="block text-sm font-medium text-theme mb-1"
           >
-            Position
+            Country
           </label>
+
           <SelectDropDown
-            items={positions}
-            selectedValue={position}
-            onChange={setPosition}
-            className="w-60 p-2 border border-gray-300 rounded-md text-sm"
+            items={countries}
+            selectedValue={country}
+            onChange={setCountry}
+            className="border border-gray-300 rounded-md text-sm"
           />
         </div>
 

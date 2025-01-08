@@ -1,12 +1,23 @@
 import { useState } from "react";
 import LoginForm from "../components/LoginForm";
 import SignupForm from "../components/SignUpForm";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 
 export default function Auth() {
   const [isSignUp, setIsSignUp] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <div className="relative w-full h-screen overflow-hidden bg-transparent">
+      {/* Back to Home Button */}
+      <div
+        className="absolute top-4 left-4 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center bg-gray-800 text-white rounded-full shadow-lg cursor-pointer hover:bg-gray-700 transition-colors"
+        onClick={() => navigate("/")}
+      >
+        <ArrowLeft className="w-6 h-6" />
+      </div>
+
       <div className="min-h-screen flex items-center justify-center text-gray-300 font-sans ">
         <div className="relative w-full max-w-5xl overflow-hidden flex flex-col md:flex-row sm:px-6 md:px-0 md:bg-gray-800 md:bg-opacity-75 md:rounded-xl">
           {/* Side Button */}
@@ -19,7 +30,7 @@ export default function Auth() {
               <div className="flex justify-center flex-col p-24 ">
                 <h1 className="text-3xl py-5">Don't have an account?</h1>
                 <p className="pb-6">
-                  Personalze Switter based on where you've seen switter content
+                  Personalize Switter based on where you've seen switter content
                   on the web. Learn more.
                 </p>
                 <button
@@ -31,9 +42,9 @@ export default function Auth() {
               </div>
             ) : (
               <div className="flex justify-center flex-col p-24 ">
-                <h1 className="text-3xl py-5 ">Already have an account?</h1>
+                <h1 className="text-3xl py-5">Already have an account?</h1>
                 <p className="pb-6">
-                  Personalze Switter based on where you've seen switter content
+                  Personalize Switter based on where you've seen switter content
                   on the web. Learn more.
                 </p>
                 <button
@@ -57,7 +68,7 @@ export default function Auth() {
 
           {/* Sign-Up Form */}
           <div
-            className={`hidden sm:block w-full md:w-1/2 p-12  md:p-8 transition-transform duration-700 ease-in-out bg-gray-800 bg-opacity-90 rounded-xl md:bg-gray-800  ${
+            className={`hidden sm:block w-full md:w-1/2 p-12 md:p-8 transition-transform duration-700 ease-in-out bg-gray-800 bg-opacity-90 rounded-xl md:bg-gray-800 ${
               isSignUp ? "translate-x-0" : "translate-x-full"
             }`}
           >

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useAuthStore } from "../store/authStore";
 import ReactDOM from "react-dom";
 
@@ -13,6 +13,20 @@ const ChangePassword = ({ onClose }: ChangePasswordProps) => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const modalRef = useRef<HTMLDivElement | null>(null);
+
+  const handleClickOutside = (e: MouseEvent) => {
+    if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
+      onClose();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const handleSubmit = () => {
     if (!user || user.password !== currentPassword) {
@@ -39,8 +53,11 @@ const ChangePassword = ({ onClose }: ChangePasswordProps) => {
   };
 
   return ReactDOM.createPortal(
-    <div className="fixed  inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="w-full m-6 dark:bg-slate-800 bg-slate-100 text-slate-900 dark:text-white max-w-md rounded-lg shadow-lg p-6">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div
+        ref={modalRef}
+        className="w-full m-6 dark:bg-slate-800 bg-slate-100 text-slate-900 dark:text-white max-w-md rounded-lg shadow-lg p-6"
+      >
         <h3 className="text-lg font-semibold text-theme mb-2">
           Change Password
         </h3>
