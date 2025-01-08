@@ -20,7 +20,7 @@ export function SignupForm() {
       email,
       password,
     });
-    navigate("/BrowseRoadmaps");
+    navigate("/Profile");
   };
 
   return (

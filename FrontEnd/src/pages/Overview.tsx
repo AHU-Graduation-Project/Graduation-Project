@@ -49,13 +49,13 @@ export default function Overview() {
               {!isAuthenticated && (
                 <div className="flex gap-4">
                   <Link
-                    to="/signup"
+                    to="/auth"
                     className="px-6 py-3 rounded-lg bg-theme text-white font-medium hover:from-blue-600 hover:to-purple-600 transition-all"
                   >
                     Get Started
                   </Link>
                   <Link
-                    to="/login"
+                    to="/auth"
                     className="px-6 py-3 rounded-lg bg-white/10 text-white font-medium hover:bg-white/20 transition-all"
                   >
                     Sign In

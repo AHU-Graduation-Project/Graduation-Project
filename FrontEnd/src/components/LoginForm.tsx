@@ -12,6 +12,9 @@ export default function LoginForm() {
   const [error, setError] = useState<string | null>(null);
   const [isSign, setIsSign] = useState(false);
 
+  const userName = "ahmad@gmail.com";
+  const userPassword = "1234";
+
   const { login, user } = useAuthStore();
 
   const handleSignToggle = () => {
@@ -20,13 +23,18 @@ export default function LoginForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      await login(email, password);
-      setError(null);
-      navigate("/BrowseRoadmaps");
-    } catch (err: any) {
-      setError(err.message || "Login failed. Please try again.");
+    if (email === userName && password === userPassword) {
+      login(email, password);
+      navigate("/profile");
+    } else {
+      setError("Login failed. Please try again.");
     }
+
+    // try {
+    //   await login(email, password);
+    // } catch (err: any) {
+    //   setError(err.message || "Login failed. Please try again.");
+    // }
   };
 
   return (

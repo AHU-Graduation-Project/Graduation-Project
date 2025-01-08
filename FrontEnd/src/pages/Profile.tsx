@@ -11,7 +11,7 @@ export default function Profile() {
 
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate("/login");
+      navigate("/auth");
     }
   }, [isAuthenticated, navigate]);
 

@@ -75,28 +75,25 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       completedRoadmaps: [],
       login: (email, password) => {
-        if (email === "ahmad@gmail.com" && password === "1234") {
-          set({
-            user: {
-              id: "1",
-              email,
-              fname: "Ahmad",
-              lname: "Alshamary",
-              password,
-              profilePicture: img,
-              position: "",
-              level: "",
-              country: "",
-              selectedRoadmaps: [],
-              completedRoadmaps: [],
-              generatedRoadmaps: [], // Initialize empty array
-
-              selectedSkills: [],
-              progress: {},
-            },
-            isAuthenticated: true,
-          });
-        }
+        set({
+          user: {
+            id: "1",
+            email,
+            fname: "Ahmad",
+            lname: "Alshamary",
+            password,
+            profilePicture: img,
+            position: "",
+            level: "",
+            country: "",
+            selectedRoadmaps: [],
+            completedRoadmaps: [],
+            generatedRoadmaps: [], // Initialize empty array
+            selectedSkills: [],
+            progress: {},
+          },
+          isAuthenticated: true,
+        });
       },
       signup: (email, password, fname, lname, position, level, country) => {
         set({

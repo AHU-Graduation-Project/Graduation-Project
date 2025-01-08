@@ -1,5 +1,4 @@
-
-import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import Header from "./components/Header";
@@ -17,11 +16,11 @@ import { useThemeStore } from "./store/themeStore";
 
 function AppContent() {
   const location = useLocation();
-  const showFooter = !location.pathname.startsWith("/roadmap");
   const { currentTheme } = useThemeStore();
 
   // Check if current route is "/Auth"
   const isAuthPage = location.pathname === "/auth";
+  const isRoadMap = location.pathname === "/roadmap";
 
   // Initialize theme on app load
   useEffect(() => {
@@ -65,7 +64,7 @@ function AppContent() {
         <Route path="/profile" element={<Profile />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
-      {!isAuthPage && <FooterComponent />}
+      {!(isAuthPage || isRoadMap) && <FooterComponent />}
     </div>
   );
 }
@@ -79,4 +78,3 @@ export default function App() {
     </ThemeProvider>
   );
 }
-
