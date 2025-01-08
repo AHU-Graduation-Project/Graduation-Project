@@ -58,28 +58,28 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       completedRoadmaps: [],
       login: (email, password) => {
-        // Simulate API call
-        set({
-          user: {
-            id: "1",
-            email,
-            fname: "ahmad",
-            lname: "alshamary",
-            password,
-            profilePicture: img,
-            position: "Front end",
-            level: "Intermediate",
-            country: "Jordan",
-            selectedRoadmaps: [],
-            completedRoadmaps: [],
-            selectedSkills: ["CSS", "HTML"],
-            progress: {},
-          },
-          isAuthenticated: true,
-        });
+        if (email === "ahmad@gmail.com" && password === "1234") {
+          set({
+            user: {
+              id: "1",
+              email,
+              fname: "Ahmad",
+              lname: "Alshamary",
+              password,
+              profilePicture: img,
+              position: "",
+              level: "",
+              country: "",
+              selectedRoadmaps: [],
+              completedRoadmaps: [],
+              selectedSkills: [],
+              progress: {},
+            },
+            isAuthenticated: true,
+          });
+        }
       },
       signup: (email, password, fname, lname, position, level, country) => {
-        // Simulate API call
         set({
           user: {
             id: "1",
@@ -109,29 +109,21 @@ export const useAuthStore = create<AuthState>()(
           const progress = { ...state.user.progress };
           const completedNodes = progress[roadmapId] || [];
 
-          if (nodeId) {
-            // Add or remove the node from progress
-            if (completed && !completedNodes.includes(nodeId)) {
-              progress[roadmapId] = [...completedNodes, nodeId];
-            } else if (!completed) {
-              progress[roadmapId] = completedNodes.filter(
-                (id) => id !== nodeId
-              );
-            }
+          if (completed && !completedNodes.includes(nodeId)) {
+            progress[roadmapId] = [...completedNodes, nodeId];
+          } else if (!completed) {
+            progress[roadmapId] = completedNodes.filter((id) => id !== nodeId);
           }
-          // Check if the roadmap is fully completed
+
           const totalNodes = roadmapNodeCounts[roadmapId] || 0;
           const isComplete = progress[roadmapId]?.length === totalNodes;
 
           const updatedCompletedRoadmaps = isComplete
-            ? [...new Set([...state.completedRoadmaps, roadmapId])] // Add roadmap if complete
-            : state.completedRoadmaps.filter((id) => id !== roadmapId); // Remove if no longer complete
+            ? [...new Set([...state.completedRoadmaps, roadmapId])]
+            : state.completedRoadmaps.filter((id) => id !== roadmapId);
 
           return {
-            user: {
-              ...state.user,
-              progress,
-            },
+            user: { ...state.user, progress },
             completedRoadmaps: updatedCompletedRoadmaps,
           };
         });
@@ -147,10 +139,7 @@ export const useAuthStore = create<AuthState>()(
             : [...state.user.selectedRoadmaps, roadmapId];
 
           return {
-            user: {
-              ...state.user,
-              selectedRoadmaps,
-            },
+            user: { ...state.user, selectedRoadmaps },
           };
         });
       },
@@ -163,10 +152,7 @@ export const useAuthStore = create<AuthState>()(
             : [...state.user.selectedSkills, skill];
 
           return {
-            user: {
-              ...state.user,
-              selectedSkills,
-            },
+            user: { ...state.user, selectedSkills },
           };
         });
       },
@@ -179,21 +165,16 @@ export const useAuthStore = create<AuthState>()(
           );
 
           return {
-            user: {
-              ...state.user,
-              selectedSkills,
-            },
+            user: { ...state.user, selectedSkills },
           };
         });
       },
       updateUser: (updatedData) => {
         set((state) => {
           if (!state.user) return state;
+
           return {
-            user: {
-              ...state.user,
-              ...updatedData,
-            },
+            user: { ...state.user, ...updatedData },
           };
         });
       },

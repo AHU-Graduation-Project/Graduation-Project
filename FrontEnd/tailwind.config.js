@@ -31,15 +31,30 @@ export default {
         },
       },
       backgroundImage: {
-        'theme': 'var(--theme-gradient)',
-        'icon': 'var(--theme-gradient)',
+        theme: "var(--theme-gradient)",
+        icon: "var(--theme-gradient)",
       },
       textColor: {
-        'theme': 'transparent',
-        'icon': 'transparent',
+        theme: "transparent",
+        icon: "transparent",
       },
       backgroundClip: {
-        'text': 'text',
+        text: "text",
+      },
+      animation: {
+        "gradient-x": "gradient-x 6s ease infinite",
+        particle: "particle 4s ease-in-out infinite",
+      },
+      keyframes: {
+        "gradient-x": {
+          "0%, 100%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
+        },
+        particle: {
+          "0%": { transform: "translateY(0) scale(1)", opacity: "1" },
+          "50%": { transform: "translateY(-20px) scale(1.2)", opacity: "0.7" },
+          "100%": { transform: "translateY(0) scale(1)", opacity: "1" },
+        },
       },
     },
   },
@@ -47,32 +62,33 @@ export default {
     require("tailwindcss"),
     require("autoprefixer"),
     require("tailwindcss-animate"),
-    function({ addBase, addUtilities }) {
+    function ({ addBase, addUtilities }) {
       addBase({
-        ':root': {
-          '--theme-gradient': 'linear-gradient(to right, var(--theme-from), var(--theme-to))',
-          '--theme-from': '#3B82F6',
-          '--theme-to': '#8B5CF6',
+        ":root": {
+          "--theme-gradient":
+            "linear-gradient(to right, var(--theme-from), var(--theme-to))",
+          "--theme-from": "#3B82F6",
+          "--theme-to": "#8B5CF6",
         },
       });
-      
+
       addUtilities({
-        '.text-theme': {
-          'background': 'var(--theme-gradient)',
-          '-webkit-background-clip': 'text',
-          '-webkit-text-fill-color': 'transparent',
-          'background-clip': 'text',
-          'color': 'transparent',
+        ".text-theme": {
+          background: "var(--theme-gradient)",
+          "-webkit-background-clip": "text",
+          "-webkit-text-fill-color": "transparent",
+          "background-clip": "text",
+          color: "transparent",
         },
-        '.bg-theme': {
-          'background': 'var(--theme-gradient)',
+        ".bg-theme": {
+          background: "var(--theme-gradient)",
         },
-        '.bg-icon': {
-          'background': 'var(--theme-gradient)',
-          '-webkit-background-clip': 'text',
-          '-webkit-text-fill-color': 'transparent',
-          'background-clip': 'text',
-          'color': 'transparent',
+        ".bg-icon": {
+          background: "var(--theme-gradient)",
+          "-webkit-background-clip": "text",
+          "-webkit-text-fill-color": "transparent",
+          "background-clip": "text",
+          color: "transparent",
         },
       });
     },
