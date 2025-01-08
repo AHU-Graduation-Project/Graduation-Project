@@ -1,20 +1,26 @@
 import { useState } from "react";
 import { InputField } from "./TextInput";
+import { useAuthStore } from "../store/authStore";
+import { useNavigate } from "react-router-dom";
 
-interface SignupFormProps {
-  onSubmit: (name: string, email: string, password: string) => void;
-  onLoginClick: () => void;
-}
-
-export function SignupForm({ onSubmit, onLoginClick }: SignupFormProps) {
-  const [name, setName] = useState("");
+export function SignupForm() {
+  const { updateUser } = useAuthStore();
+  const navigate = useNavigate();
+  const [fname, setfName] = useState("");
+  const [lname, setlName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(name, email, password);
+    updateUser({
+      fname,
+      lname,
+      email,
+      password,
+    });
+    navigate("/BrowseRoadmaps");
   };
 
   return (
@@ -29,9 +35,17 @@ export function SignupForm({ onSubmit, onLoginClick }: SignupFormProps) {
         <InputField
           id="signup-name"
           type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          label="Full Name"
+          value={fname}
+          onChange={(e) => setfName(e.target.value)}
+          label="First Name"
+          placeholder="Full Name"
+        />
+        <InputField
+          id="signup-name"
+          type="text"
+          value={lname}
+          onChange={(e) => setlName(e.target.value)}
+          label="Last Name"
           placeholder="Full Name"
         />
         <InputField
@@ -52,13 +66,9 @@ export function SignupForm({ onSubmit, onLoginClick }: SignupFormProps) {
           showToggle
           inputClickHandler={() => setShowPassword(!showPassword)}
         />
-        <div className="text-sm text-center text-gray-400 mt-4">
+        <div className=" hidden text-sm text-center text-gray-400 mt-4">
           <span>Already have an account? </span>
-          <button
-            type="button"
-            onClick={onLoginClick}
-            className="text-theme  transition"
-          >
+          <button type="button" className="text-theme  transition">
             Login
           </button>
         </div>

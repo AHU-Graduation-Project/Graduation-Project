@@ -1,28 +1,9 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuthStore } from "../store/authStore";
 import LoginForm from "../components/LoginForm";
 import SignupForm from "../components/SignUpForm";
 
 export default function Auth() {
-  const navigate = useNavigate();
-  const login = useAuthStore((state) => state.login);
-  const signup = useAuthStore((state) => state.signup);
   const [isSignUp, setIsSignUp] = useState(false);
-
-  const handleSubmitLogin = (email: string, password: string) => {
-    login(email, password);
-    navigate("/BrowseRoadmaps");
-  };
-
-  const handleSubmitSignUp = (
-    name: string,
-    email: string,
-    password: string
-  ) => {
-    signup(email, password, name);
-    navigate("/profile");
-  };
 
   return (
     <div className="relative w-full h-screen overflow-hidden bg-transparent">
@@ -67,26 +48,20 @@ export default function Auth() {
 
           {/* Login Form */}
           <div
-            className={`w-full md:w-1/2 p-12  md:p-8 transition-transform duration-700 ease-in-out bg-gray-800 bg-opacity-75 rounded-xl md:bg-gray-800 ${
+            className={`w-full md:w-1/2 p-12 mt-20 sm:mt-0 md:py-28 transition-transform duration-700 ease-in-out bg-gray-800 bg-opacity-90 rounded-xl md:bg-gray-800 ${
               isSignUp ? "-translate-x-full" : "translate-x-0"
             }`}
           >
-            <LoginForm
-              onSubmit={handleSubmitLogin}
-              onSignUpClick={() => setIsSignUp(true)}
-            />
+            <LoginForm />
           </div>
 
           {/* Sign-Up Form */}
           <div
-            className={`w-full md:w-1/2 p-12  md:p-8 transition-transform duration-700 ease-in-out bg-gray-800 bg-opacity-75 rounded-xl md:bg-gray-800  ${
+            className={`hidden sm:block w-full md:w-1/2 p-12  md:p-8 transition-transform duration-700 ease-in-out bg-gray-800 bg-opacity-90 rounded-xl md:bg-gray-800  ${
               isSignUp ? "translate-x-0" : "translate-x-full"
             }`}
           >
-            <SignupForm
-              onSubmit={handleSubmitSignUp}
-              onLoginClick={() => setIsSignUp(false)}
-            />
+            <SignupForm />
           </div>
         </div>
       </div>

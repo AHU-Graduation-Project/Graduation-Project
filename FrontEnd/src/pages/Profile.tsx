@@ -1,9 +1,10 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Star, Clock, Trophy } from "lucide-react";
+import { Star, Clock, Trophy, Palette } from "lucide-react";
 import { useAuthStore } from "../store/authStore";
 import { roadmaps } from "../data/roadmaps";
+import ThemeSelector from "../components/ThemeSelector";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -44,7 +45,7 @@ export default function Profile() {
       <div className="max-w-6xl mx-auto">
         <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-2xl p-8 mb-12">
           <h1 className="text-4xl font-bold mb-4 text-theme">
-            {t("profile.welcome")}, {user.name}
+            {t("profile.welcome")}, {user.fname} {user.lname}
           </h1>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
@@ -66,6 +67,19 @@ export default function Profile() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+
+        <div className="mb-12">
+          <div className="flex items-center gap-3 mb-6">
+            <Palette className="w-6 h-6 text-blue-500" />
+            <h2 className="text-2xl font-bold ">Customize Theme</h2>
+          </div>
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-6">
+            <p className="text-slate-600 dark:text-slate-400 mb-6">
+              Choose your preferred color scheme for the website
+            </p>
+            <ThemeSelector />
           </div>
         </div>
 
