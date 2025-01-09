@@ -1,5 +1,5 @@
-// src/domain/entities/User.ts
 export class UserEntity {
+
   id: string;
   email: string;
   fname: string;
@@ -85,4 +85,5 @@ export class UserEntity {
   updateProfile(updatedData: Partial<UserEntity>) {
     Object.assign(this, updatedData);
   }
+  
 }

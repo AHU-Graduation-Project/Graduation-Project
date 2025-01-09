@@ -5,7 +5,6 @@ import {
   Smartphone,
   Brain,
   Database,
-  Shield,
 } from "lucide-react";
 
 export const roadmaps = [

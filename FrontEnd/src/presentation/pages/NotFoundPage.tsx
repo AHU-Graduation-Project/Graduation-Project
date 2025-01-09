@@ -1,5 +1,11 @@
+import Footer from "../components/layout/Footer";
+import Header from "../components/layout/Header";
+
+
 const NotFoundPage: React.FC = () => {
   return (
+    <>
+    <Header/>
     <div className="min-h-screen flex items-center justify-center font-mono">
       <div className="text-center max-w-lg">
         <h1 className="text-6xl font-bold text-slate-600 dark:text-slate-400 mb-8 animate-pulse">
@@ -19,6 +25,8 @@ const NotFoundPage: React.FC = () => {
         </div>
       </div>
     </div>
+    <Footer/>
+    </>
   );
 };
 

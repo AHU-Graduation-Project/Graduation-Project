@@ -1,9 +1,8 @@
 import { Routes, Route } from "react-router-dom";
-import { useLocation } from "react-router-dom";
 import Overview from "../pages/Overview";
 import BrowseRoadmaps from "../pages/BrowseRoadmaps";
 import GenerateRoadmap from "../pages/GenerateRoadmap";
-import RoadmapFlow from "../components/roadmapflow/RoadmapFlow";
+import RoadmapFlow from "../pages/RoadmapFlow";
 import Auth from "../pages/Auth";
 import Profile from "../pages/Profile";
 import NotFoundPage from "../pages/NotFoundPage";
