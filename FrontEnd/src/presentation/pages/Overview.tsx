@@ -1,6 +1,6 @@
 import { TrendingUp, Brain, Target, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useAuthStore } from "../../store/authStore";
+import { useAuthStore } from "../../application/state/authStore";
 
 export default function Overview() {
   const { isAuthenticated } = useAuthStore();

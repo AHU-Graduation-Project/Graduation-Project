@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuthStore } from "../../../store/authStore";
+import { useAuthStore } from "../../../application/state/authStore";
 import { Camera } from "lucide-react";
 import SelectDropDown from "../UI/SelectDropDown";
 import Skills from "./Skills";

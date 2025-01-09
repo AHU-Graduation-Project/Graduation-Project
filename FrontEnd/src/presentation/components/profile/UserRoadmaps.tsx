@@ -1,4 +1,4 @@
-import { useAuthStore } from "../../../store/authStore";
+import { useAuthStore } from "../../../application/state/authStore";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import ConfirmationModal from "../Modal/ConformationModel";

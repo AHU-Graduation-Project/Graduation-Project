@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import UserInfo from "../components/profile/UserInfo";
 import EditProfile from "../components/profile/EditProfile";
-import { useAuthStore } from "../../store/authStore";
+import { useAuthStore } from "../../application/state/authStore";
 
 export default function Profile() {
   const navigate = useNavigate();

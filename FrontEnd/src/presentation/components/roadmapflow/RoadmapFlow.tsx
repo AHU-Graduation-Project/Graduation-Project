@@ -5,7 +5,7 @@ import ReactFlow, { Node, Edge, Background, Controls } from "reactflow";
 
 import "reactflow/dist/style.css";
 import { roadmaps } from "../../../data/roadmaps";
-import { useAuthStore } from "../../../store/authStore";
+import { useAuthStore } from "../../../application/state/authStore";
 import NodeDetailsModal from "../Modal/NodeDetailsModal";
 import RoadmapInfo from "./RoadmapInfo";
 import ChatPanel from "../chat/ChatPanel";

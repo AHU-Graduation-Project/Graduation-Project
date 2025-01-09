@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { InputField } from "../UI/TextInput";
-import { useAuthStore } from "../../../store/authStore";
+import { useAuthStore } from "../../../application/state/authStore";
 import { useNavigate } from "react-router-dom";
 
 export function SignupForm() {

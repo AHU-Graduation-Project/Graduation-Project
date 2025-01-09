@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useAuthStore } from "../../../store/authStore";
+import { useAuthStore } from "../../../application/state/authStore";
 
 type Skill = {
   title: string;

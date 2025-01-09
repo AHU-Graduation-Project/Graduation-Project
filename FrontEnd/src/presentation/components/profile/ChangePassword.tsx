@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuthStore } from "../../../store/authStore";
+import { useAuthStore } from "../../../application/state/authStore";
 import ReactDOM from "react-dom";
 
 interface ChangePasswordProps {

@@ -11,7 +11,7 @@ import { generateRoadmap } from "../../infrastructure/utils/palm";
 import { CustomNodeGenerator } from "../components/generator/CustomNodeGenerator";
 import RoadmapToolbar from "../components/generator/RoadmapToolbar";
 import EditNodeModal from "../components/Modal/EditNodeModal";
-import { useAuthStore } from "../../store/authStore";
+import { useAuthStore } from "../../application/state/authStore";
 import SaveRoadmapModal from "../components/Modal/SaveRoadmapModal";
 import { useNavigate } from "react-router-dom";
 import GeneratorHeader from "../components/generator/GeneratorHeader";

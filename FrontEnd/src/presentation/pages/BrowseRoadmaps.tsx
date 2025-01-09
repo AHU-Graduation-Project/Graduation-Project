@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import RoadmapCard from "../components/browseRoadmaps/RoadmapCard";
 import ThemeIcon from "../components/UI/ThemeIcon";
 import { roadmaps } from "../../data/roadmaps";
-import { useAuthStore } from "../../store/authStore";
+import { useAuthStore } from "../../application/state/authStore";
 import ConfirmationModal from "../components/Modal/ConformationModel";
 import P from "../components/browseRoadmaps/P";
 

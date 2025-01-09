@@ -5,7 +5,7 @@ import { MoreHorizontal } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import "reactflow/dist/style.css";
-import { useAuthStore } from "../../../store/authStore";
+import { useAuthStore } from "../../../application/state/authStore";
 
 interface NodeData {
   label: string;

@@ -6,7 +6,7 @@ import { useStreamingResponse } from "../../hooks/useStreamingResponse";
 import { useChatContext} from "../../hooks/useChatContext"
 import ChatMessage from "./ChatMessage";
 import { useNavigate } from "react-router-dom";
-import { useAuthStore } from "../../../store/authStore";
+import { useAuthStore } from "../../../application/state/authStore";
 
 interface ChatPanelProps {
   isOpen: boolean;

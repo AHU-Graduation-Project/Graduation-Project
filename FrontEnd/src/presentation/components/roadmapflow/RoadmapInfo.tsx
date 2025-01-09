@@ -1,7 +1,7 @@
 import { X, BookOpen, Video, Globe } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "../../../infrastructure/utils/cn";
-import { useAuthStore } from "../../../store/authStore";
+import { useAuthStore } from "../../../application/state/authStore";
 import { useNavigate } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 

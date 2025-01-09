@@ -3,7 +3,7 @@ import { Download, ChevronDown, ChevronUp } from 'lucide-react';
 import { cn } from '../../../infrastructure/utils/cn';
 import { PDFDownloadLink, Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
 import { useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../../../store/authStore';
+import { useAuthStore } from '../../../application/state/authStore';
 import html2canvas from 'html2canvas';
 import ThemeIcon from '../UI/ThemeIcon';
 

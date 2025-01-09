@@ -25,7 +25,7 @@ export default function GeneratorHeader({ isGenerating }: GeneratorHeaderProps) 
             <Sparkles className="w-6 h-6" />
           </div>
           <h1 className="text-4xl font-bold text-theme text-transparent bg-clip-text">
-            {t("generate.title")}
+            Generate Custom Roadmap
           </h1>
           <div className="relative">
             {/* <button

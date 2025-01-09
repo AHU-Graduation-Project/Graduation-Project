@@ -1,5 +1,5 @@
 import { Star, Clock, Trophy } from "lucide-react";
-import { useAuthStore } from "../../../store/authStore";
+import { useAuthStore } from "../../../application/state/authStore";
 import UserRoadmaps from "./UserRoadmaps";
 
 const UserInfo = () => {

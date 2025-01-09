@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { User, Info, Palette, LogOut, LogIn } from "lucide-react";
 import ThemeIcon from "./ThemeIcon";
 import ThemeSelector from "./ThemeSelector";
-import { useAuthStore } from "../../../store/authStore";
+import { useAuthStore } from "../../../application/state/authStore";
 import { useNavigate } from "react-router-dom";
 
 function DropdownToggle({
