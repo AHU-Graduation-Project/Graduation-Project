@@ -6,7 +6,6 @@ import P from "../components/browseRoadmaps/P";
 import SearchBar from "../components/UI/SearchBar";
 import SelectedRoadmapCard from "../components/browseRoadmaps/SelectedRoadmapCard";
 
-
 export default function BrowseRoadmaps() {
   const [searchQuery, setSearchQuery] = useState("");
   const { user, selectRoadmap } = useAuthStore();
@@ -45,30 +44,33 @@ export default function BrowseRoadmaps() {
         />
       </div>
 
-      {user?.selectedRoadmaps?.length > 0 && (
-        <div className="mb-12">
-          <h2 className="text-2xl font-bold mb-6 text-theme">Your Roadmaps</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {user?.selectedRoadmaps.map((roadmapId) => {
-              const roadmap = roadmaps.find((r) => r.id === roadmapId);
-              if (!roadmap) return null;
+      {Array.isArray(user?.selectedRoadmaps) &&
+        user.selectedRoadmaps.length > 0 && (
+          <div className="mb-12">
+            <h2 className="text-2xl font-bold mb-6 text-theme">
+              Your Roadmaps
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {user?.selectedRoadmaps.map((roadmapId) => {
+                const roadmap = roadmaps.find((r) => r.id === roadmapId);
+                if (!roadmap) return null;
 
-              const progress = Math.round(
-                ((user?.progress[roadmapId]?.length || 0) / 9) * 100
-              );
+                const progress = Math.round(
+                  ((user?.progress[roadmapId]?.length || 0) / 9) * 100
+                );
 
-              return (
-                <SelectedRoadmapCard
-                  key={roadmap.id}
-                  roadmap={roadmap}
-                  progress={progress}
-                  onRemove={selectRoadmap}
-                />
-              );
-            })}
+                return (
+                  <SelectedRoadmapCard
+                    key={roadmap.id}
+                    roadmap={roadmap}
+                    progress={progress}
+                    onRemove={selectRoadmap}
+                  />
+                );
+              })}
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
       <h2 className="text-2xl font-bold mb-6 text-theme">Other Roadmaps</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
