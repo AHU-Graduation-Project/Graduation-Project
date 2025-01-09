@@ -22,9 +22,7 @@ export default function RoadmapFlowComponent() {
   const [showCourses, setShowCourses] = useState(false);
   const [showFloatingMenu, setShowFloatingMenu] = useState(false);
   const [showRating, setShowRating] = useState(false);
-
   const { user } = useAuthStore();
-
   const onNodesChange = useCallback(() => {}, []);
   const onEdgesChange = useCallback(() => {}, []);
 

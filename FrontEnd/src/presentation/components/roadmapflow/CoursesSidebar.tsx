@@ -1,4 +1,4 @@
-import { X, Filter } from 'lucide-react';
+import { X } from 'lucide-react';
 import { cn } from '../../../infrastructure/utils/cn';
 import { courses } from '../../../data/courses';
 import CourseCard from './CourseCard';

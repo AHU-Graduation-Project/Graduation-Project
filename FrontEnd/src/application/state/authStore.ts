@@ -6,7 +6,7 @@ import img from "../../shared/assets//images/mike_wazowski_meme_png_by_kylewithe
 
 const roadmapNodeCounts: { [key: string]: number } = {};
 
-interface AuthState {
+interface IAuthState {
   user: UserEntity | null;
   isAuthenticated: boolean;
   completedRoadmaps: string[];
@@ -39,7 +39,7 @@ interface AuthState {
   updateUser: (updatedData: Partial<UserEntity>) => void;
 }
 
-export const useAuthStore = create<AuthState>()(
+export const useAuthStore = create<IAuthState>()(
   persist(
     (set) => ({
       user: null,
