@@ -1,93 +1,11 @@
 import { useState, useEffect } from "react";
-import { Search } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import RoadmapCard from "../components/browseRoadmaps/RoadmapCard";
-import ThemeIcon from "../components/UI/ThemeIcon";
 import { roadmaps } from "../../data/roadmaps";
 import { useAuthStore } from "../../application/state/authStore";
-import ConfirmationModal from "../components/Modal/ConformationModel";
 import P from "../components/browseRoadmaps/P";
+import SearchBar from "../components/UI/SearchBar";
+import SelectedRoadmapCard from "../components/browseRoadmaps/SelectedRoadmapCard";
 
-function SearchBar({ value, onChange, placeholder }) {
-  return (
-    <div className="relative">
-      <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400" />
-      <input
-        type="text"
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-        className="w-full pl-12 pr-4 py-3 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-      />
-    </div>
-  );
-}
-
-function SelectedRoadmapCard({ roadmap, progress, onRemove }) {
-  const navigate = useNavigate();
-  const [isModalOpen, setModalOpen] = useState(false);
-
-  const handleRemove = () => {
-    onRemove(roadmap.id);
-    setModalOpen(false);
-  };
-
-  return (
-    <div
-      key={roadmap.id}
-      className="group relative overflow-hidden rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-blue-500 dark:hover:border-blue-500 transition-all"
-    >
-      <div
-        className="absolute inset-0 bg-cover bg-center opacity-10"
-        style={{ backgroundImage: `url(${roadmap.image})` }}
-      />
-      <div className="relative p-6">
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <ThemeIcon icon={roadmap.icon} className="w-6 h-6" />
-            <h3 className="text-xl font-bold group-hover:text-theme transition-colors duration-300">
-              {roadmap.title}
-            </h3>
-          </div>
-        </div>
-        <div className="mb-4">
-          <div className="flex justify-between text-sm mb-2">
-            <span>Progress</span>
-            <span>{progress}%</span>
-          </div>
-          <div className="h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-theme transition-all"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-        </div>
-        <div className="flex flex-row justify-between">
-          <button
-            onClick={() => navigate(`/roadmap/${roadmap.id}`)}
-            className="text-theme hover:opacity-80 font-medium"
-          >
-            Continue Learning
-          </button>
-          <button
-            onClick={() => setModalOpen(true)}
-            className="text-theme hover:opacity-80 font-medium"
-          >
-            Remove
-          </button>
-        </div>
-      </div>
-
-      <ConfirmationModal
-        isOpen={isModalOpen}
-        onClose={() => setModalOpen(false)}
-        onConfirm={handleRemove}
-        title="Delete Roadmap"
-        message="Are you sure you want to remove this roadmap?"
-      />
-    </div>
-  );
-}
 
 export default function BrowseRoadmaps() {
   const [searchQuery, setSearchQuery] = useState("");

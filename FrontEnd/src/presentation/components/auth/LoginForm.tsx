@@ -15,7 +15,7 @@ export default function LoginForm() {
   const userName = "ahmad@gmail.com";
   const userPassword = "1234";
 
-  const { login, user } = useAuthStore();
+  const { login } = useAuthStore();
 
   const handleSignToggle = () => {
     setIsSign((prev) => !prev);

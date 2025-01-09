@@ -21,7 +21,7 @@ interface NodeData {
 }
 
 export function CustomNode({ data, id }: NodeProps<NodeData>) {
-  const { user, updateProgress } = useAuthStore();
+  const { user,updateProgress } = useAuthStore();
   const { id: roadmapId } = useParams();
   const isCompleted = user?.progress[roadmapId || ""]?.includes(id);
   const isFirstNode = id === "1";

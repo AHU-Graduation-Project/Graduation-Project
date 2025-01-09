@@ -98,18 +98,41 @@ export const useAuthStore = create<AuthState>()(
         set((state) => {
           if (!state.user) return state;
 
-          state.user.updateProgress(roadmapId, nodeId, completed);
+          const progress = { ...state.user.progress };
+          const completedNodes = progress[roadmapId] || [];
+
+          if (completed && !completedNodes.includes(nodeId)) {
+            progress[roadmapId] = [...completedNodes, nodeId];
+          } else if (!completed) {
+            progress[roadmapId] = completedNodes.filter((id) => id !== nodeId);
+          }
 
           const totalNodes = roadmapNodeCounts[roadmapId] || 0;
-          const isComplete =
-            state.user.progress[roadmapId]?.length === totalNodes;
+          const isComplete = progress[roadmapId]?.length === totalNodes;
 
           const updatedCompletedRoadmaps = isComplete
             ? [...new Set([...state.completedRoadmaps, roadmapId])]
             : state.completedRoadmaps.filter((id) => id !== roadmapId);
 
+          const updatedUser = new UserEntity(
+            state.user.id,
+            state.user.email,
+            state.user.fname,
+            state.user.lname,
+            state.user.password,
+            state.user.profilePicture,
+            state.user.position,
+            state.user.level,
+            state.user.country,
+            state.user.selectedRoadmaps,
+            state.user.completedRoadmaps,
+            state.user.generatedRoadmaps,
+            state.user.selectedSkills,
+            progress
+          );
+
           return {
-            user: state.user,
+            user: updatedUser,
             completedRoadmaps: updatedCompletedRoadmaps,
           };
         });
