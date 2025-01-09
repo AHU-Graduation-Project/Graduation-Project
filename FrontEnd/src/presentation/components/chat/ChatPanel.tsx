@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { X, Send } from "lucide-react";
 import { cn } from "../../../infrastructure/utils/cn";
 import { Message } from "../../../domain/entities/chat";
-import { useStreamingResponse } from "../../hooks/useStreamingResponse";
+import { StreamingResponse } from "../../../infrastructure/utils/StreamingResponse";
 import { useChatContext} from "../../hooks/useChatContext"
 import ChatMessage from "./ChatMessage";
 import { useNavigate } from "react-router-dom";
@@ -33,7 +33,7 @@ export default function ChatPanel({
   ]);
   const [input, setInput] = useState("");
   const [showSaved, setShowSaved] = useState(false);
-  const { isStreaming, streamResponse } = useStreamingResponse();
+  const { isStreaming, streamResponse } = StreamingResponse();
   const { getSystemPrompt } = useChatContext(roadmap, userProgress);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [userScrolled, setUserScrolled] = useState(false);

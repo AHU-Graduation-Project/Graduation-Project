@@ -20,5 +20,6 @@ export function useChatContext(roadmap: any, userProgress: string[]) {
     
     The user's question is: "${userInput}"`;
   }, [roadmap, userProgress]);
+  
   return { getSystemPrompt };
 }

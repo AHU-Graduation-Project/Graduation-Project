@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_AI_API_KEY);
-export function useStreamingResponse() {
+export function StreamingResponse() {
   const [isStreaming, setIsStreaming] = useState(false);
 
   const streamResponse = useCallback(async (

@@ -1,5 +1,5 @@
 This directory should contain:
 
 - useChatContext.ts
-- useStreamingResponse.ts
+- StreamingResponse.ts
 - Other custom hooks

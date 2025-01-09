@@ -1,5 +1,4 @@
 import { Sparkles, HelpCircle } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 
 interface GeneratorHeaderProps {
@@ -7,7 +6,6 @@ interface GeneratorHeaderProps {
 }
 
 export default function GeneratorHeader({ isGenerating }: GeneratorHeaderProps) {
-  const { t } = useTranslation();
   const [showTooltip, setShowTooltip] = useState(false);
 
   const examples = [
