@@ -35,6 +35,18 @@ export default function LoginForm() {
     // } catch (err: any) {
     //   setError(err.message || "Login failed. Please try again.");
     // }
+    if (email === userName && password === userPassword) {
+      login(email, password);
+      navigate("/profile");
+    } else {
+      setError("Login failed. Please try again.");
+    }
+
+    // try {
+    //   await login(email, password);
+    // } catch (err: any) {
+    //   setError(err.message || "Login failed. Please try again.");
+    // }
   };
 
   return (
