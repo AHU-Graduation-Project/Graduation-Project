@@ -1,5 +1,4 @@
 import { X, Filter } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
 import { cn } from '../../../infrastructure/utils/cn';
 import { courses } from '../../../data/courses';
 import CourseCard from './CourseCard';

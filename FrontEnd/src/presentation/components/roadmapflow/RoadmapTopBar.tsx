@@ -58,13 +58,18 @@ const RoadmapPDF = ({
 );
 
 
+interface RoadmapTopBarProps {
+  roadmap: any;
+  progress: number;
+  completedNodes: number;
+  totalNodes: number;
+}
+
 export default function RoadmapTopBar({ 
   roadmap, 
   progress, 
   completedNodes, 
   totalNodes,
-  nodes,
-  edges,
 }: RoadmapTopBarProps) {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -146,20 +151,15 @@ export default function RoadmapTopBar({
                 "bg-theme text-white hover:opacity-90 transition-colors"
               )}
             >
-
-              {({ loading }: { loading: boolean }) => (
-                <button
-                  onClick={captureFlow}
-                  disabled={loading}
-                  className="flex items-center gap-2"
-                >
-
-                  <Download className="w-4 h-4" />
-                  <span className="hidden md:inline">
-                    {loading ? "Preparing PDF..." : "Download PDF"}
-                  </span>
-                </button>
-              )}
+              <button
+                onClick={captureFlow}
+                className="flex items-center gap-2"
+              >
+                <Download className="w-4 h-4" />
+                <span className="hidden md:inline">
+                  Download PDF
+                </span>
+              </button>
             </PDFDownloadLink>
           </div>
         </div>
