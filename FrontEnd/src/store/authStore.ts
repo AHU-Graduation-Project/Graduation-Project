@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-import img from "../assets/images/mike_wazowski_meme_png_by_kylewithem_dg65n12-fullview.png";
+import img from "../shared/assets/images/mike_wazowski_meme_png_by_kylewithem_dg65n12-fullview.png";
 
 interface User {
   id: string;
@@ -75,28 +75,25 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       completedRoadmaps: [],
       login: (email, password) => {
-        if (email === "ahmad@gmail.com" && password === "1234") {
-          set({
-            user: {
-              id: "1",
-              email,
-              fname: "Ahmad",
-              lname: "Alshamary",
-              password,
-              profilePicture: img,
-              position: "",
-              level: "",
-              country: "",
-              selectedRoadmaps: [],
-              completedRoadmaps: [],
-              generatedRoadmaps: [], // Initialize empty array
-
-              selectedSkills: [],
-              progress: {},
-            },
-            isAuthenticated: true,
-          });
-        }
+        set({
+          user: {
+            id: "1",
+            email,
+            fname: "Ahmad",
+            lname: "Alshamary",
+            password,
+            profilePicture: img,
+            position: "",
+            level: "",
+            country: "",
+            selectedRoadmaps: [],
+            completedRoadmaps: [],
+            generatedRoadmaps: [], // Initialize empty array
+            selectedSkills: [],
+            progress: {},
+          },
+          isAuthenticated: true,
+        });
       },
       signup: (email, password, fname, lname, position, level, country) => {
         set({
