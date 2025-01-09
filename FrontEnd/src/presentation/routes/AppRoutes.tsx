@@ -10,9 +10,6 @@ import NotFoundPage from "../pages/NotFoundPage";
 import Background from "../components/layout/Background";
 
 export default function AppRoutes() {
-  const location = useLocation();
-  const isAuthPage = location.pathname === "/auth";
-  const isRoadMap = location.pathname === "/roadmap";
 
   return (
     <Routes>

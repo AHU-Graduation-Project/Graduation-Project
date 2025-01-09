@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useTranslation } from "react-i18next";
 import { Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import RoadmapCard from "../components/browseRoadmaps/RoadmapCard";
@@ -91,21 +90,20 @@ function SelectedRoadmapCard({ roadmap, progress, onRemove }) {
 }
 
 export default function BrowseRoadmaps() {
-  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
   const { user, selectRoadmap } = useAuthStore();
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage, setPostsPerPage] = useState(6);
-
-  const lastPostIndex = currentPage * postsPerPage;
-  const firstPostIndex = lastPostIndex - postsPerPage;
-  const currentPost = roadmaps.slice(firstPostIndex, lastPostIndex);
 
   const filteredRoadmaps = roadmaps.filter((roadmap) =>
     [roadmap.title, roadmap.description].some((field) =>
       field.toLowerCase().includes(searchQuery.toLowerCase())
     )
   );
+
+  const lastPostIndex = currentPage * postsPerPage;
+  const firstPostIndex = lastPostIndex - postsPerPage;
+  const currentPost = filteredRoadmaps.slice(firstPostIndex, lastPostIndex);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -125,7 +123,7 @@ export default function BrowseRoadmaps() {
         <SearchBar
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder={t("search.placeholder")}
+          placeholder={"Search roadmaps..."}
         />
       </div>
 
