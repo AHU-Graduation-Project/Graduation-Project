@@ -2,7 +2,8 @@ import { Link } from "react-router-dom";
 import { useAuthStore } from "../../../application/state/authStore";
 import { motion } from "framer-motion";
 import { ArrowRight, Code2, Brain, Rocket } from "lucide-react";
-import BackgroundRays from "./BackgroundRays";
+import ThemeIcon from "../UI/ThemeIcon";
+
 export default function HeroSection() {
   const { isAuthenticated } = useAuthStore();
 
@@ -56,18 +57,12 @@ export default function HeroSection() {
             >
               <Link
                 to="/auth"
-                className="group relative px-8 py-4 bg-theme text-white dark:bg-theme/80 rounded-xl font-medium shadow-xl hover:shadow-theme transition-all duration-300 overflow-hidden"
+                className="group relative px-8 py-4 bg-theme text-white  rounded-xl font-medium shadow-xl hover:shadow-theme transition-all duration-300 overflow-hidden"
               >
                 <span className="relative z-10 flex items-center gap-2">
-                  Get Started Free
+                  Get Started
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </span>
-                <motion.div
-                  className="absolute inset-0 bg-white/20"
-                  initial={false}
-                  whileHover={{ x: ["0%", "100%"] }}
-                  transition={{ duration: 0.5 }}
-                />
               </Link>
               <Link
                 to="/auth"
@@ -111,7 +106,7 @@ export default function HeroSection() {
               transition={{ duration: 0.5, delay: 1 + index * 0.1 }}
               className="group relative p-5 bg-white dark:bg-white/5 backdrop-blur-sm rounded-2xl border border-gray-200 dark:border-white/10 hover:border-theme/50 hover:bg-gray-50/50 dark:hover:bg-white/[0.02] hover:shadow-lg hover:shadow-theme/5 transition-all duration-300 flex flex-col items-center justify-center min-h-[200px] text-center"
             >
-              <feature.icon className="relative z-10 w-8 h-8 text-theme mb-4" />
+              <ThemeIcon icon={feature.icon} className="relative z-10 w-8 h-8  mb-4" />
               <h3 className="relative z-10 text-lg font-semibold text-gray-900 dark:text-white mb-2">
                 {feature.title}
               </h3>

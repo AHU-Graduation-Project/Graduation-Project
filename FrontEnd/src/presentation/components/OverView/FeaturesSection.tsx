@@ -16,13 +16,13 @@ export default function FeaturesSection() {
     },
     {
       icon: Brain,
-      title: "Skill Analysis & Insights",
+      title: "Explore Roadmaps",
       description:
-        "Get detailed insights about required skills, market demand, and salary expectations for each career path. Make informed decisions about your learning journey.",
+        "Discover comprehensive roadmaps for IT career paths, covering essential skills, learning resources, and growth strategies. Start your journey today!",
       imageUrl:
         "https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&q=80&w=800",
-      linkText: "Explore Skills",
-      linkUrl: "/",
+      linkText: "Explore roadmaps",
+      linkUrl: "/roadmaps",
       gradient: "from-purple-500 to-pink-500",
     },
   ];
@@ -62,8 +62,8 @@ export default function FeaturesSection() {
               } items-center gap-16`}
             >
               <div className="flex-1 relative">
-                <div className="absolute inset-0 bg-theme/20 rounded-3xl blur-3xl" />
-                <div className="relative bg-white/5 backdrop-blur-sm border border-white/10 p-8 rounded-3xl">
+                <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-gray-300/30 via-gray-400/20 to-gray-300/30 dark:from-gray-900/40 dark:via-gray-800/20 dark:to-gray-900/40" />
+                <div className="relative bg-white/10 backdrop-blur-lg border border-white/20 p-8 rounded-3xl dark:bg-white/5 dark:border-gray-700">
                   <motion.div
                     initial={{ scale: 0.8 }}
                     whileInView={{ scale: 1 }}
@@ -74,17 +74,17 @@ export default function FeaturesSection() {
                     <feature.icon className="w-8 h-8 text-white" />
                   </motion.div>
 
-                  <h3 className="text-3xl font-bold mb-4 text-white">
+                  <h3 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
                     {feature.title}
                   </h3>
 
-                  <p className="text-xl text-gray-400 mb-8">
+                  <p className="text-xl text-gray-600 dark:text-gray-400 mb-8">
                     {feature.description}
                   </p>
 
                   <motion.a
                     href={feature.linkUrl}
-                    className="inline-flex items-center text-theme hover:opacity-80 font-medium"
+                    className="inline-flex items-center text-theme hover:opacity-80 font-medium dark:text-theme-light"
                     whileHover={{ x: 10 }}
                     transition={{ type: "spring", stiffness: 400, damping: 10 }}
                   >

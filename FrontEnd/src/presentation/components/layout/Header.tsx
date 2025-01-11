@@ -50,12 +50,7 @@ export default function Header() {
     { to: "/generate", icon: Sparkles, label: "Generate" },
   ];
 
-  const getCurrentPageName = () => {
-    const path = location.pathname;
-    if (path === "/") return "Overview";
-    if (path.startsWith("/roadmap/")) return "Roadmap Details";
-    return path.slice(1).charAt(0).toUpperCase() + path.slice(2);
-  };
+
 
   return (
     <header
