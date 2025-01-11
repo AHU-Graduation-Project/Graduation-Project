@@ -2,14 +2,24 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import ThemeIcon from "../UI/ThemeIcon";
 import ConfirmationModal from "../Modal/ConformationModel";
+import { LucideIcon } from 'lucide-react';
+
 interface Roadmap {
   id: string;
   image: string;
-  icon: string;
+  icon: LucideIcon;
   title: string;
 }
 
-function SelectedRoadmapCard({ roadmap, progress, onRemove }: { roadmap: Roadmap; progress: number; onRemove: (id: string) => void }) {
+function SelectedRoadmapCard({
+  roadmap,
+  progress,
+  onRemove,
+}: {
+  roadmap: Roadmap;
+  progress: number;
+  onRemove: (id: string) => void;
+}) {
   const navigate = useNavigate();
   const [isModalOpen, setModalOpen] = useState(false);
 
@@ -19,8 +29,9 @@ function SelectedRoadmapCard({ roadmap, progress, onRemove }: { roadmap: Roadmap
   };
 
   return (
-    <div className="group relative overflow-hidden rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-blue-500 dark:hover:border-blue-500 transition-all">
-      <div className="absolute inset-0 bg-cover bg-center opacity-10"
+    <div className="group relative overflow-hidden rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700  hover_shawdow_effect border-rad transition-all">
+      <div
+        className="absolute inset-0 bg-cover bg-center opacity-10"
         style={{ backgroundImage: `url(${roadmap.image})` }}
       />
       <div className="relative p-6">

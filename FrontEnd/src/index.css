@@ -155,7 +155,7 @@ body {
 }
 
 /* Edge animation for completed nodes */
-.react-flow__edge.completed-edge {
+.completedGlow {
   animation: edgeGlow 2s ease-in-out infinite;
 }
 
@@ -169,4 +169,8 @@ body {
   100% {
     filter: drop-shadow(0 0 2px var(--theme-from));
   }
+}
+
+.hover_shawdow_effect:hover{
+      box-shadow: 0 0 5px var(--theme-from), 0 0 10px var(--theme-to);
 }

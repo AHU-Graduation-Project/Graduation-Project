@@ -17,7 +17,7 @@ export default function RoadmapCard({ id, title, description, icon }: RoadmapCar
   return (
     <Link
       to={`/roadmap/${id}`}
-      className="group relative overflow-hidden rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:shadow-xl transition-all duration-300"
+      className="group relative overflow-hidden rounded-xl bg-white dark:bg-slate-800  hover:shadow-xl transition-all duration-300"
     >
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r transition-all duration-300 opacity-0 group-hover:opacity-100" style={{
         backgroundImage: `linear-gradient(to right, ${currentTheme.colors.from}, ${currentTheme.colors.to})`
