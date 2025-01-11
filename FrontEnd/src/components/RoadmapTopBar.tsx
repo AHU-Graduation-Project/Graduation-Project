@@ -1,12 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
-import {
-  Download,
-  Image as ImageIcon,
-  ChevronDown,
-  ChevronUp,
-} from "lucide-react";
+import { Image as ImageIcon, ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "../utils/cn";
 import html2canvas from "html2canvas";
+import { useAuthStore } from "../store/authStore";
+import { useNavigate } from "react-router-dom";
 import ThemeIcon from "./ThemeIcon";
 
 export default function RoadmapTopBar({
@@ -14,10 +11,22 @@ export default function RoadmapTopBar({
   progress,
   completedNodes,
   totalNodes,
+  onAddToRoadmap,
 }: RoadmapTopBarProps) {
   const [isVisible, setIsVisible] = useState(true);
+  const { user, selectRoadmap } = useAuthStore();
+  const navigate = useNavigate();
+  const isSelected = user?.selectedRoadmaps.includes(roadmap?.id);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [flowImage, setFlowImage] = useState<string | null>(null);
+
+  const handleAddToRoadmap = () => {
+    if (!user) {
+      navigate("/auth");
+      return;
+    }
+    selectRoadmap(roadmap.id);
+  };
 
   const captureFlow = useCallback(async () => {
     const flowElement = document.querySelector(".react-flow");
@@ -73,12 +82,20 @@ export default function RoadmapTopBar({
             </p>
           </div>
           <div className="flex items-center gap-3">
+            {!isSelected && (
+              <button
+                onClick={handleAddToRoadmap}
+                className="px-4 py-2 rounded-lg bg-theme text-white hover:opacity-90 transition-colors text-sm md:text-base"
+              >
+                Add to My Roadmaps
+              </button>
+            )}
             <button
               onClick={captureFlow}
               className="px-4 py-2 rounded-lg bg-theme text-white flex items-center gap-2 hover:opacity-90 transition-colors text-sm md:text-base"
             >
               <ImageIcon className="w-4 h-4" />
-              <span>Download </span>
+              <span>Download</span>
             </button>
           </div>
         </div>

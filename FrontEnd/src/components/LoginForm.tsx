@@ -29,12 +29,6 @@ export default function LoginForm() {
     } else {
       setError("Login failed. Please try again.");
     }
-
-    // try {
-    //   await login(email, password);
-    // } catch (err: any) {
-    //   setError(err.message || "Login failed. Please try again.");
-    // }
   };
 
   return (

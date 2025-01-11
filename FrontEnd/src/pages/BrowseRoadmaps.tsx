@@ -7,7 +7,7 @@ import ThemeIcon from "../components/ThemeIcon";
 import { roadmaps } from "../data/roadmaps";
 import { useAuthStore } from "../store/authStore";
 import ConfirmationModal from "../components/ConformationModel";
-import P from "../components/P";
+import Pagination from "../components/Pagination";
 
 function SearchBar({ value, onChange, placeholder }) {
   return (
@@ -42,8 +42,8 @@ function SelectedRoadmapCard({ roadmap, progress, onRemove }) {
         className="absolute inset-0 bg-cover bg-center opacity-10"
         style={{ backgroundImage: `url(${roadmap.image})` }}
       />
-      <div className="relative p-5">
-        <div className="flex items-start justify-between mb-4">
+      <div className="relative p-4">
+        <div className="flex items-start justify-between mb-4 ">
           <div className="flex items-center gap-3">
             <ThemeIcon icon={roadmap.icon} className="w-6 h-6" />
             <h3 className="text-xl font-bold group-hover:text-theme transition-colors duration-300">
@@ -95,7 +95,7 @@ export default function BrowseRoadmaps() {
   const [searchQuery, setSearchQuery] = useState("");
   const { user, selectRoadmap } = useAuthStore();
   const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage, setPostsPerPage] = useState(6);
+  const [postsPerPage, setPostsPerPage] = useState(1);
 
   const lastPostIndex = currentPage * postsPerPage;
   const firstPostIndex = lastPostIndex - postsPerPage;
@@ -170,7 +170,7 @@ export default function BrowseRoadmaps() {
       </div>
 
       <div className="pt-6">
-        <P
+        <Pagination
           totalPosts={filteredRoadmaps.length}
           postsPerPage={postsPerPage}
           currentPage={currentPage}

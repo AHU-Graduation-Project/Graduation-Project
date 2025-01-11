@@ -12,7 +12,7 @@ const SelectDropDown = ({
   <select
     value={selectedValue}
     onChange={(e) => onChange(e.target.value)}
-    className={`w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-theme ${className} bg-white dark:bg-slate-800 text-black dark:text-white`}
+    className={`w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-theme ${className} bg-transparent dark:bg-slate-800 text-black dark:text-white`}
   >
     {items.map((item) => (
       <option

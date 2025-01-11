@@ -14,6 +14,7 @@ interface User {
   position: string;
   level: string;
   country: string;
+  aboutme: string;
   selectedRoadmaps: string[];
   generatedRoadmaps: Array<{
     id: string;
@@ -41,7 +42,8 @@ interface AuthState {
     isEmailConformed: boolean,
     position: string,
     level: string,
-    country: string
+    country: string,
+    aboutme: string
   ) => void;
   logout: () => void;
   updateProgress: (
@@ -57,7 +59,6 @@ interface AuthState {
     edges: any[]
   ) => void;
   deleteGeneratedRoadmap: (roadmapId: string) => void;
-
   addSkill: (skill: string) => void;
   removeSkill: (skill: string) => void;
   updateUser: (updatedData: Partial<User>) => void;
@@ -89,6 +90,7 @@ export const useAuthStore = create<AuthState>()(
             position: "Full Stack",
             level: "",
             country: "",
+            aboutme: "exited for the new market!",
             selectedRoadmaps: [],
             completedRoadmaps: [],
             generatedRoadmaps: [], // Initialize empty array
@@ -106,6 +108,7 @@ export const useAuthStore = create<AuthState>()(
         isEmailConformed,
         position,
         level,
+        aboutme,
         country
       ) => {
         set({
@@ -120,6 +123,7 @@ export const useAuthStore = create<AuthState>()(
             position,
             level,
             country,
+            aboutme,
             selectedRoadmaps: [],
             completedRoadmaps: [],
             selectedSkills: [],

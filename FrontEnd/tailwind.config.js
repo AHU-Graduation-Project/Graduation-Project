@@ -4,6 +4,15 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      animation: {
+        grid: "grid 15s linear infinite",
+      },
+      keyframes: {
+        grid: {
+          "0%": { transform: "translateY(-50%)" },
+          "100%": { transform: "translateY(0)" },
+        },
+      },
       colors: {
         border: "hsl(var(--border))",
         background: "hsl(var(--background))",
@@ -39,29 +48,29 @@ export default {
         icon: "transparent",
       },
       backgroundClip: {
-        'text': 'text',
+        text: "text",
       },
       typography: {
         DEFAULT: {
           css: {
-            maxWidth: 'none',
-            color: 'inherit',
+            maxWidth: "none",
+            color: "inherit",
             a: {
-              color: 'inherit',
-              textDecoration: 'underline',
-              fontWeight: '500',
+              color: "inherit",
+              textDecoration: "underline",
+              fontWeight: "500",
             },
             code: {
-              color: 'inherit',
-              background: 'hsl(var(--muted))',
-              padding: '0.2em 0.4em',
-              borderRadius: '0.25rem',
-              fontWeight: '400',
+              color: "inherit",
+              background: "hsl(var(--muted))",
+              padding: "0.2em 0.4em",
+              borderRadius: "0.25rem",
+              fontWeight: "400",
             },
-            'code::before': {
+            "code::before": {
               content: '""',
             },
-            'code::after': {
+            "code::after": {
               content: '""',
             },
           },
@@ -73,8 +82,8 @@ export default {
     require("tailwindcss"),
     require("autoprefixer"),
     require("tailwindcss-animate"),
-    require('@tailwindcss/typography'),
-    function({ addBase, addUtilities }) {
+    require("@tailwindcss/typography"),
+    function ({ addBase, addUtilities }) {
       addBase({
         ":root": {
           "--theme-gradient":

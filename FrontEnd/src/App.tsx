@@ -20,7 +20,6 @@ function AppContent() {
 
   // Check if current route is "/Auth"
   const isAuthPage = location.pathname === "/auth";
-  const isRoadMap = location.pathname === "/roadmap";
 
   // Initialize theme on app load
   useEffect(() => {
@@ -53,7 +52,7 @@ function AppContent() {
         <Route path="/generate" element={<GenerateRoadmap />} />
         <Route path="/roadmap/:id" element={<RoadmapFlow />} />
         <Route
-          path="/Auth"
+          path="/auth"
           element={
             <div className="relative w-full h-screen">
               <Background />
@@ -64,7 +63,7 @@ function AppContent() {
         <Route path="/profile" element={<Profile />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
-      {!(isAuthPage || isRoadMap) && <FooterComponent />}
+      {!isAuthPage && <FooterComponent />}
     </div>
   );
 }
