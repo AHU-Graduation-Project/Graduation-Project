@@ -5,6 +5,7 @@ import { useAuthStore } from "../../../application/state/authStore";
 import P from "./P";
 import SearchBar from "../UI/SearchBar";
 import SelectedRoadmapCard from "./SelectedRoadmapCard";
+import AnimationWrapper from "../UI/Animation/Animation";
 
 export default function BrowseRoadmapsComponent() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -28,51 +29,65 @@ export default function BrowseRoadmapsComponent() {
 
   return (
     <div className="container mx-auto px-4 py-12">
-      <div className="max-w-3xl mx-auto text-center mb-12">
-        <h1 className="text-4xl font-bold mb-4 text-theme text-transparent bg-clip-text">
-          Development Roadmaps
-        </h1>
-        <p className="text-lg text-slate-600 dark:text-white/80">
-          Choose your path and start your journey in software development
-        </p>
-      </div>
+      <AnimationWrapper animationType={5}>
+        {" "}
+        <div className="max-w-3xl mx-auto text-center mb-12">
+          <h1 className="text-4xl font-bold mb-4 text-theme text-transparent bg-clip-text">
+            Development Roadmaps
+          </h1>
+          <p className="text-lg text-slate-600 dark:text-white/80">
+            Choose your path and start your journey in software development
+          </p>
+        </div>
+      </AnimationWrapper>
+
       <div className="max-w-2xl mx-auto mb-12">
-        <SearchBar
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder={"Search roadmaps..."}
-        />
+        <AnimationWrapper animationType={5}>
+          <SearchBar
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder={"Search roadmaps..."}
+          />
+        </AnimationWrapper>
       </div>
 
       {Array.isArray(user?.selectedRoadmaps) &&
         user.selectedRoadmaps.length > 0 && (
           <div className="mb-12">
-            <h2 className="text-2xl font-bold mb-6 text-theme">
-              Your Roadmaps
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {user?.selectedRoadmaps.map((roadmapId) => {
-                const roadmap = roadmaps.find((r) => r.id === roadmapId);
-                if (!roadmap) return null;
+            <AnimationWrapper animationType={5}>
+              {" "}
+              <h2 className="text-2xl font-bold mb-6 text-theme">
+                Your Roadmaps
+              </h2>
+            </AnimationWrapper>
+            <AnimationWrapper animationType={5}>
+              {" "}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {user?.selectedRoadmaps.map((roadmapId) => {
+                  const roadmap = roadmaps.find((r) => r.id === roadmapId);
+                  if (!roadmap) return null;
 
-                const progress = Math.round(
-                  ((user?.progress[roadmapId]?.length || 0) / 9) * 100
-                );
+                  const progress = Math.round(
+                    ((user?.progress[roadmapId]?.length || 0) / 9) * 100
+                  );
 
-                return (
-                  <SelectedRoadmapCard
-                    key={roadmap.id}
-                    roadmap={roadmap}
-                    progress={progress}
-                    onRemove={selectRoadmap}
-                  />
-                );
-              })}
-            </div>
+                  return (
+                    <SelectedRoadmapCard
+                      key={roadmap.id}
+                      roadmap={roadmap}
+                      progress={progress}
+                      onRemove={selectRoadmap}
+                    />
+                  );
+                })}
+              </div>
+            </AnimationWrapper>
           </div>
         )}
 
-      <h2 className="text-2xl font-bold mb-6 text-theme">Other Roadmaps</h2>
+      <AnimationWrapper animationType={5}>
+        <h2 className="text-2xl font-bold mb-6 text-theme">Other Roadmaps</h2>
+      </AnimationWrapper>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {currentPost.length > 0 ? (
           currentPost.map((roadmap) => (

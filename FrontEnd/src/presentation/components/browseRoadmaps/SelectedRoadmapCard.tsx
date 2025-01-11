@@ -29,7 +29,7 @@ function SelectedRoadmapCard({
   };
 
   return (
-    <div className="group relative overflow-hidden rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700  hover_shawdow_effect border-rad transition-all">
+    <div className="group  relative overflow-hidden rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700  hover_shawdow_effect border-rad transition-all">
       <div
         className="absolute inset-0 bg-cover bg-center opacity-10"
         style={{ backgroundImage: `url(${roadmap.image})` }}

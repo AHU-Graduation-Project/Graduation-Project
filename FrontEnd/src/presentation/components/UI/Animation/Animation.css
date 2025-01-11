@@ -1,0 +1,72 @@
+/* Base transition class for smoother animations */
+.transition-base {
+  transition: all 0.5s ease-out;
+}
+
+/* Fade In Up Animation */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeInUp {
+  opacity: 0;
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+/* Fade In Down Animation */
+@keyframes fadeInDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeInDown {
+  opacity: 0;
+  animation: fadeInDown 0.5s ease-out forwards;
+}
+
+/* Fade In Left Animation */
+@keyframes fadeInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fadeInLeft {
+  opacity: 0;
+  animation: fadeInLeft 0.5s ease-out forwards;
+}
+
+/* Fade In Right Animation */
+@keyframes fadeInRight {
+  0% {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fadeInRight {
+  opacity: 0;
+  animation: fadeInRight 0.5s ease-out forwards;
+}
