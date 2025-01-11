@@ -298,7 +298,6 @@ export async function generateRoadmap(
     if (!match) {
       throw new Error("Invalid AI response format - no JSON structure found");
     }
-    console.log(JSON.parse(match[0]));
     try {
       const parsedData = JSON.parse(match[0]);
 
