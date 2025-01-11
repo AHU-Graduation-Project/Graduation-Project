@@ -11,7 +11,7 @@ export default function FeaturesSection() {
       imageUrl:
         "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=800",
       linkText: "Generate Your Path",
-      linkUrl: "/generate",
+      linkUrl: "/#/generate",
       gradient: "from-blue-500 to-purple-500",
     },
     {
@@ -22,7 +22,7 @@ export default function FeaturesSection() {
       imageUrl:
         "https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&q=80&w=800",
       linkText: "Explore roadmaps",
-      linkUrl: "/roadmaps",
+      linkUrl: "/#/roadmaps",
       gradient: "from-purple-500 to-pink-500",
     },
   ];
