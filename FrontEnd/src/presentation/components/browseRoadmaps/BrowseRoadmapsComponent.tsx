@@ -60,7 +60,7 @@ export default function BrowseRoadmapsComponent() {
                 Your Roadmaps
               </h2>
             </AnimationWrapper>
-            <AnimationWrapper animationType={5}>
+            
               {" "}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {user?.selectedRoadmaps.map((roadmapId) => {
@@ -81,7 +81,7 @@ export default function BrowseRoadmapsComponent() {
                   );
                 })}
               </div>
-            </AnimationWrapper>
+            
           </div>
         )}
 
