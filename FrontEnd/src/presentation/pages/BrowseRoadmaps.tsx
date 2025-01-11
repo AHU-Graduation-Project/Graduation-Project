@@ -1,4 +1,4 @@
-import BrowseRoadmapsComponent from "../components/browseRoadmaps/BrowsRoadmapsComponent";
+import BrowseRoadmapsComponent from "../components/browseRoadmaps/BrowseRoadmapsComponent";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import BackgroundRays from "../components/OverView/BackgroundRays";

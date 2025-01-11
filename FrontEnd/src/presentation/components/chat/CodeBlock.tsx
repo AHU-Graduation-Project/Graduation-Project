@@ -12,16 +12,37 @@ export default function CodeBlock({ language, value }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
 
   const copyCode = async () => {
-    await navigator.clipboard.writeText(value);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      // Fallback for older browsers
+      const textArea = document.createElement("textarea");
+      textArea.value = value;
+      document.body.appendChild(textArea);
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch (err) {
+        console.error('Copy failed:', err);
+      }
+      document.body.removeChild(textArea);
+    }
   };
 
   return (
-    <div className="relative group">
+    <div className="relative group bg-theme">
       <button
+        type="button"
         onClick={copyCode}
-        className="absolute right-2 top-2 p-2 rounded-lg bg-slate-800 opacity-0 group-hover:opacity-100 transition-opacity"
+        onTouchEnd={(e) => {
+          e.preventDefault();
+          copyCode();
+        }}
+        className="absolute right-2 top-2 p-2 rounded-lg bg-slate-800 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
         title="Copy code"
       >
         {copied ? (

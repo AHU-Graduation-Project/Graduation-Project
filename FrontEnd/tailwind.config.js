@@ -119,10 +119,7 @@ export default {
           filter: "blur(3px)", // Apply the background blur
           zIndex: -1, // Ensure it stays behind the content
         },
-        ".border-theme": {
-          borderImage:
-            "linear-gradient(to right, var(--theme-from) 0%, var(--theme-to) 100%) 1",
-        },
+      
       
       });
     },
