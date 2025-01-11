@@ -1,5 +1,6 @@
-import { ChevronDown, ChevronUp } from 'lucide-react';
-import Slider from './customrange';
+import { ChevronDown, ChevronUp } from "lucide-react";
+import Slider from "./customrange";
+import AnimationWrapper from "../UI/Animation/Animation";
 
 interface AdvancedOptionsProps {
   isOpen: boolean;
@@ -11,27 +12,28 @@ interface AdvancedOptionsProps {
   onOptionChange: (option: string, value: number) => void;
 }
 
-export default function AdvancedOptions({ 
-  isOpen, 
-  onToggle, 
-  options, 
-  onOptionChange 
+export default function AdvancedOptions({
+  isOpen,
+  onToggle,
+  options,
+  onOptionChange,
 }: AdvancedOptionsProps) {
   return (
     <div className="space-y-4">
-      <button
-        type="button"
-        onClick={onToggle}
-        className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 hover:text-theme transition-colors mx-auto"
-      >
-        Advanced Options
-        {isOpen ? (
-          <ChevronUp className="w-4 h-4" />
-        ) : (
-          <ChevronDown className="w-4 h-4" />
-        )}
-      </button>
-
+      <AnimationWrapper animationType={5}>
+        <button
+          type="button"
+          onClick={onToggle}
+          className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 hover:text-theme transition-colors mx-auto"
+        >
+          Advanced Options
+          {isOpen ? (
+            <ChevronUp className="w-4 h-4" />
+          ) : (
+            <ChevronDown className="w-4 h-4" />
+          )}
+        </button>
+      </AnimationWrapper>
       {isOpen && (
         <div className="p-4 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -47,9 +49,7 @@ export default function AdvancedOptions({
                   max={30}
                   min={5}
                 />
-                <span className="w-12 text-center">
-                  {options.minTopics}
-                </span>
+                <span className="w-12 text-center">{options.minTopics}</span>
               </div>
             </div>
 
@@ -65,9 +65,7 @@ export default function AdvancedOptions({
                   max={5}
                   min={1}
                 />
-                <span className="w-12 text-center">
-                  {options.minSubtopics}
-                </span>
+                <span className="w-12 text-center">{options.minSubtopics}</span>
               </div>
             </div>
           </div>

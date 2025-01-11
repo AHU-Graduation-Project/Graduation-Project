@@ -17,9 +17,8 @@ const EXAMPLE_STRUCTURE = `{
       label: "HTML",
       type: "topic",
       description: "Learn the fundamentals of HTML markup language.",
-      marketDemand: "High demand as the foundation of web development.",
-      averageSalary: "$60,000 - $80,000",
-      requiredSkills: ["Semantic HTML", "Forms", "Accessibility"],
+      isSkill: true, // This is just if this is skill are Positionable in the cv
+      isAnalysisNeeded: true, // This just if this topic are find a job with topic name
       isAchieved: true,
     },
   },
@@ -31,9 +30,8 @@ const EXAMPLE_STRUCTURE = `{
       label: "CSS",
       type: "topic",
       description: "Master styling and layout with CSS.",
-      marketDemand: "Essential skill for frontend development.",
-      averageSalary: "$65,000 - $85,000",
-      requiredSkills: ["Flexbox", "Grid", "Responsive Design"],
+      isSkill: true,
+      isAnalysisNeeded: true,
       isAchieved: false,
       requiredNodes: ["1"],
     },
@@ -46,9 +44,8 @@ const EXAMPLE_STRUCTURE = `{
       label: "JavaScript",
       type: "topic",
       description: "Learn core JavaScript programming concepts.",
-      marketDemand: "Very high demand with excellent job prospects.",
-      averageSalary: "$80,000 - $120,000",
-      requiredSkills: ["ES6+", "Async Programming", "DOM Manipulation"],
+      isSkill: true,
+      isAnalysisNeeded: true,
       isAchieved: false,
       requiredNodes: ["2"],
     },
@@ -61,9 +58,8 @@ const EXAMPLE_STRUCTURE = `{
       label: "JS Syntax",
       type: "subtopic",
       description: "Master JavaScript syntax and core concepts.",
-      marketDemand: "Fundamental skill for all JavaScript development.",
-      averageSalary: "$75,000 - $95,000",
-      requiredSkills: ["Variables", "Functions", "Objects"],
+      isSkill: false,
+      isAnalysisNeeded: false,
       isAchieved: false,
       requiredNodes: ["3"],
     },
@@ -76,9 +72,8 @@ const EXAMPLE_STRUCTURE = `{
       label: "DOM",
       type: "subtopic",
       description: "Learn DOM manipulation and events.",
-      marketDemand: "Essential for frontend development.",
-      averageSalary: "$75,000 - $95,000",
-      requiredSkills: ["Selectors", "Events", "Traversal"],
+      isSkill: false,
+      isAnalysisNeeded: false,
       isAchieved: false,
       requiredNodes: ["3"],
     },
@@ -91,9 +86,8 @@ const EXAMPLE_STRUCTURE = `{
       label: "React",
       type: "topic",
       description: "Build modern web applications with React.",
-      marketDemand: "Very high demand for React developers.",
-      averageSalary: "$90,000 - $140,000",
-      requiredSkills: ["Components", "Hooks", "State Management"],
+      isSkill: true,
+      isAnalysisNeeded: true,
       isAchieved: false,
       requiredNodes: ["3"],
     },
@@ -106,10 +100,9 @@ const EXAMPLE_STRUCTURE = `{
       label: "Angular",
       type: "topic",
       description: "Develop enterprise applications with Angular.",
-      marketDemand: "Strong demand in enterprise environments.",
-      averageSalary: "$95,000 - $145,000",
-      requiredSkills: ["TypeScript", "RxJS", "Angular CLI"],
       isAchieved: false,
+      isSkill: true,
+      isAnalysisNeeded: true,
       requiredNodes: ["3"],
     },
   },
@@ -121,10 +114,9 @@ const EXAMPLE_STRUCTURE = `{
       label: "VCS",
       type: "topic",
       description: "Learn version control with Git.",
-      marketDemand: "Essential skill for all developers.",
-      averageSalary: "$70,000 - $90,000",
-      requiredSkills: ["Git", "GitHub", "Branching Strategies"],
-      isAchieved: false,
+      isSkill: ture,
+      isAnalysisNeeded: true,
+      isAchieved: true,
       requiredNodes: ["6", "7"],
     },
   },
@@ -136,10 +128,9 @@ const EXAMPLE_STRUCTURE = `{
       label: "SSR Vs CSR",
       type: "topic",
       description: "Understand server-side and client-side rendering.",
-      marketDemand: "Growing demand for full-stack knowledge.",
-      averageSalary: "$100,000 - $150,000",
-      requiredSkills: ["Next.js", "Performance Optimization", "SEO"],
       isAchieved: false,
+      isSkill: false,
+      isAnalysisNeeded: false,
       requiredNodes: ["8"],
     },
   },
@@ -234,10 +225,10 @@ const createSystemPrompt = (
    - Data object must include:
      * type: "topic" for main nodes, "subtopic" for side nodes
      * label: concise name
+     * isSkill: This is just if this is skill are Positionable in the cv
+     * isAnalysisNeeded: This just if this topic are find a job with topic name
      * description: detailed explanation
-     * marketDemand: industry demand description
-     * averageSalary: salary range
-     * requiredSkills: array of 3-5 skills
+
 
 2. Edge Structure:
    For main flow (vertical connections):
@@ -277,6 +268,7 @@ const createSystemPrompt = (
      * type: "documentation" | "course" | "article" | "book"
      * description: brief description of what this resource covers
 
+
 Ensure all information provided is backed by reputable sources and include them in the response.`;
 
 export async function generateRoadmap(
@@ -291,7 +283,8 @@ export async function generateRoadmap(
       [
         createSystemPrompt(options),
         EXAMPLE_STRUCTURE,
-        `Generate a learning roadmap for: ${prompt}. Follow the example structure exactly and provide a complete roadmap for the requested topic, ensuring proper node positioning and connections. Include at least ${options.minTopics} main topics and ${options.minSubtopics} subtopics per main topic. Make sure to include relevant sources and references.`,
+        `Generate a learning roadmap for: ${prompt}. Follow the example structure exactly and provide a complete roadmap for the requested topic, ensuring proper node positioning and connections. Include at least ${options.minTopics} main topics and ${options.minSubtopics} subtopics per main topic. Make sure to include relevant sources and references. ensure the user propmt about IT fileds or related other then this dont send anything
+`,
       ],
       { signal }
     );

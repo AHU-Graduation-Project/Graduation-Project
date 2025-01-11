@@ -1,6 +1,5 @@
 import React from "react";
 import { motion } from "framer-motion"; // Ensure you import framer-motion
-import { cn } from "../../../infrastructure/utils/cn";// Optional, for conditional class names
 
 const GeneratingIndicator: React.FC = () => {
   return (

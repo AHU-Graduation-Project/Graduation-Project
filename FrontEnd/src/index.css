@@ -266,7 +266,7 @@ body {
 
 .animate-popUp {
   opacity: 0;
-  animation: popUp 0.8s ease-out forwards;
+  animation: popUp 0.3s ease-out forwards;
 }
 
 /* Zoom In Animation */
