@@ -42,27 +42,48 @@ export const gradientThemes: GradientTheme[] = [
     },
     class: 'from-rose-500 to-pink-500',
     iconColor: 'text-rose-500'
+  },{
+  id: 'blue-green',
+  name: 'Ocean Breeze',
+  colors: {
+    from: '#3B82F6',
+    to: '#10B981'
   },
-  {
-    id: 'amber-orange',
-    name: 'Desert Sand',
-    colors: {
-      from: '#F59E0B',
-      to: '#F97316'
-    },
-    class: 'from-amber-500 to-orange-500',
-    iconColor: 'text-amber-500'
+  class: 'from-blue-500 to-green-500',
+  iconColor: 'text-blue-500'
+},
+{
+  id: 'pink-purple',
+  name: 'Sunset Glow',
+  colors: {
+    from: '#EC4899',
+    to: '#8B5CF6'
   },
-  {
-    id: 'indigo-violet',
-    name: 'Twilight Sky',
-    colors: {
-      from: '#6366F1',
-      to: '#8B5CF6'
-    },
-    class: 'from-indigo-500 to-violet-500',
-    iconColor: 'text-indigo-500'
+  class: 'from-pink-500 to-purple-500',
+  iconColor: 'text-pink-500'
+},
+{
+  id: 'red-yellow',
+  name: 'Fiery Sunset',
+  colors: {
+    from: '#EF4444',
+    to: '#F59E0B'
   },
+  class: 'from-red-500 to-yellow-500',
+  iconColor: 'text-red-500'
+},
+
+{
+  id: 'yellow-pink',
+  name: 'Golden Hour',
+  colors: {
+    from: '#FBBF24',
+    to: '#F472B6'
+  },
+  class: 'from-yellow-500 to-pink-500',
+  iconColor: 'text-yellow-500'
+}
+,
   {
     id: 'cyan-blue',
     name: 'Arctic Ice',
@@ -83,7 +104,7 @@ interface ThemeState {
 export const useThemeStore = create<ThemeState>()(
   persist(
     (set) => ({
-      currentTheme: gradientThemes[0],
+      currentTheme: gradientThemes[2],
       setTheme: (theme) => {
         set({ currentTheme: theme });
         document.documentElement.style.setProperty('--theme-from', theme.colors.from);

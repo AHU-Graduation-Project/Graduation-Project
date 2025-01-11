@@ -55,7 +55,7 @@ export default function ModalsAndPanels({
       <CoursesSidebar
         isOpen={showCourses}
         onClose={() => setShowCourses(false)}
-        topic={selectedNode?.label}
+        topic={roadmap?.title}
       />
       <RatingModal
         isOpen={showRating}

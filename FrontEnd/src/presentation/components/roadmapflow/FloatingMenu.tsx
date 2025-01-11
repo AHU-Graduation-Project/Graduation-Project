@@ -70,6 +70,9 @@ export default function FloatingMenu({
               >
                 <Star className="w-6 h-6" />
               </button>
+              <motion.div className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-slate-800 text-white px-3 py-1.5 rounded-lg text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity">
+                Rate Roadmap
+              </motion.div>
             </motion.div>
             <motion.div
               className="relative group"
@@ -87,6 +90,9 @@ export default function FloatingMenu({
               >
                 <BookOpen className="w-6 h-6" />
               </button>
+              <motion.div className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-slate-800 text-white px-3 py-1.5 rounded-lg text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity">
+                View Courses
+              </motion.div>
             </motion.div>
             <motion.div
               className="relative group"
@@ -104,6 +110,9 @@ export default function FloatingMenu({
               >
                 <MessageCircle className="w-6 h-6" />
               </button>
+              <motion.div className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-slate-800 text-white px-3 py-1.5 rounded-lg text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity">
+                AI Assistant
+              </motion.div>
             </motion.div>
             <motion.div
               className="relative group"
@@ -121,6 +130,9 @@ export default function FloatingMenu({
               >
                 <AlertCircle className="w-6 h-6" />
               </button>
+              <motion.div className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-slate-800 text-white px-3 py-1.5 rounded-lg text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity">
+                Roadmap Info
+              </motion.div>
             </motion.div>
           </>
         )}

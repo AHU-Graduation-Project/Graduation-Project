@@ -14,7 +14,6 @@ type Platform = 'all' | 'udemy' | 'coursera';
 
 export default function CoursesSidebar({ isOpen, onClose, topic }: CoursesSidebarProps) {
   const [platform, setPlatform] = useState<Platform>('all');
-
   if (!isOpen) return null;
 
   const filteredCourses = courses.filter(course => {

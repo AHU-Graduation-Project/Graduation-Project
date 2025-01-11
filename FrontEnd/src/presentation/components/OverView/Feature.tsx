@@ -1,4 +1,21 @@
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
+import { useState, useEffect, useMemo } from "react";
+
+// Hook to check if the device is mobile
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  return isMobile;
+}
 
 interface FeatureProps {
   icon: React.ReactNode;
@@ -8,6 +25,7 @@ interface FeatureProps {
   linkText: string;
   linkUrl: string;
   gradient: string;
+  index: number;
 }
 
 export default function Feature({
@@ -18,30 +36,27 @@ export default function Feature({
   linkText,
   linkUrl,
   gradient,
+  index,
 }: FeatureProps) {
+  const isEven = index % 2 === 0;
+  const isMobile = useIsMobile(); // Check if it's a mobile device
+
+  // Memoize static icon and image URL to avoid unnecessary re-renders
+  const IconMemo = useMemo(() => icon, [icon]);
+  const ImageMemo = useMemo(() => imageUrl, [imageUrl]);
+
   return (
-    <div className="flex items-center gap-12">
-      <div className="flex-1">
-        <div className="w-12 h-12 mb-4">{icon}</div>
-        <h3 className="text-2xl font-bold mb-4">{title}</h3>
-        <p className="text-slate-600 dark:text-slate-400 mb-6">{description}</p>
-        <Link
-          to={linkUrl}
-          className="inline-flex items-center text-blue-500 hover:text-blue-600 font-medium"
-        >
-          {linkText}
-        </Link>
-      </div>
-      <div className="flex-1 relative">
-        <div
-          className={`absolute inset-0 ${gradient} rounded-2xl blur opacity-20`}
-        />
-        <img
-          src={imageUrl}
-          alt={title}
-          className="relative rounded-2xl shadow-xl"
-        />
-      </div>
-    </div>
+    <motion.div
+      initial={{ opacity: 0, y: isMobile ? 0 : 50 }} // Adjust animation for mobile
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-100px" }}
+      transition={{ duration: isMobile ? 0.5 : 0.8, delay: index * 0.2 }} // Adjust duration for mobile
+      className={`flex flex-col ${
+        isEven ? "md:flex-row" : "md:flex-row-reverse"
+      } items-center gap-12 py-20`}
+    >
+      
+
+    </motion.div>
   );
 }
