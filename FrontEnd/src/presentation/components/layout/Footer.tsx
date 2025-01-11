@@ -1,27 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect} from "react";
 import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
 
 const Footer: React.FC = () => {
-  const [location, setLocation] = useState<string>("Fetching location...");
 
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setLocation(
-            `Lat: ${latitude.toFixed(2)}, Long: ${longitude.toFixed(2)}`
-          );
-        },
-        () => setLocation("Unable to retrieve location")
-      );
-    } else {
-      setLocation("Geolocation not supported");
-    }
-  }, []);
 
   return (
-    <footer className="bg-gray-800 dark:bg-custom-gradient-dark text-gray-300 py-6">
+    <footer className="bg-gray-800 dark:bg-custom-gradient-dark text-gray-300 py-6 relative " >
       <div className="container mx-auto px-4 flex flex-col items-center">
         <div className="flex flex-col items-center space-y-4 mb-5">
           {/* <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 text-transparent bg-clip-text">

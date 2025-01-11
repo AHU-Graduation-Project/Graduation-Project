@@ -1,66 +1,126 @@
 import { Link } from "react-router-dom";
 import { useAuthStore } from "../../../application/state/authStore";
-
+import { motion } from "framer-motion";
+import { ArrowRight, Code2, Brain, Rocket } from "lucide-react";
+import BackgroundRays from "./BackgroundRays";
 export default function HeroSection() {
   const { isAuthenticated } = useAuthStore();
 
   return (
-    <div className="relative overflow-hidden bg-gradient-to-b from-slate-900 to-slate-800 dark:from-slate-950 dark:to-slate-900">
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20" />
-        <div className="absolute inset-y-0 right-0 w-1/2">
-          <svg
-            className="absolute inset-0 h-full w-full"
-            viewBox="0 0 100 100"
-            preserveAspectRatio="none"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="0.5"
-            strokeDasharray="2,2"
-            style={{ color: "rgba(255,255,255,0.1)" }}
+    <div className="relative min-h-screen">
+      {/* Animated Background */}
+      {/* Content */}
+      <div className="relative container mx-auto px-4 pt-20 lg:pt-32">
+        <div className="max-w-5xl mx-auto text-center mb-16">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-theme/10 mb-6"
           >
-            {[...Array(10)].map((_, i) => (
-              <line key={i} x1="0" y1={i * 10} x2="100" y2={i * 10} />
-            ))}
-            {[...Array(10)].map((_, i) => (
-              <line key={i} x1={i * 10} y1="0" x2={i * 10} y2="100" />
-            ))}
-          </svg>
-        </div>
-      </div>
+            <span className="relative flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-theme opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-theme"></span>
+            </span>
+            <span className="text-theme font-medium">
+              AI-Powered Learning Paths
+            </span>
+          </motion.div>
 
-      <div className="relative">
-        <div className="container mx-auto px-4 py-24">
-          <div className="max-w-3xl">
-            <h1 className="text-6xl font-bold mb-6 text-white">
-              Your Path to{" "}
-              <span className="text-theme text-transparent bg-clip-text">
-                Tech Excellence
-              </span>
-            </h1>
-            <p className="text-xl text-slate-300 mb-8">
-              Discover personalized learning roadmaps powered by industry
-              insights and real-world data. Track your progress and achieve your
-              goals.
-            </p>
-            {!isAuthenticated && (
-              <div className="flex gap-4">
-                <Link
-                  to="/auth"
-                  className="px-6 py-3 rounded-lg bg-theme text-white font-medium hover:from-blue-600 hover:to-purple-600 transition-all"
-                >
-                  Get Started
-                </Link>
-                <Link
-                  to="/auth"
-                  className="px-6 py-3 rounded-lg bg-white/10 text-white font-medium hover:bg-white/20 transition-all"
-                >
-                  Sign In
-                </Link>
-              </div>
-            )}
-          </div>
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="text-5xl md:text-7xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400"
+          >
+            Master Your Tech Journey with{" "}
+            <span className="text-theme">DevPath</span>
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="text-xl text-gray-600 dark:text-gray-400 mb-12 max-w-3xl mx-auto"
+          >
+            Personalized learning roadmaps powered by AI. Track your progress,
+            master new skills, and accelerate your tech career.
+          </motion.p>
+
+          {!isAuthenticated && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              className="flex flex-wrap justify-center gap-4"
+            >
+              <Link
+                to="/auth"
+                className="group relative px-8 py-4 bg-theme text-white dark:bg-theme/80 rounded-xl font-medium shadow-xl hover:shadow-theme transition-all duration-300 overflow-hidden"
+              >
+                <span className="relative z-10 flex items-center gap-2">
+                  Get Started Free
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </span>
+                <motion.div
+                  className="absolute inset-0 bg-white/20"
+                  initial={false}
+                  whileHover={{ x: ["0%", "100%"] }}
+                  transition={{ duration: 0.5 }}
+                />
+              </Link>
+              <Link
+                to="/auth"
+                className="px-8 py-4 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-900 dark:text-white rounded-xl font-medium border border-gray-200 dark:border-white/10 transition-colors duration-300"
+              >
+                Sign In
+              </Link>
+            </motion.div>
+          )}
         </div>
+
+        {/* Feature Cards */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.8 }}
+          className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto"
+        >
+          {[
+            {
+              icon: Code2,
+              title: "Interactive Roadmaps",
+              description:
+                "Follow structured learning paths tailored to your goals",
+            },
+            {
+              icon: Brain,
+              title: "AI Assistance",
+              description: "Get personalized guidance and recommendations",
+            },
+            {
+              icon: Rocket,
+              title: "Track Progress",
+              description: "Monitor your journey and celebrate achievements",
+            },
+          ].map((feature, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 1 + index * 0.1 }}
+              className="group relative p-5 bg-white dark:bg-white/5 backdrop-blur-sm rounded-2xl border border-gray-200 dark:border-white/10 hover:border-theme/50 hover:bg-gray-50/50 dark:hover:bg-white/[0.02] hover:shadow-lg hover:shadow-theme/5 transition-all duration-300 flex flex-col items-center justify-center min-h-[200px] text-center"
+            >
+              <feature.icon className="relative z-10 w-8 h-8 text-theme mb-4" />
+              <h3 className="relative z-10 text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                {feature.title}
+              </h3>
+              <p className="relative z-10 text-sm text-gray-600 dark:text-gray-400 max-w-[200px]">
+                {feature.description}
+              </p>
+            </motion.div>
+          ))}
+        </motion.div>
       </div>
     </div>
   );

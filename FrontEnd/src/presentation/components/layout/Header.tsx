@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Code2, Map, Sparkles, BarChart2, Menu, X } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import ThemeToggle from "../UI/ThemeToggle";
 import ThemeIcon from "../UI/ThemeIcon";
 import DropdownToggle from "../UI/DrowDown";
@@ -9,7 +9,7 @@ export default function Header() {
   const [activeDropdown, setActiveDropdown] = useState<
     "header" | "dropdown" | null
   >(null);
-
+  const location = useLocation();
   const headerRef = useRef<HTMLDivElement | null>(null);
 
   const closeDropdown = () => setActiveDropdown(null);
@@ -50,6 +50,13 @@ export default function Header() {
     { to: "/generate", icon: Sparkles, label: "Generate" },
   ];
 
+  const getCurrentPageName = () => {
+    const path = location.pathname;
+    if (path === "/") return "Overview";
+    if (path.startsWith("/roadmap/")) return "Roadmap Details";
+    return path.slice(1).charAt(0).toUpperCase() + path.slice(2);
+  };
+
   return (
     <header
       ref={headerRef}
@@ -63,13 +70,16 @@ export default function Header() {
           <h1 className="text-2xl font-bold text-theme">DevPath</h1>
         </Link>
 
+      
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-6 relative">
           {menuItems.map((item) => (
             <Link
               key={item.to}
               to={item.to}
-              className="text-slate-700 dark:text-white/80 hover:text-slate-900 dark:hover:text-white flex items-center gap-2 transition-colors group"
+              className={`text-slate-700 dark:text-white/80 hover:text-slate-900 dark:hover:text-white flex items-center gap-2 transition-colors group ${
+                location.pathname === item.to ? "text-theme font-medium" : ""
+              }`}
             >
               <ThemeIcon icon={item.icon} className="w-4 h-4" />
               <span>{item.label}</span>
@@ -84,7 +94,7 @@ export default function Header() {
         </nav>
 
         {/* Mobile Menu Button */}
-        <div className="md:hidden flex items-center gap-4 ">
+        <div className="md:hidden flex items-center gap-4">
           <ThemeToggle />
           <DropdownToggle
             isOpen={activeDropdown === "dropdown"}
@@ -108,13 +118,18 @@ export default function Header() {
         {/* Mobile Menu */}
         {activeDropdown === "header" && (
           <div className="md:hidden fixed inset-x-0 top-20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-b border-slate-200 dark:border-slate-700 p-4">
+          
             <nav className="flex flex-col gap-4">
               {menuItems.map((item) => (
                 <Link
                   key={item.to}
                   to={item.to}
                   onClick={closeDropdown}
-                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors group"
+                  className={`flex items-center gap-3 p-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors group ${
+                    location.pathname === item.to
+                      ? "bg-slate-100 dark:bg-slate-800"
+                      : ""
+                  }`}
                 >
                   <ThemeIcon icon={item.icon} className="w-5 h-5" />
                   <span className="font-medium">{item.label}</span>
