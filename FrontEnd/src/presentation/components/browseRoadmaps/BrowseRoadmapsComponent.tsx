@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import RoadmapCard from "./RoadmapCard";
 import { roadmaps } from "../../../data/roadmaps";
 import { useAuthStore } from "../../../application/state/authStore";
-import P from "./P";
+import Pagination from "./Pagination";
 import SearchBar from "../UI/SearchBar";
 import SelectedRoadmapCard from "./SelectedRoadmapCard";
 import AnimationWrapper from "../UI/Animation/Animation";
@@ -11,7 +11,7 @@ export default function BrowseRoadmapsComponent() {
   const [searchQuery, setSearchQuery] = useState("");
   const { user, selectRoadmap } = useAuthStore();
   const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage, setPostsPerPage] = useState(6);
+  const [postsPerPage, setPostsPerPage] = useState(9);
 
   const filteredRoadmaps = roadmaps.filter((roadmap) =>
     [roadmap.title, roadmap.description].some((field) =>
@@ -59,29 +59,26 @@ export default function BrowseRoadmapsComponent() {
               <h2 className="text-2xl font-bold mb-6 text-theme">
                 Your Roadmaps
               </h2>
-            </AnimationWrapper>
-            
-              {" "}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {user?.selectedRoadmaps.map((roadmapId) => {
-                  const roadmap = roadmaps.find((r) => r.id === roadmapId);
-                  if (!roadmap) return null;
+            </AnimationWrapper>{" "}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {user?.selectedRoadmaps.map((roadmapId) => {
+                const roadmap = roadmaps.find((r) => r.id === roadmapId);
+                if (!roadmap) return null;
 
-                  const progress = Math.round(
-                    ((user?.progress[roadmapId]?.length || 0) / 9) * 100
-                  );
+                const progress = Math.round(
+                  ((user?.progress[roadmapId]?.length || 0) / 9) * 100
+                );
 
-                  return (
-                    <SelectedRoadmapCard
-                      key={roadmap.id}
-                      roadmap={roadmap}
-                      progress={progress}
-                      onRemove={selectRoadmap}
-                    />
-                  );
-                })}
-              </div>
-            
+                return (
+                  <SelectedRoadmapCard
+                    key={roadmap.id}
+                    roadmap={roadmap}
+                    progress={progress}
+                    onRemove={selectRoadmap}
+                  />
+                );
+              })}
+            </div>
           </div>
         )}
 
@@ -102,8 +99,8 @@ export default function BrowseRoadmapsComponent() {
         )}
       </div>
 
-      <div className="pt-6">
-        <P
+      <div className="pt-6 z-40">
+        <Pagination
           totalPosts={filteredRoadmaps.length}
           postsPerPage={postsPerPage}
           currentPage={currentPage}

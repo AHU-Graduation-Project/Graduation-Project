@@ -106,7 +106,10 @@ export default function HeroSection() {
               transition={{ duration: 0.5, delay: 1 + index * 0.1 }}
               className="group relative p-5 bg-white dark:bg-white/5 backdrop-blur-sm rounded-2xl border border-gray-200 dark:border-white/10 hover:border-theme/50 hover:bg-gray-50/50 dark:hover:bg-white/[0.02] hover:shadow-lg hover:shadow-theme/5 transition-all duration-300 flex flex-col items-center justify-center min-h-[200px] text-center"
             >
-              <ThemeIcon icon={feature.icon} className="relative z-10 w-8 h-8  mb-4" />
+              <ThemeIcon
+                icon={feature.icon}
+                className="relative z-10 w-8 h-8  mb-4"
+              />
               <h3 className="relative z-10 text-lg font-semibold text-gray-900 dark:text-white mb-2">
                 {feature.title}
               </h3>

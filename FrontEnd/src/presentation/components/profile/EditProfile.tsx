@@ -1,7 +1,9 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useAuthStore } from "../../../application/state/authStore";
-import { Camera } from "lucide-react";
-import SelectDropDown from "../UI/SelectDropDown";
+import ProfilePicture from "./ProfilePicture";
+import PersonalInfo from "./PersonalInfo";
+import DropdownSection from "./DropDownSection";
+import AboutMe from "./AboutMe";
 import Skills from "./Skills";
 import ChangePassword from "./ChangePassword";
 
@@ -21,15 +23,18 @@ const countries = [
   "Mexico",
 ];
 
-const positions = ["Front end", "Backend", "DevOps", "Software Enginner"];
-const levels = ["Junior", "Middle", "Senior"];
+const levels = ["Junior", "Middle", "Senior", "Team Leader", "Project Manager"];
 
-const EditProfile = () => {
+const EditProfile: React.FC = () => {
   const { user, updateUser } = useAuthStore();
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [fname, setFirstName] = useState(user?.fname || "");
   const [lname, setLastName] = useState(user?.lname || "");
   const [email, setEmail] = useState(user?.email || "");
+  const [aboutme, setAboutMe] = useState(user?.aboutme || "");
+  const [isEmailConf, setIsEmailConf] = useState(
+    user?.isEmailConformed || false
+  );
   const [position, setPosition] = useState(user?.position || "");
   const [level, setLevel] = useState(user?.level || "");
   const [country, setCountry] = useState(user?.country || "");
@@ -46,9 +51,9 @@ const EditProfile = () => {
       country,
       position,
       level,
+      aboutme,
       profilePicture,
     });
-
     setSuccessMessage("Changes have been successfully saved!");
     setTimeout(() => setSuccessMessage(null), 3000);
   };
@@ -67,166 +72,76 @@ const EditProfile = () => {
   if (!user) return null;
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 w-full mx-auto">
-      <h2 className="text-center text-theme text-2xl font-bold mb-6">
+    <div className="p-4 bg-gradient-to-r from-blue-500/10 to-purple-500/10 sm:p-6 lg:p-8 w-full max-w-screen-xl shadow-md rounded-lg mx-auto space-y-6">
+      <h2 className="text-center text-theme dark:text-white text-3xl font-bold">
         Profile
       </h2>
 
-      <div className="flex flex-col sm:flex-row sm:items-start sm:gap-6">
-        {/* Profile Picture Section */}
-        <div className="flex-shrink-0 flex flex-col items-center sm:items-start">
-          <label htmlFor="profilePicture" className="cursor-pointer">
-            <div className="w-32 h-32 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center">
-              {profilePicture ? (
-                <img
-                  src={profilePicture}
-                  alt="Profile"
-                  className="w-full h-full object-cover rounded-full"
-                />
-              ) : (
-                <Camera className="w-10 h-10 text-slate-500" />
-              )}
-            </div>
-          </label>
-          <input
-            type="file"
-            id="profilePicture"
-            className="hidden"
-            accept="image/*"
-            onChange={handleProfilePictureChange}
-          />
-          {profilePicture && (
-            <button
-              onClick={() => setProfilePicture("")}
-              className="mt-2 sm:ml-9 text-sm text-red-600 hover:underline"
-            >
-              Remove
-            </button>
-          )}
-        </div>
+      {/* Profile Picture */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <ProfilePicture
+          profilePicture={profilePicture}
+          onChange={handleProfilePictureChange}
+          onRemove={() => setProfilePicture("")}
+        />
 
-        {/* Input Fields Section */}
-        <div className="flex-1 space-y-4 mt-6 sm:mt-0">
-          <div className="flex gap-4">
-            <div className="flex-1">
-              <label
-                htmlFor="firstName"
-                className="block text-sm font-medium text-theme mb-1"
-              >
-                First Name
-              </label>
-              <input
-                type="text"
-                id="firstName"
-                value={fname}
-                onChange={(e) => setFirstName(e.target.value)}
-                className="w-full border bg-transparent border-gray-300 rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-theme"
-              />
-            </div>
-
-            <div className="flex-1">
-              <label
-                htmlFor="lastName"
-                className="block text-sm font-medium text-theme mb-1"
-              >
-                Last Name
-              </label>
-              <input
-                type="text"
-                id="lastName"
-                value={lname}
-                onChange={(e) => setLastName(e.target.value)}
-                className="w-full border bg-transparent border-gray-300 rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-theme"
-              />
-            </div>
-          </div>
-
-          <div className="flex gap-4">
-            <div className="flex-1">
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-theme mb-1"
-              >
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full border bg-transparent border-gray-300 rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-theme"
-              />
-            </div>
-
-            <div className="flex-1">
-              <label
-                htmlFor="country"
-                className="block text-sm font-medium text-theme mb-1"
-              >
-                Country
-              </label>
-              {/* <Country /> */}
-              <SelectDropDown
-                items={countries}
-                selectedValue={country}
-                onChange={setCountry}
-                className="border border-gray-300 rounded-md text-sm"
-              />
-            </div>
-          </div>
-        </div>
+        {/* Personal Information */}
+        <PersonalInfo
+          fname={fname}
+          lname={lname}
+          email={email}
+          isEmailConf={isEmailConf}
+          position={position}
+          onFirstNameChange={setFirstName}
+          onLastNameChange={setLastName}
+          onEmailChange={setEmail}
+          onPositionChange={setPosition}
+        />
       </div>
 
-      <div className="flex flex-col lg:flex-row lg:gap-9 pt-1 w-full">
-        <div className="my-3 min-w-48">
-          <label
-            htmlFor="position"
-            className="block text-sm font-medium text-theme mb-1"
-          >
-            Position
-          </label>
-          <SelectDropDown
-            items={positions}
-            selectedValue={position}
-            onChange={setPosition}
-            className="w-60 p-2 border border-gray-300 rounded-md text-sm"
-          />
-        </div>
-
-        <div className="my-3 min-w-48">
-          <label
-            htmlFor="level"
-            className="block text-sm font-medium text-theme mb-1"
-          >
-            Level
-          </label>
-          <SelectDropDown
-            items={levels}
-            selectedValue={level}
-            onChange={setLevel}
-            className=" w-60 p-2 border border-gray-300 rounded-md text-sm"
-          />
-        </div>
-
-        <div className="my-3 w-full">
-          <Skills />
-        </div>
+      {/* Dropdown Sections */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <DropdownSection
+          label="Country"
+          items={countries}
+          selectedValue={country}
+          onChange={setCountry}
+        />
+        <DropdownSection
+          label="Level"
+          items={levels}
+          selectedValue={level}
+          onChange={setLevel}
+        />
       </div>
 
-      {/* Save Button */}
+      {/* About Me Section */}
+      <AboutMe aboutme={aboutme} onAboutMeChange={setAboutMe} />
+
+      {/* Skills Section */}
+      <div className="shadow-md rounded-lg p-6">
+        <h3 className="text-lg font-semibold text-theme dark:text-white mb-4">
+          Skills
+        </h3>
+        <Skills />
+      </div>
+
+      {/* Change Password Modal */}
       {showChangePassword && (
         <ChangePassword onClose={() => setShowChangePassword(false)} />
       )}
-      <div className="flex justify-start gap-5 items-center mt-2">
+
+      {/* Action Buttons */}
+      <div className="flex justify-start gap-4 items-center">
         <button
           onClick={() => setShowChangePassword(!showChangePassword)}
-          className="py-2 px-2 bg-gray-400 text-white rounded-lg hover:bg-gray-600"
+          className="py-2 px-4 bg-gray-400 dark:bg-gray-600 text-white rounded-lg hover:bg-gray-500 dark:hover:bg-gray-700"
         >
           Change Password
         </button>
         <button
           onClick={handleSaveChanges}
-          className="py-2 px-2 bg-theme text-white rounded-lg hover:bg-blue-600"
+          className="py-2 px-4 bg-theme text-white rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600"
         >
           Save Changes
         </button>
