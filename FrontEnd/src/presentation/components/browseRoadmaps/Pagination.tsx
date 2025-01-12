@@ -63,7 +63,7 @@ const P: React.FC<PProps> = ({
   if (totalPages <= 1) return null;
 
   return (
-    <div className="flex items-center justify-evenly mt-4 space-x-1 flex-wrap min-w-[300px] max-w-[500px] mx-auto">
+    <div className="flex items-center justify-center gap-3 mt-4 space-x-1 flex-wrap min-w-[300px] max-w-[500px] mx-auto">
       <button
         onClick={handlePrevious}
         disabled={currentPage === 1}

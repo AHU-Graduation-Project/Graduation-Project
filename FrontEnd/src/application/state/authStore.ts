@@ -2,7 +2,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { UserEntity } from "../../domain/entities/User";
-import img from "../../shared/assets//images/mike_wazowski_meme_png_by_kylewithem_dg65n12-fullview.png"
+import img from "../../shared/assets//images/mike_wazowski_meme_png_by_kylewithem_dg65n12-fullview.png";
 
 const roadmapNodeCounts: { [key: string]: number } = {};
 
@@ -18,7 +18,9 @@ interface IAuthState {
     lname: string,
     position: string,
     level: string,
-    country: string
+    country: string,
+    aboutme: string,
+    isEmailConformed: boolean
   ) => void;
   logout: () => void;
   updateProgress: (
@@ -56,6 +58,8 @@ export const useAuthStore = create<IAuthState>()(
           "",
           "",
           "",
+          "",
+          false,
           [],
           [],
           [],
@@ -68,7 +72,17 @@ export const useAuthStore = create<IAuthState>()(
           isAuthenticated: true,
         });
       },
-      signup: (email, password, fname, lname, position, level, country) => {
+      signup: (
+        email,
+        password,
+        fname,
+        lname,
+        position,
+        level,
+        country,
+        aboutme,
+        isEmailConformed
+      ) => {
         const user = new UserEntity(
           "1",
           email,
@@ -79,6 +93,8 @@ export const useAuthStore = create<IAuthState>()(
           position,
           level,
           country,
+          aboutme,
+          isEmailConformed,
           [],
           [],
           [],
@@ -124,6 +140,8 @@ export const useAuthStore = create<IAuthState>()(
             state.user.position,
             state.user.level,
             state.user.country,
+            state.user.aboutme,
+            state.user.isEmailConformed,
             state.user.selectedRoadmaps,
             state.user.completedRoadmaps,
             state.user.generatedRoadmaps,

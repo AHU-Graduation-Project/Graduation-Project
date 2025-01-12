@@ -15,7 +15,7 @@ export default function LoginForm() {
   const userName = "ahmad@gmail.com";
   const userPassword = "1234";
 
-  const { login } = useAuthStore();
+  const { login, user } = useAuthStore();
 
   const handleSignToggle = () => {
     setIsSign((prev) => !prev);
@@ -29,24 +29,6 @@ export default function LoginForm() {
     } else {
       setError("Login failed. Please try again.");
     }
-
-    // try {
-    //   await login(email, password);
-    // } catch (err: any) {
-    //   setError(err.message || "Login failed. Please try again.");
-    // }
-    if (email === userName && password === userPassword) {
-      login(email, password);
-      navigate("/profile");
-    } else {
-      setError("Login failed. Please try again.");
-    }
-
-    // try {
-    //   await login(email, password);
-    // } catch (err: any) {
-    //   setError(err.message || "Login failed. Please try again.");
-    // }
   };
 
   return (

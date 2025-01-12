@@ -157,39 +157,38 @@ export default function BackgroundRays({
 
   const rays = configurations[option] || configurations[1];
 
- const isMobile = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const isMobile = /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
- return (
-   <div
-     className="absolute inset-0 overflow-hidden z-0"
-     style={{ height: pageHeight }}
-   >
-     <div className="absolute w-full h-full">
-       {rays.map((ray, index) => (
-         <motion.div
-           key={index}
-           className={`absolute bg-theme opacity-30 rounded-full ${
-             isMobile ? "" : "blur-3xl"
-           }`}
-           style={{
-             ...ray.position,
-             width: `${ray.size}px`,
-             height: `${ray.size}px`,
-           }}
-           animate={{
-             x: ray.animation.x,
-             y: ray.animation.y,
-             scale: ray.animation.scale,
-           }}
-           transition={{
-             duration: ray.animation.duration,
-             repeat: Infinity,
-             ease: "easeInOut",
-           }}
-         />
-       ))}
-     </div>
-   </div>
- );
-
+  return (
+    <div
+      className="absolute inset-0 overflow-hidden z-0"
+      style={{ height: pageHeight }}
+    >
+      <div className="absolute w-full h-full">
+        {rays.map((ray, index) => (
+          <motion.div
+            key={index}
+            className={`absolute bg-theme opacity-30 rounded-full  ${
+              isMobile ? "" : "blur-3xl"
+            }`}
+            style={{
+              ...ray.position,
+              width: `${ray.size}px`,
+              height: `${ray.size}px`,
+            }}
+            animate={{
+              x: ray.animation.x,
+              y: ray.animation.y,
+              scale: ray.animation.scale,
+            }}
+            transition={{
+              duration: ray.animation.duration,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
+      </div>
+    </div>
+  );
 }

@@ -1,5 +1,4 @@
 export class UserEntity {
-
   id: string;
   email: string;
   fname: string;
@@ -8,7 +7,9 @@ export class UserEntity {
   profilePicture: string;
   position: string;
   level: string;
+  aboutme: string;
   country: string;
+  isEmailConformed: boolean;
   selectedRoadmaps: string[];
   completedRoadmaps: string[];
   generatedRoadmaps: {
@@ -31,6 +32,8 @@ export class UserEntity {
     position: string,
     level: string,
     country: string,
+    aboutme: string,
+    isEmailConformed: boolean,
     selectedRoadmaps: string[],
     completedRoadmaps: string[],
     generatedRoadmaps: {
@@ -52,6 +55,8 @@ export class UserEntity {
     this.position = position;
     this.level = level;
     this.country = country;
+    this.aboutme = aboutme;
+    this.isEmailConformed = isEmailConformed;
     this.selectedRoadmaps = selectedRoadmaps;
     this.completedRoadmaps = completedRoadmaps;
     this.generatedRoadmaps = generatedRoadmaps;
@@ -85,5 +90,4 @@ export class UserEntity {
   updateProfile(updatedData: Partial<UserEntity>) {
     Object.assign(this, updatedData);
   }
-  
 }

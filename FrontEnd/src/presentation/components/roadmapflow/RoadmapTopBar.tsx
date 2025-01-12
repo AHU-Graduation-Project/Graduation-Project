@@ -1,82 +1,33 @@
-import { useState, useEffect, useCallback } from 'react';
-import { Download, ChevronDown, ChevronUp } from 'lucide-react';
-import { cn } from '../../../infrastructure/utils/cn';
-import { PDFDownloadLink, Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
-import { useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../../../application/state/authStore';
-import html2canvas from 'html2canvas';
-import ThemeIcon from '../UI/ThemeIcon';
+import { useState, useEffect, useCallback } from "react";
+import { cn } from "../../../infrastructure/utils/cn";
+// import { PDFDownloadLink, Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
+import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "../../../application/state/authStore";
+import html2canvas from "html2canvas";
+import ThemeIcon from "../UI/ThemeIcon";
+import { Image as ImageIcon, ChevronDown, ChevronUp } from "lucide-react";
 
-
-const styles = StyleSheet.create({
-  page: {
-    padding: 30,
-    backgroundColor: "#FFFFFF",
-  },
-  title: {
-    fontSize: 24,
-    marginBottom: 20,
-    color: "#1E40AF",
-  },
-  flowImage: {
-    width: "100%",
-    height: 500,
-    marginTop: 20,
-  },
-  legend: {
-    marginTop: 20,
-    padding: 10,
-    backgroundColor: "#F1F5F9",
-    borderRadius: 4,
-  },
-  legendTitle: {
-    fontSize: 12,
-    marginBottom: 5,
-    color: "#475569",
-  },
-});
-
-const RoadmapPDF = ({
+export default function RoadmapTopBar({
   roadmap,
-  flowImage,
-}: {
-  roadmap: any;
-  flowImage: string;
-}) => (
-  <Document>
-    <Page size="A4" style={styles.page}>
-      <Text style={styles.title}>{roadmap.title} Learning Path</Text>
-      {flowImage && <Image src={flowImage} style={styles.flowImage} />}
-      <View style={styles.legend}>
-        <Text style={styles.legendTitle}>Learning Path Legend</Text>
-        <Text>• Completed nodes are marked in green</Text>
-        <Text>• Locked nodes are grayed out</Text>
-        <Text>• Active nodes show the full gradient</Text>
-      </View>
-    </Page>
-  </Document>
-);
-
-
-interface RoadmapTopBarProps {
-  roadmap: any;
-  progress: number;
-  completedNodes: number;
-  totalNodes: number;
-}
-
-export default function RoadmapTopBar({ 
-  roadmap, 
-  progress, 
-  completedNodes, 
+  progress,
+  completedNodes,
   totalNodes,
+  onAddToRoadmap,
 }: RoadmapTopBarProps) {
   const [isVisible, setIsVisible] = useState(true);
+  const { user, selectRoadmap } = useAuthStore();
+  const navigate = useNavigate();
+  const isSelected = user?.selectedRoadmaps.includes(roadmap?.id);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [flowImage, setFlowImage] = useState<string | null>(null);
-  const navigate = useNavigate();
-  const { user, selectRoadmap } = useAuthStore();
-  const isSelected = user?.selectedRoadmaps.includes(roadmap?.id);
+
+  const handleAddToRoadmap = () => {
+    if (!user) {
+      navigate("/auth");
+      return;
+    }
+    selectRoadmap(roadmap.id);
+  };
 
   const captureFlow = useCallback(async () => {
     const flowElement = document.querySelector(".react-flow");
@@ -88,11 +39,18 @@ export default function RoadmapTopBar({
         });
         const image = canvas.toDataURL("image/png");
         setFlowImage(image);
+        // Trigger PNG download
+        const link = document.createElement("a");
+        link.href = image;
+        link.download = `${roadmap.title
+          .toLowerCase()
+          .replace(/\s+/g, "-")}-roadmap.png`;
+        link.click();
       } catch (error) {
         console.error("Error capturing flow:", error);
       }
     }
-  }, []);
+  }, [roadmap.title]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -104,14 +62,6 @@ export default function RoadmapTopBar({
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
-
-  const handleAddToRoadmap = () => {
-    if (!user) {
-      navigate('/auth');
-      return;
-    }
-    selectRoadmap(roadmap.id);
-  };
 
   if (!roadmap) return null;
 
@@ -141,26 +91,13 @@ export default function RoadmapTopBar({
                 Add to My Roadmaps
               </button>
             )}
-            <PDFDownloadLink
-              document={<RoadmapPDF roadmap={roadmap} flowImage={flowImage!} />}
-              fileName={`${roadmap.title
-                .toLowerCase()
-                .replace(/\s+/g, "-")}-roadmap.pdf`}
-              className={cn(
-                "px-4 py-2 rounded-lg flex items-center gap-2 text-sm md:text-base",
-                "bg-theme text-white hover:opacity-90 transition-colors"
-              )}
+            <button
+              onClick={captureFlow}
+              className="px-4 py-2 rounded-lg bg-theme text-white flex items-center gap-2 hover:opacity-90 transition-colors text-sm md:text-base"
             >
-              <button
-                onClick={captureFlow}
-                className="flex items-center gap-2"
-              >
-                <Download className="w-4 h-4" />
-                <span className="hidden md:inline">
-                  Download PDF
-                </span>
-              </button>
-            </PDFDownloadLink>
+              <ImageIcon className="w-4 h-4" />
+              <span>Download</span>
+            </button>
           </div>
         </div>
 
@@ -198,7 +135,7 @@ export default function RoadmapTopBar({
           {isVisible ? (
             <ThemeIcon icon={ChevronUp} className="w-5 h-5" />
           ) : (
-            <ChevronDown className="w-5 h-5 " />
+            <ChevronDown className="w-5 h-5" />
           )}
         </button>
       </div>
