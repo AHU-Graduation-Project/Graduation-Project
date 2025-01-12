@@ -1,7 +1,7 @@
 import { ChevronDown, ChevronUp } from "lucide-react";
 import Slider from "./customrange";
 import AnimationWrapper from "../UI/Animation/Animation";
-
+import ThemeIcon from "../UI/ThemeIcon";
 interface AdvancedOptionsProps {
   isOpen: boolean;
   onToggle: () => void;
@@ -24,7 +24,7 @@ export default function AdvancedOptions({
         <button
           type="button"
           onClick={onToggle}
-          className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 hover:text-theme transition-colors mx-auto"
+          className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 transition-colors mx-auto"
         >
           Advanced Options
           {isOpen ? (
