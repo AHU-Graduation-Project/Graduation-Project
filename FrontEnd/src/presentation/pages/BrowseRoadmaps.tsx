@@ -6,7 +6,7 @@ export default function BrowseRoadmaps() {
   return (
     <>
       <Header />
-      <BackgroundRays option={4} fullPage={true} />
+      <BackgroundRays option={2} fullPage={true} />
       <BrowseRoadmapsComponent />
       <Footer />
     </>
