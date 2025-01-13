@@ -3,11 +3,11 @@ import { cn } from '../../../infrastructure/utils/cn';
 import CourseCard from './CourseCard';
 import { useState, useEffect, useRef } from 'react';
 import { getCourses } from '../../../infrastructure/api/getCourses';
-import { ICourse } from '../../../infrastructure/api/getCourses';
+import { ICourse } from '../../../domain/entities/course';
 import { Alert, AlertDescription} from "../UI/Alert"
 import {LoadingState } from './SkeletonCard';
 
-interface CoursesSidebarProps {
+interface CourseModalProps {
   isOpen: boolean;
   onClose: () => void;
   topic?: string;
@@ -20,11 +20,11 @@ type CoursesCache = {
   [key: string]: ICourse[];
 };
 
-export default function CoursesSidebar({
+export default function CourseModal({
   isOpen,
   onClose,
   topic,
-}: CoursesSidebarProps) {
+}: CourseModalProps) {
   const [platform, setPlatform] = useState<Platform>('all');
   const [courses, setCourses] = useState<ICourse[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -71,7 +71,7 @@ export default function CoursesSidebar({
   const filteredCourses =
     platform === 'all'
       ? courses
-      : courses.filter((course) => course.platform.toLowerCase() === platform);
+      : courses.filter((course) => course.platform.toLowerCase() === platform.toLocaleLowerCase());
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
@@ -84,6 +84,7 @@ export default function CoursesSidebar({
             </h2>
             <button
               onClick={onClose}
+              aria-label="Close courses sidebar"
               className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
             >
               <X className="w-5 h-5" />
@@ -93,7 +94,7 @@ export default function CoursesSidebar({
           {/* Platform Filter */}
           <div className="flex items-center gap-4 mt-4">
             <div className="flex gap-2">
-              {(['all', 'udemy', 'coursera'] as const).map((p) => (
+              {(['all', 'Udemy', 'Coursera'] as const).map((p) => (
                 <button
                   key={p}
                   onClick={() => setPlatform(p)}
@@ -121,8 +122,8 @@ export default function CoursesSidebar({
             </Alert>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredCourses.map((course) => (
-                <CourseCard key={course.id} course={course} />
+              {filteredCourses.map((course ,key) => (
+                <CourseCard key={key} course={course} />
               ))}
 
               {filteredCourses.length === 0 && (

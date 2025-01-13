@@ -1,9 +1,8 @@
-import { Star } from "lucide-react";
-import { Course } from "../../../domain/entities/course";
+import { ICourse } from "../../../domain/entities/course";
 import { cn } from "../../../infrastructure/utils/cn";
 
 interface CourseCardProps {
-  course: Course;
+  course: ICourse;
 }
 
 export default function CourseCard({ course }: CourseCardProps) {

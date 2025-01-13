@@ -1,12 +1,5 @@
 import axios, { AxiosError } from 'axios';
-
-export interface ICourse {
-  title: string;
-  photoUrl: string;
-  url: string;
-  platform: string;
-  price: string;
-}
+import { ICourse } from '../../domain/entities/course';
 
 interface GetCoursesResponse {
   courses: ICourse[];

@@ -1,15 +1,15 @@
-import { NodeProps, Handle, Position, NodeToolbar } from "reactflow";
-import { cn } from "../../../infrastructure/utils/cn";
-import { useParams } from "react-router-dom";
-import { MoreHorizontal } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
-import "reactflow/dist/style.css";
-import { useAuthStore } from "../../../application/state/authStore";
+import { NodeProps, Handle, Position, NodeToolbar } from 'reactflow';
+import { cn } from '../../../infrastructure/utils/cn';
+import { useParams } from 'react-router-dom';
+import { MoreHorizontal } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
+import 'reactflow/dist/style.css';
+import { useAuthStore } from '../../../application/state/authStore';
 
 interface NodeData {
   label: string;
-  type: "topic" | "subtopic";
+  type: 'topic' | 'subtopic';
   description: string;
   marketDemand: string;
   averageSalary: string;
@@ -17,14 +17,15 @@ interface NodeData {
   isAchieved: boolean;
   requiredNodes?: string[];
   onShowDetails: (data: any) => void;
+  onShowCourses: (data: any) => void;
   jobs?: number;
 }
 
 export function CustomNode({ data, id }: NodeProps<NodeData>) {
-  const { user,updateProgress } = useAuthStore();
+  const { user, updateProgress } = useAuthStore();
   const { id: roadmapId } = useParams();
-  const isCompleted = user?.progress[roadmapId || ""]?.includes(id);
-  const isFirstNode = id === "1";
+  const isCompleted = user?.progress[roadmapId || '']?.includes(id);
+  const isFirstNode = id === '1';
   const shouldBeActive = isCompleted || isFirstNode || data.isAchieved;
   const [showToolbar, setShowToolbar] = useState(false);
   const toolbarContainerRef = useRef<HTMLDivElement>(null);
@@ -34,7 +35,7 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent | TouchEvent) => {
       const toolbarClicked = toolbarContainerRef.current?.contains(
-        event.target as Node
+        event.target as Node,
       );
       const buttonClicked = buttonRef.current?.contains(event.target as Node);
 
@@ -43,12 +44,12 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    document.addEventListener("touchstart", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("touchstart", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
     };
   }, []);
 
@@ -57,23 +58,25 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
     setShowToolbar(false);
 
     switch (action) {
-      case "details":
+      case 'details':
         data.onShowDetails(data);
         break;
-      case "complete":
+      case 'complete':
         if (user && shouldBeActive) {
           setIsAnimating(true);
-          updateProgress(roadmapId || "", id, !isCompleted);
+          updateProgress(roadmapId || '', id, !isCompleted);
           setTimeout(() => setIsAnimating(false), 1000);
         }
         break;
-      case "jobs":
+      case 'jobs':
         window.open(
           `https://www.linkedin.com/jobs/search/?keywords=${data.label}`,
-          "_blank"
+          '_blank',
         );
         break;
-      case "courses":
+      case 'courses':
+     
+        data.onShowCourses(data);
         break;
     }
   };
@@ -85,10 +88,10 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
   };
 
   const showHandles = {
-    top: data.type === "topic",
-    bottom: data.type === "topic",
-    left: data.type === "subtopic" || data.type === "topic",
-    right: data.type === "subtopic" || data.type === "topic",
+    top: data.type === 'topic',
+    bottom: data.type === 'topic',
+    left: data.type === 'subtopic' || data.type === 'topic',
+    right: data.type === 'subtopic' || data.type === 'topic',
   };
 
   return (
@@ -102,27 +105,27 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
         >
           <div className="flex flex-col min-w-[160px]">
             <button
-              onClick={(e) => handleAction("details", e)}
+              onClick={(e) => handleAction('details', e)}
               className="w-full px-4 py-2 text-left text-white hover:bg-white/10 transition-colors text-sm rounded-lg"
             >
               View Details
             </button>
             {user && shouldBeActive && (
               <button
-                onClick={(e) => handleAction("complete", e)}
+                onClick={(e) => handleAction('complete', e)}
                 className="w-full px-4 py-2 text-left text-white hover:bg-white/10 transition-colors text-sm rounded-lg"
               >
-                {isCompleted ? "Mark Incomplete" : "Mark Complete"}
+                {isCompleted ? 'Mark Incomplete' : 'Mark Complete'}
               </button>
             )}
             <button
-              onClick={(e) => handleAction("jobs", e)}
+              onClick={(e) => handleAction('jobs', e)}
               className="w-full px-4 py-2 text-left text-white hover:bg-white/10 transition-colors text-sm rounded-lg"
             >
               View Jobs ({data.jobs || 0})
             </button>
             <button
-              onClick={(e) => handleAction("courses", e)}
+              onClick={(e) => handleAction('courses', e)}
               className="w-full px-4 py-2 text-left text-white hover:bg-white/10 transition-colors text-sm rounded-lg"
             >
               View Courses
@@ -143,21 +146,21 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
         }
         transition={{ duration: 0.5 }}
         className={cn(
-          "px-6 py-3 shadow-lg rounded-xl border-2 relative hover:scale-105 transition-transform",
-          "min-w-[200px]",
-          data.type === "topic"
-            ? "rounded-2xl text-lg font-bold tracking-wide shadow-xl border-theme"
-            : "text-sm font-medium tracking-normal shadow-md scale-90 border-dashed",
-          !shouldBeActive && "opacity-50 bg-slate-800/50",
+          'px-6 py-3 shadow-lg rounded-xl border-2 relative hover:scale-105 transition-transform',
+          'min-w-[200px]',
+          data.type === 'topic'
+            ? 'rounded-2xl text-lg font-bold tracking-wide shadow-xl border-theme'
+            : 'text-sm font-medium tracking-normal shadow-md scale-90 border-dashed',
+          !shouldBeActive && 'opacity-50 bg-slate-800/50',
           shouldBeActive &&
             (isCompleted
-              ? data.type === "topic"
-                ? "bg-theme animate-completion"
-                : "bg-transparent bg-theme-shadow bg-theme-blur"
-              : data.type === "topic"
-              ? "bg-theme-shadow animate-breath"
-              : ""),
-          !shouldBeActive && "cursor-not-allowed"
+              ? data.type === 'topic'
+                ? 'bg-theme animate-completion'
+                : 'bg-transparent bg-theme-shadow bg-theme-blur'
+              : data.type === 'topic'
+              ? 'bg-theme-shadow animate-breath'
+              : ''),
+          !shouldBeActive && 'cursor-not-allowed',
         )}
       >
         {data.jobs && (
@@ -180,15 +183,15 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
         <div className="text-center mt-1">
           <h3
             className={cn(
-              "font-medium transition-colors",
-              data.type === "topic" ? "text-lg" : "text-lg",
+              'font-medium transition-colors',
+              data.type === 'topic' ? 'text-lg' : 'text-lg',
               shouldBeActive
                 ? isCompleted
-                  ? "text-white"
-                  : data.type === "topic"
-                  ? "text-theme dark:text-white"
-                  : "text-theme/90 dark:text-white/90"
-                : "text-slate-400"
+                  ? 'text-white'
+                  : data.type === 'topic'
+                  ? 'text-theme dark:text-white'
+                  : 'text-theme/90 dark:text-white/90'
+                : 'text-slate-400',
             )}
           >
             {data.label}
@@ -213,7 +216,7 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
         )}
         {showHandles.left && (
           <Handle
-            type={data.type === "subtopic" ? "target" : "source"}
+            type={data.type === 'subtopic' ? 'target' : 'source'}
             position={Position.Left}
             id="left"
             className="border-none bg-transparent"
@@ -221,13 +224,15 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
         )}
         {showHandles.right && (
           <Handle
-            type={data.type === "subtopic" ? "target" : "source"}
+            type={data.type === 'subtopic' ? 'target' : 'source'}
             position={Position.Right}
             id="right"
             className="border-none bg-transparent"
           />
         )}
       </motion.div>
+
+  
     </>
   );
 }
