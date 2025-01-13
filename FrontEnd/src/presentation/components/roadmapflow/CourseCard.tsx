@@ -23,7 +23,7 @@ export default function CourseCard({ course }: CourseCardProps) {
         <div
           className={cn(
             "absolute top-3 left-3 text-xs font-medium px-2 py-1 rounded-full z-10",
-            course.platform === "udemy"
+            course.platform === "Udemy"
               ? "bg-purple-100 text-purple-700"
               : "bg-blue-100 text-blue-700 "
           )}
@@ -37,7 +37,7 @@ export default function CourseCard({ course }: CourseCardProps) {
             <span className="text-white font-medium">View Course</span>
           </div>
           <img
-            src={course.image}
+            src={course.photoUrl}
             alt={course.title}
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
           />
@@ -48,19 +48,19 @@ export default function CourseCard({ course }: CourseCardProps) {
           {/* Title */}
           <h3 className="font-medium text-sm mb-2 line-clamp-2 group-hover:text-theme transition-colors">
             {course.title.length > 50
-              ? course.title.slice(0, 50) + "..."
+              ? course.title.slice(0, 50) + '...'
               : course.title}
           </h3>
 
           {/* Rating and Price */}
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1">
+            {/* <div className="flex items-center gap-1">
               <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
               <span className="text-sm text-slate-600 dark:text-slate-400">
                 {course.rating}
               </span>
-            </div>
-            <span className="font-bold text-theme">${course.price}</span>
+            </div> */}
+            <span className="font-bold text-theme">{course.price}</span>
           </div>
         </div>
       </div>
