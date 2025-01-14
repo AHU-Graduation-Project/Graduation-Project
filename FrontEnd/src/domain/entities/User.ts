@@ -10,6 +10,7 @@ export class UserEntity {
   aboutme: string;
   country: string;
   isEmailConformed: boolean;
+  tokken: string;
   selectedRoadmaps: string[];
   completedRoadmaps: string[];
   generatedRoadmaps: {
@@ -34,6 +35,7 @@ export class UserEntity {
     country: string,
     aboutme: string,
     isEmailConformed: boolean,
+    tokken: string,
     selectedRoadmaps: string[],
     completedRoadmaps: string[],
     generatedRoadmaps: {
@@ -57,6 +59,7 @@ export class UserEntity {
     this.country = country;
     this.aboutme = aboutme;
     this.isEmailConformed = isEmailConformed;
+    this.tokken = tokken;
     this.selectedRoadmaps = selectedRoadmaps;
     this.completedRoadmaps = completedRoadmaps;
     this.generatedRoadmaps = generatedRoadmaps;

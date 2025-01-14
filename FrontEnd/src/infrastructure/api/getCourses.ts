@@ -25,7 +25,7 @@ interface GetCoursesParams {
 export const getCourses = async (params: GetCoursesParams = {}): Promise<GetCoursesResponse> => {
   try {
     const response = await axios.get<GetCoursesResponse>(
-      `${import.meta.env.VITE_PATH_API}/getCourses`,
+      `${import.meta.env.VITE_PATH_API}/getCourses`
       {
         params,
         headers: {

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { InputField } from "../UI/TextInput";
 import { useAuthStore } from "../../../application/state/authStore";
+import { InputField } from "../UI/TextInput";
 import Servey from "./Servey";
 
 export function SignupForm() {

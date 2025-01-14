@@ -20,7 +20,8 @@ interface IAuthState {
     level: string,
     country: string,
     aboutme: string,
-    isEmailConformed: boolean
+    isEmailConformed: boolean,
+    tokken: string
   ) => void;
   logout: () => void;
   updateProgress: (
@@ -60,6 +61,7 @@ export const useAuthStore = create<IAuthState>()(
           "",
           "",
           false,
+          "",
           [],
           [],
           [],
@@ -81,7 +83,8 @@ export const useAuthStore = create<IAuthState>()(
         level,
         country,
         aboutme,
-        isEmailConformed
+        isEmailConformed,
+        tokken
       ) => {
         const user = new UserEntity(
           "1",
@@ -95,6 +98,7 @@ export const useAuthStore = create<IAuthState>()(
           country,
           aboutme,
           isEmailConformed,
+          tokken,
           [],
           [],
           [],
@@ -142,6 +146,7 @@ export const useAuthStore = create<IAuthState>()(
             state.user.country,
             state.user.aboutme,
             state.user.isEmailConformed,
+            state.user.tokken,
             state.user.selectedRoadmaps,
             state.user.completedRoadmaps,
             state.user.generatedRoadmaps,
@@ -205,6 +210,12 @@ export const useAuthStore = create<IAuthState>()(
           };
         });
       },
+      // setToken: (tokken) => {
+      //   set((state) => {
+      //     if(!state.user) return state;
+
+      //   })
+      // }
       saveGeneratedRoadmap: (title, description, nodes, edges) => {
         set((state) => {
           if (!state.user) return state;
