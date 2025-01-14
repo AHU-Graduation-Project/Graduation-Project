@@ -2,9 +2,11 @@ import axios, { AxiosError } from 'axios';
 import { ICourse } from '../../domain/entities/course';
 
 interface GetCoursesResponse {
+data: {
   courses: ICourse[];
   total: number;
-
+};
+success: boolean;
 }
 
 interface GetCoursesParams {

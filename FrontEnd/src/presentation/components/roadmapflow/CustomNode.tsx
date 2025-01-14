@@ -1,11 +1,12 @@
 import { NodeProps, Handle, Position, NodeToolbar } from 'reactflow';
 import { cn } from '../../../infrastructure/utils/cn';
 import { useParams } from 'react-router-dom';
-import { MoreHorizontal } from 'lucide-react';
+import { MoreHorizontal, Loader2 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import 'reactflow/dist/style.css';
 import { useAuthStore } from '../../../application/state/authStore';
+import { getJobs } from '../../../infrastructure/api/getJobs';
 
 interface NodeData {
   label: string;
@@ -18,7 +19,7 @@ interface NodeData {
   requiredNodes?: string[];
   onShowDetails: (data: any) => void;
   onShowCourses: (data: any) => void;
-  jobs?: number;
+  isAnalysisNeeded: boolean;
 }
 
 export function CustomNode({ data, id }: NodeProps<NodeData>) {
@@ -31,19 +32,43 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
   const toolbarContainerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [jobs, setJobs] = useState(0);
+  const [isLoadingJobs, setIsLoadingJobs] = useState(false);
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
-      const toolbarClicked = toolbarContainerRef.current?.contains(
-        event.target as Node,
-      );
-      const buttonClicked = buttonRef.current?.contains(event.target as Node);
-
-      if (!toolbarClicked && !buttonClicked) {
-        setTimeout(() => setShowToolbar(false), 0);
+    const fetchJobs = async () => {
+      setIsLoadingJobs(true);
+      try {
+        const jobsCount = await getJobs({
+          keyword: data.label,
+          location: 'Amman', // Default location
+          dateSincePosted: '24h', // Default to last 24 hours
+          option: 'count', // Default to count only
+        });
+        setJobs(jobsCount.data);
+      } catch (error) {
+        console.error('Error fetching jobs:', error);
+        setJobs(0);
+      } finally {
+        setIsLoadingJobs(false);
       }
     };
+    if (data.isAnalysisNeeded){fetchJobs();} // Only fetch jobs if analysis is needed
+  }, [data.label, data.isAnalysisNeeded]);
 
+  // Rest of the component code remains the same...
+  const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+    const toolbarClicked = toolbarContainerRef.current?.contains(
+      event.target as Node,
+    );
+    const buttonClicked = buttonRef.current?.contains(event.target as Node);
+
+    if (!toolbarClicked && !buttonClicked) {
+      setTimeout(() => setShowToolbar(false), 0);
+    }
+  };
+
+  useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
     document.addEventListener('touchstart', handleClickOutside);
 
@@ -75,7 +100,6 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
         );
         break;
       case 'courses':
-     
         data.onShowCourses(data);
         break;
     }
@@ -118,12 +142,7 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
                 {isCompleted ? 'Mark Incomplete' : 'Mark Complete'}
               </button>
             )}
-            <button
-              onClick={(e) => handleAction('jobs', e)}
-              className="w-full px-4 py-2 text-left text-white hover:bg-white/10 transition-colors text-sm rounded-lg"
-            >
-              View Jobs ({data.jobs || 0})
-            </button>
+            
             <button
               onClick={(e) => handleAction('courses', e)}
               className="w-full px-4 py-2 text-left text-white hover:bg-white/10 transition-colors text-sm rounded-lg"
@@ -163,9 +182,14 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
           !shouldBeActive && 'cursor-not-allowed',
         )}
       >
-        {data.jobs && (
+        {!isLoadingJobs && jobs > 0 && (
           <div className="absolute -top-3 -left-3 w-6 h-6 rounded-full bg-theme flex items-center justify-center text-white text-xs font-medium shadow-lg">
-            {data.jobs}
+            {jobs}
+          </div>
+        )}
+        {isLoadingJobs && (
+          <div className="absolute -top-3 -left-3 w-6 h-6 rounded-full bg-theme flex items-center justify-center text-white text-xs font-medium shadow-lg">
+            <Loader2 className="w-3 h-3 animate-spin" />
           </div>
         )}
 
@@ -231,8 +255,6 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
           />
         )}
       </motion.div>
-
-  
     </>
   );
 }

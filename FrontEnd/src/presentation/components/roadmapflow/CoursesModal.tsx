@@ -48,9 +48,9 @@ export default function CourseModal({
 
       try {
         const response = await getCourses({ keyword: topic });
-        setCourses(response.courses);
+        setCourses(response.data.courses);
         // Store in cache
-        coursesCache.current[topic] = response.courses;
+        coursesCache.current[topic] = response.data.courses;
       } catch (err) {
         setError(
           err instanceof Error ? err.message : 'Failed to fetch courses',
