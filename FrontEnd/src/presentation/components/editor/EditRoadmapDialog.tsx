@@ -3,12 +3,20 @@ import { X, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import styles from "./EditRoadmapDialog.module.css";
 import { RoadmapData } from "./RoadmapEditor";
-import * as Icons from "lucide-react";
+import {BookOpen , Video , Globe} from "lucide-react";
+
+const iconMap = {
+  "Book": BookOpen,
+  "Video": Video,
+  "Link": Globe
+} as const;
+
+type IconType = keyof typeof iconMap;
 
 type Resource = {
   label: string;
   description: string;
-  icon: string;
+  icon: IconType;
   url: string;
 };
 
@@ -18,10 +26,6 @@ type EditRoadmapDialogProps = {
   roadmapData: RoadmapData;
   onSave: (data: RoadmapData) => void;
 };
-
-const iconOptions = Object.keys(Icons).filter(
-  (key) => typeof Icons[key] === "function" && key !== "default"
-);
 
 const EditRoadmapDialog = ({
   isOpen,
@@ -66,6 +70,8 @@ const EditRoadmapDialog = ({
     }));
   };
 
+  
+
   return (
     <Dialog.Root open={isOpen} onOpenChange={onClose}>
       <Dialog.Portal>
@@ -83,6 +89,8 @@ const EditRoadmapDialog = ({
                   onChange={(e) =>
                     setFormData((prev) => ({ ...prev, title: e.target.value }))
                   }
+                  title="Roadmap Title"
+                  placeholder="Enter roadmap title"
                 />
               </div>
 
@@ -97,6 +105,8 @@ const EditRoadmapDialog = ({
                       description: e.target.value,
                     }))
                   }
+                  title="Roadmap Description"
+                  placeholder="Enter a description for your roadmap"
                 />
               </div>
 
@@ -134,13 +144,14 @@ const EditRoadmapDialog = ({
                             <select
                               className={styles.input}
                               value={resource.icon}
+                              title="Select icon"
                               onChange={(e) =>
-                                updateResource(index, "icon", e.target.value)
+                                updateResource(index, "icon", e.target.value as IconType)
                               }
                             >
-                              {iconOptions.map((icon) => (
-                                <option key={icon} value={icon}>
-                                  {icon}
+                              {Object.keys(iconMap).map((iconName) => (
+                                <option key={iconName} value={iconName}>
+                                  {iconName}
                                 </option>
                               ))}
                             </select>

@@ -62,7 +62,7 @@
   @apply bg-theme;
 }
 
-.nodeTypeIndicator.sideTopic {
+.nodeTypeIndicator.subTopic {
   @apply bg-theme;
 }
 

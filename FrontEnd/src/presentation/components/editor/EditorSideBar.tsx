@@ -12,16 +12,16 @@ import styles from "./EditorSideBar.module.css";
 export type SidebarProps = {
   isSidebarOpen: boolean;
   setIsSidebarOpen: (open: boolean) => void;
-  selectedNodeType: "topic" | "sideTopic";
-  setSelectedNodeType: (type: "topic" | "sideTopic") => void;
+  selectedNodeType: "topic" | "subTopic";
+  setSelectedNodeType: (type: "topic" | "subTopic") => void;
   setIsEditDialogOpen: (open: boolean) => void;
   addNode: () => void;
-  nodes: { id: string; data: { label: string; type: "topic" | "sideTopic" } }[];
+  nodes: { id: string; data: { label: string; type: "topic" | "subTopic" } }[];
   handleEditNode: (nodeId: string) => void;
   styles: CSSModuleClasses;
   onSave: () => void;
   onRestore: () => void;
-  onDragStart: (e: React.DragEvent, type: "topic" | "sideTopic") => void;
+  onDragStart: (e: React.DragEvent, type: "topic" | "subTopic") => void;
 };
 
 const EditorSideBar = ({
@@ -69,10 +69,10 @@ const EditorSideBar = ({
               </div>
               <div
                 className={styles.dndNode}
-                onDragStart={(e) => onDragStart(e, "sideTopic")}
+                onDragStart={(e) => onDragStart(e, "subTopic")}
                 draggable
               >
-                Side Topic Node
+                Sub Topic Node
               </div>
               <div className={styles.controls}>
                 <button onClick={onSave} className={styles.button}>

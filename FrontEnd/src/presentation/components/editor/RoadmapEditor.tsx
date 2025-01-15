@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect } from 'react';
 import ReactFlow, {
   Node,
   Edge,
@@ -10,23 +10,25 @@ import ReactFlow, {
   applyNodeChanges,
   MiniMap,
   ReactFlowInstance,
-} from "reactflow";
-import "reactflow/dist/style.css";
-import CustomNode from "./CustomNode";
-import EditRoadmapDialog from "./EditRoadmapDialog";
-import EditNodeDialog from "./EditNodeDialog";
-import styles from "./RoadmapEditor.module.css";
-import EditorSideBar from "./EditorSideBar";
+  EdgeTypes
+} from 'reactflow';
+import 'reactflow/dist/style.css';
+import CustomNodeEditor from './CustomNodeEditor';
+import EditRoadmapDialog from './EditRoadmapDialog';
+import EditNodeDialog from './EditNodeDialog';
+import styles from './RoadmapEditor.module.css';
+import EditorSideBar from './EditorSideBar';
+import CustomEdge from './CustomEdge';
 
-import { useRef } from "react";
-import { useNodesState, useEdgesState, NodePositionChange } from "reactflow";
-import "reactflow/dist/style.css";
+import { useRef } from 'react';
+import { useNodesState, useEdgesState, NodePositionChange } from 'reactflow';
+import 'reactflow/dist/style.css';
 
-import  HelperLinesRenderer  from './HelperLines';
-import { getHelperLines } from "../../../infrastructure/utils/helperLines";
+import HelperLinesRenderer from './HelperLines';
+import { getEnhancedHelperLines } from '../../../infrastructure/utils/helperLines';
 
 const nodeTypes = {
-  custom: CustomNode,
+  custom: CustomNodeEditor,
 };
 
 export type RoadmapData = {
@@ -43,28 +45,33 @@ export type RoadmapData = {
 export type NodeData = {
   label: string;
   description: string;
-  type: "topic" | "sideTopic";
+  type: 'topic' | 'subTopic';
 };
 
 const initialNodes: Node[] = [
   {
-    id: "1",
-    type: "custom",
+    id: '1',
+    type: 'custom',
     position: { x: 250, y: 100 },
     data: {
-      label: "Start",
-      description: "Beginning of the roadmap",
-      type: "sideTopic",
+      label: 'Start',
+      description: 'Beginning of the roadmap',
+      type: 'subTopic',
     },
   },
 ];
+
+const edgeTypes: EdgeTypes = {
+  custom: CustomEdge,
+};
+
 
 const RoadmapEditor = () => {
   const [nodes, setNodes] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [roadmapData, setRoadmapData] = useState<RoadmapData>({
-    title: "My Roadmap",
-    description: "A learning path",
+    title: 'My Roadmap',
+    description: 'A learning path',
     resources: [],
   });
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -77,7 +84,21 @@ const RoadmapEditor = () => {
   const [helperLines, setHelperLines] = useState<{
     horizontal?: number;
     vertical?: number;
-  }>({});
+    spacingGuides: Array<{
+      start: number;
+      end: number;
+      position: number;
+      distance: number;
+      isVertical: boolean;
+    }>;
+    centerGuides: {
+      horizontal?: number;
+      vertical?: number;
+    };
+  }>({
+    spacingGuides: [],
+    centerGuides: {},
+  });
   const rightSidebarRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -92,9 +113,9 @@ const RoadmapEditor = () => {
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isRightSidebarOpen]);
 
@@ -102,26 +123,26 @@ const RoadmapEditor = () => {
     (changes: NodeChange[]) => {
       const positionChange = changes.find(
         (change): change is NodePositionChange =>
-          change.type === "position" && change.position !== undefined
+          change.type === 'position' && change.position !== undefined,
       );
 
       if (positionChange) {
-        const { horizontal, vertical } = getHelperLines(positionChange, nodes);
-        setHelperLines({ horizontal, vertical });
+        const { horizontal, vertical, spacingGuides, centerGuides } =
+          getEnhancedHelperLines(positionChange, nodes, 20); // Increased distance threshold to 20
+        setHelperLines({ horizontal, vertical, spacingGuides, centerGuides });
       } else {
-        setHelperLines({});
+        setHelperLines({ spacingGuides: [], centerGuides: {} });
       }
 
       setNodes((nds) => applyNodeChanges(changes, nds));
     },
-    [nodes, setNodes]
+    [nodes, setNodes],
   );
-
   const onConnect = useCallback(
     (params: Connection) => {
-      setEdges((eds) => addEdge({ ...params, type: "smoothstep" }, eds));
+      setEdges((eds) => addEdge({ ...params, type: 'smoothstep' }, eds));
     },
-    [setEdges]
+    [setEdges],
   );
 
   const handleNodeClick = (event: React.MouseEvent, node: Node) => {
@@ -132,15 +153,15 @@ const RoadmapEditor = () => {
   const handleUpdateNodeFromSidebar = (data: {
     label: string;
     description: string;
-    type: "topic" | "sideTopic";
+    type: 'topic' | 'subTopic';
   }) => {
     if (selectedNode) {
       setNodes((nds) =>
         nds.map((node) =>
           node.id === selectedNode.id
             ? { ...node, data: { ...node.data, ...data } }
-            : node
-        )
+            : node,
+        ),
       );
     }
   };
@@ -156,15 +177,17 @@ const RoadmapEditor = () => {
   const handleUpdateNode = (nodeId: string, data: NodeData) => {
     setNodes((nds) =>
       nds.map((node) =>
-        node.id === nodeId ? { ...node, data: { ...node.data, ...data } } : node
-      )
+        node.id === nodeId
+          ? { ...node, data: { ...node.data, ...data } }
+          : node,
+      ),
     );
   };
 
   const handleDeleteNode = (nodeId: string) => {
     setNodes((nds) => nds.filter((node) => node.id !== nodeId));
     setEdges((eds) =>
-      eds.filter((edge) => edge.source !== nodeId && edge.target !== nodeId)
+      eds.filter((edge) => edge.source !== nodeId && edge.target !== nodeId),
     );
     setIsRightSidebarOpen(false);
     setSelectedNode(null);
@@ -179,20 +202,20 @@ const RoadmapEditor = () => {
       handleDeleteNode(event.detail);
     };
 
-    window.addEventListener("editNode", handleEditNodeEvent as EventListener);
+    window.addEventListener('editNode', handleEditNodeEvent as EventListener);
     window.addEventListener(
-      "deleteNode",
-      handleDeleteNodeEvent as EventListener
+      'deleteNode',
+      handleDeleteNodeEvent as EventListener,
     );
 
     return () => {
       window.removeEventListener(
-        "editNode",
-        handleEditNodeEvent as EventListener
+        'editNode',
+        handleEditNodeEvent as EventListener,
       );
       window.removeEventListener(
-        "deleteNode",
-        handleDeleteNodeEvent as EventListener
+        'deleteNode',
+        handleDeleteNodeEvent as EventListener,
       );
     };
   }, []);
@@ -201,7 +224,7 @@ const RoadmapEditor = () => {
     (event: React.DragEvent) => {
       event.preventDefault();
 
-      const type = event.dataTransfer.getData("application/reactflow");
+      const type = event.dataTransfer.getData('application/reactflow');
       if (!type || !reactFlowInstance) return;
 
       const position = reactFlowInstance.screenToFlowPosition({
@@ -211,31 +234,31 @@ const RoadmapEditor = () => {
 
       const newNode: Node = {
         id: `${nodes.length + 1}`,
-        type: "custom",
+        type: 'custom',
         position,
-        data: { label: `New ${type}`, description: "", type },
+        data: { label: `New ${type}`, description: '', type },
       };
 
       setNodes((nds) => nds.concat(newNode));
     },
-    [reactFlowInstance, nodes.length, setNodes]
+    [reactFlowInstance, nodes.length, setNodes],
   );
 
   const onDragOver = useCallback((event: React.DragEvent) => {
     event.preventDefault();
-    event.dataTransfer.dropEffect = "move";
+    event.dataTransfer.dropEffect = 'move';
   }, []);
 
   const onSave = useCallback(() => {
     if (reactFlowInstance) {
       const flow = reactFlowInstance.toObject();
-      localStorage.setItem("roadmap-flow", JSON.stringify(flow));
+      localStorage.setItem('roadmap-flow', JSON.stringify(flow));
     }
   }, [reactFlowInstance]);
 
   const onRestore = useCallback(() => {
     const restoreFlow = async () => {
-      const flow = JSON.parse(localStorage.getItem("roadmap-flow") || "{}");
+      const flow = JSON.parse(localStorage.getItem('roadmap-flow') || '{}');
       if (flow.nodes && flow.edges) {
         setNodes(flow.nodes);
         setEdges(flow.edges);
@@ -256,7 +279,7 @@ const RoadmapEditor = () => {
         onSave={onSave}
         onRestore={onRestore}
         onDragStart={(e, type) => {
-          e.dataTransfer.setData("application/reactflow", type);
+          e.dataTransfer.setData('application/reactflow', type);
         }}
       />
 
@@ -270,7 +293,9 @@ const RoadmapEditor = () => {
           onDragOver={onDragOver}
           onDrop={onDrop}
           onNodeClick={handleNodeClick}
+          onEdgeClick={(event, edge) => console.log('edge clicked', edge)}
           nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
           onInit={setReactFlowInstance}
           fitView
         >
@@ -280,6 +305,8 @@ const RoadmapEditor = () => {
           <HelperLinesRenderer
             horizontal={helperLines.horizontal}
             vertical={helperLines.vertical}
+            spacingGuides={helperLines.spacingGuides}
+            centerGuides={helperLines.centerGuides}
           />
         </ReactFlow>
       </div>
@@ -287,7 +314,7 @@ const RoadmapEditor = () => {
       <div
         ref={rightSidebarRef}
         className={`${styles.rightSidebar} ${
-          isRightSidebarOpen ? styles.open : ""
+          isRightSidebarOpen ? styles.open : ''
         }`}
       >
         {selectedNode && (
@@ -314,12 +341,12 @@ const RoadmapEditor = () => {
                 onChange={(e) =>
                   handleUpdateNodeFromSidebar({
                     ...selectedNode.data,
-                    type: e.target.value as "topic" | "sideTopic",
+                    type: e.target.value as 'topic' | 'subTopic',
                   })
                 }
               >
                 <option value="topic">Topic</option>
-                <option value="sideTopic">Side Topic</option>
+                <option value="subTopic">Sub Topic</option>
               </select>
             </div>
             <div className={styles.rightSidebarField}>
