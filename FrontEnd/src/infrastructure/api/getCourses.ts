@@ -1,31 +1,23 @@
 import axios, { AxiosError } from 'axios';
-
-interface Course {
-  title: string;
-  price?: number;
-  photo?: string;
-  
-}
+import { ICourse } from '../../domain/entities/course';
 
 interface GetCoursesResponse {
-  courses: Course[];
+data: {
+  courses: ICourse[];
   total: number;
-
+};
+success: boolean;
 }
 
 interface GetCoursesParams {
-  query?: string;
-  page?: number;
-  pageSize?: number;
-  category?: string;
-  sortBy?: 'price' | 'title' | 'duration';
-  sortOrder?: 'asc' | 'desc';
+  keyword?: string;  // changed from query to keyword
+ 
 }
 
 export const getCourses = async (params: GetCoursesParams = {}): Promise<GetCoursesResponse> => {
   try {
     const response = await axios.get<GetCoursesResponse>(
-      `${import.meta.env.VITE_PATH_API}/getCourses`,
+      `${import.meta.env.VITE_PATH_API}/courses`,  // updated endpoint
       {
         params,
         headers: {

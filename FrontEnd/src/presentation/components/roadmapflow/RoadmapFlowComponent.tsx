@@ -20,6 +20,7 @@ export default function RoadmapFlowComponent() {
   const [showInfo, setShowInfo] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [showCourses, setShowCourses] = useState(false);
+  const [ShowDetails , setShowDetails] = useState(false);
   const [showFloatingMenu, setShowFloatingMenu] = useState(false);
   const [showRating, setShowRating] = useState(false);
   const { user } = useAuthStore();
@@ -68,8 +69,13 @@ export default function RoadmapFlowComponent() {
       ...node,
       data: {
         ...nodeData,
-        onShowDetails: (nodeData: any) => setSelectedNode(nodeData),
-      },
+        onShowDetails: (nodeData: any) => {
+          setShowDetails(true);
+          setSelectedNode(nodeData)},
+        onShowCourses: (nodeData: any) => {
+          setSelectedNode(nodeData);
+          setShowCourses(true); 
+      }}
     };
   });
 
@@ -116,6 +122,8 @@ export default function RoadmapFlowComponent() {
         setShowInfo={setShowInfo}
         showChat={showChat}
         setShowChat={setShowChat}
+        showDetails={ShowDetails}
+        setShowDetails={setShowDetails}
         showCourses={showCourses}
         setShowCourses={setShowCourses}
         showRating={showRating}

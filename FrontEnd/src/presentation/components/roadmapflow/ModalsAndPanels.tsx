@@ -1,9 +1,9 @@
-import React from "react";
-import NodeDetailsModal from "../Modal/NodeDetailsModal";
-import RoadmapInfo from "./RoadmapInfo";
-import ChatPanel from "../chat/ChatPanel";
-import CoursesSidebar from "./CoursesSidebar";
-import RatingModal from "../Modal/RatingModel";
+import React from 'react';
+import NodeDetailsModal from '../Modal/NodeDetailsModal';
+import RoadmapInfo from './RoadmapInfo';
+import ChatPanel from '../chat/ChatPanel';
+import CourseModal from './CoursesModal';
+import RatingModal from '../Modal/RatingModel';
 
 interface ModalsAndPanelsProps {
   selectedNode: any;
@@ -12,6 +12,8 @@ interface ModalsAndPanelsProps {
   setShowInfo: React.Dispatch<React.SetStateAction<boolean>>;
   showChat: boolean;
   setShowChat: React.Dispatch<React.SetStateAction<boolean>>;
+  showDetails: boolean;
+  setShowDetails: React.Dispatch<React.SetStateAction<boolean>>;
   showCourses: boolean;
   setShowCourses: React.Dispatch<React.SetStateAction<boolean>>;
   showRating: boolean;
@@ -27,6 +29,8 @@ export default function ModalsAndPanels({
   setShowInfo,
   showChat,
   setShowChat,
+  showDetails,
+  setShowDetails,
   showCourses,
   setShowCourses,
   showRating,
@@ -37,8 +41,11 @@ export default function ModalsAndPanels({
   return (
     <>
       <NodeDetailsModal
-        isOpen={!!selectedNode}
-        onClose={() => setSelectedNode(null)}
+        isOpen={showDetails}
+        onClose={() => {
+          setShowDetails(false);
+          setSelectedNode(null);
+        }}
         node={selectedNode}
       />
       <RoadmapInfo
@@ -52,16 +59,19 @@ export default function ModalsAndPanels({
         roadmap={roadmap}
         userProgress={userProgress}
       />
-      <CoursesSidebar
+      <CourseModal
         isOpen={showCourses}
-        onClose={() => setShowCourses(false)}
-        topic={roadmap?.title}
+        onClose={() => {
+          setShowCourses(false);
+          setSelectedNode(null);
+        }}
+        topic={!selectedNode ? roadmap?.title : selectedNode?.label}
       />
       <RatingModal
         isOpen={showRating}
         onClose={() => setShowRating(false)}
         onSubmit={(rating, comment) =>
-          console.log("Rating:", rating, "Comment:", comment)
+          console.log('Rating:', rating, 'Comment:', comment)
         }
       />
     </>
