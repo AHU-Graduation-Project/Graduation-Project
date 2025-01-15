@@ -2,7 +2,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { UserEntity } from "../../domain/entities/User";
-import img from "../../shared/assets//images/mike_wazowski_meme_png_by_kylewithem_dg65n12-fullview.png";
+const img = null
 
 const roadmapNodeCounts: { [key: string]: number } = {};
 

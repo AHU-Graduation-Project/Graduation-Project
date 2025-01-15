@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.customNode {
+  @apply relative p-6 rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl;
+}
+
+.topic {
+  @apply bg-white dark:bg-slate-800 border-2 border-theme;
+}
+
+.sideTopic {
+  @apply bg-white/50 dark:bg-slate-800/50 border border-dashed border-theme;
+}
+
+.nodeContent {
+  @apply flex flex-col gap-3;
+}
+
+.nodeHeader {
+  @apply flex items-center justify-between mb-2;
+}
+
+.nodeLabel {
+  @apply text-xl font-semibold text-theme dark:text-white;
+}
+
+.nodeDescription {
+  @apply text-sm text-slate-600 dark:text-slate-400;
+}

@@ -38,6 +38,9 @@ export default {
         theme: "transparent",
         icon: "transparent",
       },
+      borderColor: {
+        theme: "var(--theme-to)",
+      },
       backgroundClip: {
         text: "text",
       },
@@ -106,7 +109,7 @@ export default {
           boxShadow: `0 4px 15px var(--theme-from), 0 8px 30px var(--theme-to)`,
         },
         ".bg-theme-blur": {
-          position: "relative", // Make sure the element has a position for the pseudo-element
+          position: "relative",
         },
         ".bg-theme-blur::before": {
           content: '""',
@@ -116,11 +119,15 @@ export default {
           right: 0,
           bottom: 0,
           background: "var(--theme-gradient)",
-          filter: "blur(3px)", // Apply the background blur
-          zIndex: -1, // Ensure it stays behind the content
+          filter: "blur(3px)",
+          zIndex: -1,
         },
-      
-      
+        ".border-theme": {
+          borderColor: "var(--theme-to)",
+        },
+        ".ring-theme":{
+          
+        }
       });
     },
   ],

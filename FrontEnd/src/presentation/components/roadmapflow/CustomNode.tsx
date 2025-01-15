@@ -158,21 +158,21 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
         animate={
           isAnimating
             ? {
-                scale: [1, 1.1, 1],
+                scale: [1, 1.1, 1], 
                 rotate: [0, 5, -5, 0],
               }
-            : {}
-        }
-        transition={{ duration: 0.5 }}
+            : {} 
+        } 
+        transition={{ duration: 0.5 }} 
         className={cn(
           'px-6 py-3 shadow-lg rounded-xl border-2 relative hover:scale-105 transition-transform',
           'min-w-[200px]',
-          data.type === 'topic'
+          data.type === 'topic' 
             ? 'rounded-2xl text-lg font-bold tracking-wide shadow-xl border-theme'
             : 'text-sm font-medium tracking-normal shadow-md scale-90 border-dashed',
           !shouldBeActive && 'opacity-50 bg-slate-800/50',
           shouldBeActive &&
-            (isCompleted
+            (isCompleted 
               ? data.type === 'topic'
                 ? 'bg-theme animate-completion'
                 : 'bg-transparent bg-theme-shadow bg-theme-blur'
