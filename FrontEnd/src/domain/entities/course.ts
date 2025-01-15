@@ -1,11 +1,7 @@
-export interface Course {
-  id: string;
+export interface ICourse {
   title: string;
-  platform: 'udemy' | 'coursera';
-  image: string;
-  instructor: string;
-  rating: number;
-  price: number;
+  photoUrl: string;
   url: string;
-  topics: string[];
+  platform: string;
+  price: string;
 }
