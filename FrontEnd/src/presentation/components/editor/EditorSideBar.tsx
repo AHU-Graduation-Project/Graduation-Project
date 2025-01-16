@@ -24,6 +24,8 @@ export type SidebarProps = {
   onDragStart: (e: React.DragEvent, type: 'topic' | 'subTopic') => void;
   isPublished?: boolean;
   onPublish?: () => void;
+  setSelectedNode: (node: { id: string; data: { label: string; type: 'topic' | 'subTopic' } }) => void;
+  setShowRightSidebar: (show: boolean) => void;
 };
 
 const EditorSideBar = ({
@@ -36,6 +38,8 @@ const EditorSideBar = ({
   onDragStart,
   isPublished,
   onPublish,
+  setSelectedNode,
+  setShowRightSidebar,
 }: SidebarProps) => {
   const navigate = useNavigate();
 
@@ -70,6 +74,13 @@ const EditorSideBar = ({
             >
               <Edit2 size={20} />
               Edit Roadmap
+            </button>
+            <button
+              className={styles.actionButton}
+              onClick={() => setIsEditDialogOpen(true)}
+            >
+              <Edit2 size={20} />
+              Edit Resources
             </button>
             <div className="flex flex-col gap-2">
               <h3>Node Types</h3>
@@ -123,8 +134,14 @@ const EditorSideBar = ({
                 </span>
                 <div className={styles.nodeListActions}>
                   <button
-                    className={styles.nodeListButton}
-                    onClick={() => handleEditNode(node.id)}
+                    className={
+                      styles.nodeListButton +
+                      ' hover:scale-105 hover:bg-gray-200 dark:hover:bg-gray-500'
+                    }
+                    onClick={() => {
+                      setSelectedNode(node);
+                      setShowRightSidebar(true);
+                    }}
                     aria-label="Edit node"
                   >
                     <Edit2 size={16} />

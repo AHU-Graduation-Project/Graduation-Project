@@ -599,6 +599,8 @@ useEffect(() => {
         onDragStart={(e, type) => {
           e.dataTransfer.setData('application/reactflow', type);
         }}
+        setSelectedNode={setSelectedNode}
+        setShowRightSidebar={setIsRightSidebarOpen}
       />
 
       <div className={styles.flowContainer}>
