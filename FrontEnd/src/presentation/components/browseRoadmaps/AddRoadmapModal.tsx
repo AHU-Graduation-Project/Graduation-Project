@@ -15,7 +15,7 @@ import {
   InsertFrontmatter,
   Separator,
 } from "@mdxeditor/editor";
-
+import { useNavigate } from "react-router-dom";
 import "@mdxeditor/editor/style.css";
 
 const AddRoadmapModal = ({ isOpen, onClose, onAdd }) => {
@@ -26,6 +26,7 @@ const AddRoadmapModal = ({ isOpen, onClose, onAdd }) => {
   const [routeError, setRouteError] = useState("");
   const [isCheckingRoute, setIsCheckingRoute] = useState(false);
   const [selectedIconIndex, setSelectedIconIndex] = useState(null);
+  const navigate = useNavigate();
   const modalRef = useRef(null);
 
   const icons = [Edit, Code, Map, Plus, Brain, Library];
@@ -88,7 +89,7 @@ const AddRoadmapModal = ({ isOpen, onClose, onAdd }) => {
   if (!isOpen) return null;
 
   const handleAdd = () => {
-    if (!title || !route || !description || !selectedIcon) {
+    if (!title || !route || !selectedIcon) {
       return;
     }
 
@@ -96,12 +97,12 @@ const AddRoadmapModal = ({ isOpen, onClose, onAdd }) => {
       return;
     }
 
-    onAdd({
-      title,
-      route,
-      description,
-      icon: selectedIcon,
-    });
+    // onAdd({
+    //   title,
+    //   route,
+    //   description,
+    //   icon: selectedIcon,
+    // });
 
     setTitle("");
     setRoute("");
@@ -109,6 +110,7 @@ const AddRoadmapModal = ({ isOpen, onClose, onAdd }) => {
     setSelectedIcon(null);
     setSelectedIconIndex(null);
     onClose();
+    navigate("/editor");
   };
 
   return (
@@ -167,7 +169,9 @@ const AddRoadmapModal = ({ isOpen, onClose, onAdd }) => {
           <MDXEditor
             markdown={description}
             // .rich-editor .editable  {color white}
-            className="h-80 overflow-y-scroll bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 rich-editor"
+            contentEditableClassName="text-gray-700 dark:text-gray-300"
+            className="h-80 overflow-y-scroll bg-white dark:bg-slate-800  "
+            onChange={setDescription}
             plugins={[
               toolbarPlugin({
                 toolbarClassName: " ",

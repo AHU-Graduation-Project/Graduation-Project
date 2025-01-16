@@ -56,10 +56,11 @@ export default function BrowseRoadmapsComponent() {
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search roadmaps..."
               className="bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-md flex-grow"
+              inputClassName="w-full"
             />
             <button
               onClick={() => setIsModalOpen(true)}
-              className="bg-theme text-white px-4 py-2 rounded-md ml-2"
+              className="bg-theme text-white px-4 py-2 rounded-md ml-2 w-[230px] max-h-[50px]"
             >
               Create Roadmap
             </button>
