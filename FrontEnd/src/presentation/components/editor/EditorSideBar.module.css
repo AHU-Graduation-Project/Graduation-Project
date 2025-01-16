@@ -79,13 +79,18 @@
 }
 
 .dndNode {
-  @apply p-4 border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-lg mb-3 cursor-grab transition-all duration-200 bg-slate-50 dark:bg-slate-900 hover:shadow-md;
+  @apply p-4 border-2 border-slate-300 dark:border-slate-600 rounded-lg mb-3 cursor-grab transition-all duration-200 bg-slate-50 dark:bg-slate-900 hover:shadow-md;
 }
 
 .dndNode:hover {
   @apply border-theme;
 }
-
+.Topic {
+  @apply flex items-center gap-2 border-theme;
+}
+.subTopic {
+  @apply  flex items-center gap-2  border-theme border-dashed;
+}
 .controls {
   @apply mt-8 flex flex-col gap-4;
 }
