@@ -152,13 +152,7 @@ const AddRoadmapModal = ({ isOpen, onClose, onAdd }) => {
             Description
           </label>
           <Markdown description={description} setDescription={setDescription} />
-          <button
-            onClick={() => {
-              console.log();
-            }}
-          >
-            get dis
-          </button>
+
         </div>
 
         <div className="mb-4">

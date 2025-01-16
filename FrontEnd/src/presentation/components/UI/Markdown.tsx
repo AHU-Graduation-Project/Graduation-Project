@@ -14,18 +14,19 @@ import {
   Italic,
   Underline as UnderlineIcon,
   Link as LinkIcon,
-  AlignLeft,
-  AlignCenter,
-  AlignRight,
   List,
   ListOrdered,
   Quote,
   Heading1,
   Heading2,
+  FlipHorizontal,
+  FlipVertical,
   Undo,
   Redo,
   Highlighter,
 } from "lucide-react";
+import { Markdown } from 'tiptap-markdown';
+
 
 const MenuButton = ({
   onClick,
@@ -55,6 +56,8 @@ export default function Editor({ description, setDescription }: EditorProps) {
   // const [content, setContent] = useState("");
   const editor = useEditor({
     extensions: [
+      Markdown,
+
       StarterKit.configure({
         bulletList: {
           keepMarks: true,
@@ -66,7 +69,7 @@ export default function Editor({ description, setDescription }: EditorProps) {
         },
         blockquote: {
           HTMLAttributes: {
-            class: "border-l-4 border-gray-300 pl-4",
+            class: 'border-l-4 border-gray-300 pl-4',
           },
         },
       }),
@@ -74,14 +77,14 @@ export default function Editor({ description, setDescription }: EditorProps) {
       Link.configure({
         openOnClick: false,
         HTMLAttributes: {
-          class: "text-blue-600 underline",
+          class: 'text-blue-600 underline',
         },
       }),
       TextAlign.configure({
-        types: ["heading", "paragraph"],
+        types: ['heading', 'paragraph'],
       }),
       Placeholder.configure({
-        placeholder: "Start writing something amazing...",
+        placeholder: 'Start writing something amazing...',
       }),
       Typography,
       TextStyle,
@@ -99,7 +102,7 @@ export default function Editor({ description, setDescription }: EditorProps) {
     editorProps: {
       attributes: {
         class:
-          "prose prose-sm sm:prose lg:prose-lg xl:prose-xl focus:outline-none max-w-none",
+          'prose prose-sm sm:prose lg:prose-lg xl:prose-xl focus:outline-none max-w-none',
       },
     },
   });
@@ -121,85 +124,61 @@ export default function Editor({ description, setDescription }: EditorProps) {
         <div className="border-b border-gray-200 p-2 flex flex-wrap gap-1 sticky top-0 bg-white z-10">
           <MenuButton
             onClick={() => editor.chain().focus().toggleBold().run()}
-            active={editor.isActive("bold")}
+            active={editor.isActive('bold')}
           >
             <Bold size={18} />
           </MenuButton>
           <MenuButton
             onClick={() => editor.chain().focus().toggleItalic().run()}
-            active={editor.isActive("italic")}
+            active={editor.isActive('italic')}
           >
             <Italic size={18} />
           </MenuButton>
-          <MenuButton
-            onClick={() => editor.chain().focus().toggleUnderline().run()}
-            active={editor.isActive("underline")}
-          >
-            <UnderlineIcon size={18} />
-          </MenuButton>
-          <MenuButton onClick={addLink} active={editor.isActive("link")}>
+          <MenuButton onClick={addLink} active={editor.isActive('link')}>
             <LinkIcon size={18} />
           </MenuButton>
-          <div className="w-px h-6 bg-gray-200 mx-1 self-center" />
-          <MenuButton
-            onClick={() => editor.chain().focus().setTextAlign("left").run()}
-            active={editor.isActive({ textAlign: "left" })}
-          >
-            <AlignLeft size={18} />
-          </MenuButton>
-          <MenuButton
-            onClick={() => editor.chain().focus().setTextAlign("center").run()}
-            active={editor.isActive({ textAlign: "center" })}
-          >
-            <AlignCenter size={18} />
-          </MenuButton>
-          <MenuButton
-            onClick={() => editor.chain().focus().setTextAlign("right").run()}
-            active={editor.isActive({ textAlign: "right" })}
-          >
-            <AlignRight size={18} />
-          </MenuButton>
+
           <div className="w-px h-6 bg-gray-200 mx-1 self-center" />
           <MenuButton
             onClick={() =>
-              editor.chain().focus().toggleHeading({ level: 1 }).run()
+              editor.chain().focus().toggleHeading({ level: 2 }).run()
             }
-            active={editor.isActive("heading", { level: 1 })}
+            active={editor.isActive('heading', { level: 2 })}
           >
             <Heading1 size={18} />
           </MenuButton>
           <MenuButton
             onClick={() =>
-              editor.chain().focus().toggleHeading({ level: 2 }).run()
+              editor.chain().focus().toggleHeading({ level: 3 }).run()
             }
-            active={editor.isActive("heading", { level: 2 })}
+            active={editor.isActive('heading', { level: 3 })}
           >
             <Heading2 size={18} />
           </MenuButton>
           <MenuButton
+            onClick={() => editor.chain().focus().setHorizontalRule().run()}
+          >
+            < FlipVertical size={18} />
+          </MenuButton>
+          <MenuButton
             onClick={() => editor.chain().focus().toggleBulletList().run()}
-            active={editor.isActive("bulletList")}
+            active={editor.isActive('bulletList')}
           >
             <List size={18} />
           </MenuButton>
           <MenuButton
             onClick={() => editor.chain().focus().toggleOrderedList().run()}
-            active={editor.isActive("orderedList")}
+            active={editor.isActive('orderedList')}
           >
             <ListOrdered size={18} />
           </MenuButton>
           <MenuButton
             onClick={() => editor.chain().focus().toggleBlockquote().run()}
-            active={editor.isActive("blockquote")}
+            active={editor.isActive('blockquote')}
           >
             <Quote size={18} />
           </MenuButton>
-          <MenuButton
-            onClick={() => editor.chain().focus().toggleHighlight().run()}
-            active={editor.isActive("highlight")}
-          >
-            <Highlighter size={18} />
-          </MenuButton>
+
           <div className="w-px h-6 bg-gray-200 mx-1 self-center" />
           <MenuButton onClick={() => editor.chain().focus().undo().run()}>
             <Undo size={18} />
@@ -221,28 +200,28 @@ export default function Editor({ description, setDescription }: EditorProps) {
         >
           <MenuButton
             onClick={() => editor.chain().focus().toggleBold().run()}
-            active={editor.isActive("bold")}
+            active={editor.isActive('bold')}
           >
             <Bold size={16} />
           </MenuButton>
           <MenuButton
             onClick={() => editor.chain().focus().toggleItalic().run()}
-            active={editor.isActive("italic")}
+            active={editor.isActive('italic')}
           >
             <Italic size={16} />
           </MenuButton>
           <MenuButton
             onClick={() => editor.chain().focus().toggleUnderline().run()}
-            active={editor.isActive("underline")}
+            active={editor.isActive('underline')}
           >
             <UnderlineIcon size={16} />
           </MenuButton>
-          <MenuButton onClick={addLink} active={editor.isActive("link")}>
+          <MenuButton onClick={addLink} active={editor.isActive('link')}>
             <LinkIcon size={16} />
           </MenuButton>
           <MenuButton
             onClick={() => editor.chain().focus().toggleHighlight().run()}
-            active={editor.isActive("highlight")}
+            active={editor.isActive('highlight')}
           >
             <Highlighter size={16} />
           </MenuButton>
