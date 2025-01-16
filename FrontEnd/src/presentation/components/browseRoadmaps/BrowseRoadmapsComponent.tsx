@@ -6,12 +6,19 @@ import Pagination from "./Pagination";
 import SearchBar from "../UI/SearchBar";
 import SelectedRoadmapCard from "./SelectedRoadmapCard";
 import AnimationWrapper from "../UI/Animation/Animation";
+import AddRoadmapModal from "./AddRoadmapModal";
 
 export default function BrowseRoadmapsComponent() {
   const [searchQuery, setSearchQuery] = useState("");
   const { user, selectRoadmap } = useAuthStore();
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage, setPostsPerPage] = useState(9);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleAddRoadmap = (newRoadmap) => {
+    console.log("New Roadmap:", newRoadmap);
+    setIsModalOpen(false);
+  };
 
   const filteredRoadmaps = roadmaps.filter((roadmap) =>
     [roadmap.title, roadmap.description].some((field) =>
@@ -43,11 +50,21 @@ export default function BrowseRoadmapsComponent() {
 
       <div className="max-w-2xl mx-auto mb-12">
         <AnimationWrapper animationType={5}>
-          <SearchBar
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={"Search roadmaps..."}
-          />
+          <div className="flex flex-row">
+            <SearchBar
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search roadmaps..."
+              className="bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-md flex-grow"
+              inputClassName="w-full"
+            />
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="bg-theme text-white px-4 py-2 rounded-md ml-2 w-[230px] max-h-[50px]"
+            >
+              Create Roadmap
+            </button>
+          </div>
         </AnimationWrapper>
       </div>
 
@@ -85,6 +102,7 @@ export default function BrowseRoadmapsComponent() {
       <AnimationWrapper animationType={5}>
         <h2 className="text-2xl font-bold mb-6 text-theme">Other Roadmaps</h2>
       </AnimationWrapper>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {currentPost.length > 0 ? (
           currentPost.map((roadmap) => (
@@ -98,6 +116,11 @@ export default function BrowseRoadmapsComponent() {
           </div>
         )}
       </div>
+      <AddRoadmapModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onAdd={handleAddRoadmap}
+      />
 
       <div className="pt-6 z-40">
         <Pagination

@@ -176,6 +176,11 @@ body {
   @apply fill-fill;
 }
 
+/* Custom styling for the editor content */
+.mdx-editor .editor-content {
+  color: #e4e6e9; /* Equivalent to Tailwind's text-gray-800 */
+}
+
 /* Node completion animation */
 @keyframes completion {
   0% {
@@ -230,7 +235,7 @@ body {
   }
 }
 
-.hover_shawdow_effect:hover{
+.hover_shawdow_effect:hover {
   box-shadow: 0 0 5px var(--theme-from), 0 0 10px var(--theme-to);
 }
 
@@ -308,8 +313,6 @@ body {
   opacity: 0;
   animation: fadeInRight 0.5s ease-out forwards;
 }
-
-
 
 /* Pop Up Animation */
 @keyframes popUp {

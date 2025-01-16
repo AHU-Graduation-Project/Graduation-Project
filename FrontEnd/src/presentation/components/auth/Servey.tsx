@@ -22,7 +22,7 @@ const countries = [
 
 const levels = ["Junior", "Middle", "Senior", "Team Leader", "Project Manager"];
 
-const Servey = () => {
+const Survey = () => {
   const navigate = useNavigate();
   const { user, updateUser } = useAuthStore();
   const [position, setPosition] = useState(user?.position || "");
@@ -30,8 +30,8 @@ const Servey = () => {
   const [country, setCountry] = useState(user?.country || "");
 
   const handleSurveySubmit = () => {
-    navigate("/");
     handleSaveChanges();
+    navigate("/");
   };
 
   const handleSkipSurvey = () => {
@@ -47,78 +47,110 @@ const Servey = () => {
   };
 
   return (
-    <div className="survey-modal">
-      <h2 className="text-2xl font-bold mb-2 text-theme">Survey</h2>
-      <p className="text-sm mb-2 text-gray-400">
-        Please fill in your Information.
-      </p>
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-200 relative z-20">
+      <div className="max-w-md w-full space-y-8 bg-gray-800 p-8 rounded-lg shadow-lg transition-colors duration-200">
+        <div className="text-center">
+          <h2 className="text-3xl font-extrabold text-theme mb-2 transition-colors duration-200">
+            Career Survey
+          </h2>
+          <p className="text-sm text-gray-500 mb-8 transition-colors duration-200">
+            Help us personalize your experience by sharing your professional
+            details.
+          </p>
+        </div>
 
-      <div className="flex-1">
-        <label
-          htmlFor="position"
-          className="block text-sm font-medium text-theme mb-1"
-        >
-          Position
-        </label>
-        <input
-          type="text"
-          id="position"
-          value={position}
-          onChange={(e) => setPosition(e.target.value)}
-          className="w-full border bg-transparent border-gray-300 rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-theme"
-        />
-      </div>
+        <div className="space-y-6">
+          <div>
+            <label
+              htmlFor="position"
+              className="block text-sm font-medium text-theme mb-2 transition-colors duration-200"
+            >
+              Position
+            </label>
+            <input
+              type="text"
+              id="position"
+              value={position}
+              onChange={(e) => setPosition(e.target.value)}
+              className="appearance-none block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm placeholder-gray-500 
+                bg-gray-700 text-gray-900 dark:text-white
+                focus:outline-none focus:ring-2 focus:border-blue-400
+                sm:text-sm transition-colors duration-200"
+              placeholder="Enter your current position"
+            />
+          </div>
 
-      <div className="my-3 min-w-48">
-        <label
-          htmlFor="country"
-          className="block text-sm font-medium text-theme mb-1"
-        >
-          Country
-        </label>
+          <div>
+            <label
+              htmlFor="country"
+              className="block text-sm font-medium text-theme mb-2 transition-colors duration-200"
+            >
+              Country
+            </label>
+            <SelectDropDown
+              items={countries}
+              selectedValue={country}
+              onChange={setCountry}
+              className="appearance-none block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm 
+               bg-gray-700  text-white
+                focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
+                dark:focus:ring-blue-400 dark:focus:border-blue-400
+                sm:text-sm transition-colors duration-200"
+            />
+          </div>
 
-        <SelectDropDown
-          items={countries}
-          selectedValue={country}
-          onChange={setCountry}
-          className="border border-gray-300 rounded-md text-sm"
-        />
-      </div>
+          <div>
+            <label
+              htmlFor="level"
+              className="block text-sm font-medium text-theme mb-2 transition-colors duration-200"
+            >
+              Experience Level
+            </label>
+            <SelectDropDown
+              items={levels}
+              selectedValue={level}
+              onChange={setLevel}
+              className="appearance-none block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm 
+                bg-gray-700 text-white
+                focus:outline-none focus:ring-2  focus:ring-blue-400  focus:border-blue-400
+                sm:text-sm transition-colors duration-200"
+            />
+          </div>
 
-      <div className="my-3 min-w-48">
-        <label
-          htmlFor="level"
-          className="block text-sm font-medium text-theme mb-1"
-        >
-          Level
-        </label>
-        <SelectDropDown
-          items={levels}
-          selectedValue={level}
-          onChange={setLevel}
-          className=" w-60 p-2 border border-gray-300 rounded-md text-sm"
-        />
-      </div>
+          <div className="py-4">
+            <Skills />
+          </div>
 
-      <Skills />
-
-      <div className="flex justify-between mt-3">
-        <button
-          onClick={handleSkipSurvey}
-          className="bg-gray-200 text-gray-700 py-2 px-4 rounded text-end"
-        >
-          Skip
-        </button>
-
-        <button
-          onClick={handleSurveySubmit}
-          className="bg-theme text-white py-2 px-4 rounded"
-        >
-          Next
-        </button>
+          <div className="flex justify-between pt-6">
+            <button
+              onClick={handleSkipSurvey}
+              className="inline-flex justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 
+                rounded-md shadow-sm text-sm font-medium 
+                text-gray-300 
+                bg-gray-700 
+                hover:bg-gray-600 
+                focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 
+                dark:focus:ring-offset-gray-800 dark:focus:ring-gray-400
+                transition-colors duration-200"
+            >
+              Skip for Now
+            </button>
+            <button
+              onClick={handleSurveySubmit}
+              className="inline-flex justify-center py-2 px-4 border border-transparent 
+                rounded-md shadow-sm text-sm font-medium text-white 
+                 bg-theme dark:hover:bg-blue-600 
+                focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 
+                dark:focus:ring-offset-gray-800 dark:focus:ring-blue-400
+                transition-colors duration-200"
+            >
+              Save & Continue
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
-export default Servey;
+export default Survey;

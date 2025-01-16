@@ -23,7 +23,6 @@ export default function RoadmapInfo({
 
   if (!isOpen || !roadmap) return null;
 
-
   const resources = [
     {
       label: "Documentation",

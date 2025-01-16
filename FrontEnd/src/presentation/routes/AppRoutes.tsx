@@ -9,7 +9,6 @@ import NotFoundPage from "../pages/NotFoundPage";
 import Background from "../components/layout/Background";
 import Editor from "../pages/editor";
 export default function AppRoutes() {
-
   return (
     <Routes>
       <Route path="/" element={<Overview />} />
@@ -19,8 +18,8 @@ export default function AppRoutes() {
       <Route
         path="/Auth"
         element={
-          <div className="relative w-full h-screen">
-            <Background />
+          <div className="relative w-full h-screen ">
+            {/* <Background /> */}
             <Auth />
           </div>
         }

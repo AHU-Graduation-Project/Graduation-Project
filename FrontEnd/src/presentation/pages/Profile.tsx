@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import UserInfo from "../components/profile/UserInfo";
 import EditProfile from "../components/profile/EditProfile";
@@ -6,12 +6,18 @@ import { useAuthStore } from "../../application/state/authStore";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import { motion } from "framer-motion";
+
 // import BackgroundRays from "../components/OverView/BackgroundRays";
 
 export default function Profile() {
   const navigate = useNavigate();
+  const [showCv, setShowCv] = useState(true);
 
   const { user, isAuthenticated } = useAuthStore();
+
+  const handleShowCv = () => {
+    setShowCv(!showCv);
+  };
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -33,7 +39,6 @@ export default function Profile() {
           className="max-w-6xl mx-auto"
         >
           <UserInfo />
-
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -44,6 +49,13 @@ export default function Profile() {
           </motion.h1>
 
           <EditProfile />
+
+          <button
+            className="my-3 bg-theme border rounded-lg text-white py-2 px-3"
+            onClick={handleShowCv}
+          >
+            Show CV
+          </button>
         </motion.div>
       </div>
       <Footer />

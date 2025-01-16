@@ -205,6 +205,12 @@ export const useAuthStore = create<IAuthState>()(
           };
         });
       },
+      // setToken: (tokken) => {
+      //   set((state) => {
+      //     if(!state.user) return state;
+
+      //   })
+      // }
       saveGeneratedRoadmap: (title, description, nodes, edges) => {
         set((state) => {
           if (!state.user) return state;
