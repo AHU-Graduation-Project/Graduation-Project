@@ -27,6 +27,8 @@ import 'reactflow/dist/style.css';
 import EditNodesSideBar from './EditNodesSideBar';
 import HelperLinesRenderer from './HelperLines';
 import { getEnhancedHelperLines } from '../../../infrastructure/utils/helperLines';
+import ConfirmRefreshModal from '../Modal/ConfirmRefreshModal';
+
 
 const nodeTypes = {
   custom: CustomNodeEditor,
@@ -67,6 +69,11 @@ const edgeTypes: EdgeTypes = {
 };
 
 const RoadmapEditor = () => {
+  const isDragging = useRef(false);
+const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+const [showRefreshConfirm, setShowRefreshConfirm] = useState(false);
+const [isPublished, setIsPublished] = useState(false);
+
   const [nodes, setNodes] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [roadmapData, setRoadmapData] = useState<RoadmapData>({
@@ -102,6 +109,242 @@ const RoadmapEditor = () => {
   });
   const rightSidebarRef = useRef<HTMLDivElement>(null);
   const deleteKeyPressed = useKeyPress('Delete');
+  const [undoStack, setUndoStack] = useState<
+    {
+      nodes: Node[];
+      edges: Edge[];
+    }[]
+  >([]);
+
+  const [redoStack, setRedoStack] = useState<
+    {
+      nodes: Node[];
+      edges: Edge[];
+    }[]
+  >([]);
+
+  // Save state to history for all changes
+  const saveToHistory = useCallback(
+    (newState: { nodes: Node[]; edges: Edge[] }) => {
+      setUndoStack((prev) => [...prev, newState]);
+      setRedoStack([]); // Clear redo stack when new changes are made
+    },
+    [],
+  );
+
+  useEffect(() => {
+    setUndoStack([
+      {
+        nodes,
+        edges,
+      },
+    ]);
+  }, []); // Run once on mount
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.ctrlKey && event.key === 'z') {
+        event.preventDefault();
+        if (undoStack.length > 1) {
+          const currentState = undoStack[undoStack.length - 1];
+          const previousState = undoStack[undoStack.length - 2];
+
+          // Restore previous state
+          setNodes(previousState.nodes);
+          setEdges(previousState.edges);
+
+          // Update stacks
+          setUndoStack((prev) => prev.slice(0, -1));
+          setRedoStack((prev) => [currentState, ...prev]);
+        } else if (undoStack.length === 1) {
+          // Handle the case where there's only one state in the undo stack
+          const currentState = undoStack[0];
+
+          // Clear the canvas
+          setNodes([]);
+          setEdges([]);
+
+          // Move current state to redo stack
+          setUndoStack([]);
+          setRedoStack((prev) => [currentState, ...prev]);
+        }
+      } else if (event.ctrlKey && event.key === 'y') {
+        event.preventDefault();
+        if (redoStack.length > 0) {
+          const nextState = redoStack[0];
+
+          // Restore next state
+          setNodes(nextState.nodes);
+          setEdges(nextState.edges);
+
+          // Update stacks
+          setRedoStack((prev) => prev.slice(1));
+          setUndoStack((prev) => [...prev, nextState]);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [undoStack, redoStack, setEdges, setNodes]);
+
+  // Update all state-changing functions to use saveToHistory
+
+  const onNodesChange = useCallback(
+    (changes: NodeChange[]) => {
+      const positionChange = changes.find(
+        (change): change is NodePositionChange =>
+          change.type === 'position' && change.position !== undefined,
+      );
+
+      if (positionChange) {
+        isDragging.current = true;
+        const { horizontal, vertical, spacingGuides, centerGuides } =
+          getEnhancedHelperLines(positionChange, nodes, 20);
+        setHelperLines({ horizontal, vertical, spacingGuides, centerGuides });
+      } else {
+        setHelperLines({ spacingGuides: [], centerGuides: {} });
+      }
+
+      const newNodes = applyNodeChanges(changes, nodes);
+      setNodes(newNodes);
+
+      // Only save to history if it's  a position change (e.g., selection)
+    },
+    [nodes, edges, saveToHistory, setNodes],
+  );
+
+  const onNodeDragStop = useCallback(() => {
+    if (isDragging.current) {
+      isDragging.current = false;
+      // Save the final position to history
+      saveToHistory({
+        nodes,
+        edges,
+      });
+    }
+  }, [nodes, edges, selectedNode, selectedEdge]);
+
+  const handleDeleteNode = (nodeId: string) => {
+    const newNodes = nodes.filter((node) => node.id !== nodeId);
+    const newEdges = edges.filter(
+      (edge) => edge.source !== nodeId && edge.target !== nodeId,
+    );
+    setNodes(newNodes);
+    setEdges(newEdges);
+    setIsRightSidebarOpen(false);
+    setSelectedNode(null);
+
+    saveToHistory({
+      nodes: newNodes,
+      edges: newEdges,
+    });
+  };
+
+  const onConnect = useCallback(
+    (params: Connection) => {
+      const newEdges = addEdge(
+        { ...params, type: 'smoothstep', animated: false },
+        edges,
+      );
+      setEdges(newEdges);
+      saveToHistory({
+        nodes,
+        edges: newEdges,
+      });
+    },
+    [edges, nodes, selectedNode, selectedEdge],
+  );
+
+  const handleUpdateNodeFromSidebar = (data: {
+    label: string;
+    description: string;
+    type: 'topic' | 'subTopic';
+  }) => {
+    if (selectedNode) {
+      const newNodes = nodes.map((node) =>
+        node.id === selectedNode.id
+          ? { ...node, data: { ...node.data, ...data } }
+          : node,
+      );
+      const newSelectedNode = {
+        ...selectedNode,
+        data: { ...selectedNode.data, ...data },
+      };
+
+      setNodes(newNodes);
+      setSelectedNode(newSelectedNode);
+
+      saveToHistory({
+        nodes: newNodes,
+        edges,
+      });
+    }
+  };
+
+  const handleUpdateEdgeFromSidebar = (
+    edgeId: string,
+    updates: Partial<Edge>,
+  ) => {
+    const newEdges = edges.map((edge) =>
+      edge.id === edgeId
+        ? {
+            ...edge,
+            ...updates,
+            style: {
+              ...edge.style,
+              ...updates.style,
+            },
+          }
+        : edge,
+    );
+    const newSelectedEdge =
+      selectedEdge?.id === edgeId
+        ? { ...selectedEdge, ...updates }
+        : selectedEdge;
+
+    setEdges(newEdges);
+    setSelectedEdge(newSelectedEdge);
+
+    saveToHistory({
+      nodes,
+      edges: newEdges,
+    });
+  };
+  const handleSaveAndRefresh = () => {
+    onSave();
+    setHasUnsavedChanges(false);
+    setShowRefreshConfirm(false);
+    window.location.reload();
+  };
+  const handleRefreshAnyway = () => {
+    setHasUnsavedChanges(false);
+    setShowRefreshConfirm(false);
+    window.location.reload();
+  };
+  // Add event listener for beforeunload to prevent accidental refresh
+// useEffect(() => {
+//     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+//       if (hasUnsavedChanges) {
+        
+//         e.preventDefault();
+        
+//         // Prevent the default alert from showing
+//         e.returnValue = '';
+//         // Show custom modal instead
+//         // setShowRefreshConfirm(true);
+//       }
+//       e.preventDefault();
+//     };
+    
+//     window.addEventListener('beforeunload', handleBeforeUnload);
+//     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+//   }, [hasUnsavedChanges]);
+  
+const handlePublish = () => {
+  // Here you would typically make an API call to publish the roadmap
+  setIsPublished(true);
+};
 
   useEffect(() => {
     if (deleteKeyPressed) {
@@ -133,35 +376,6 @@ const RoadmapEditor = () => {
     };
   }, [isRightSidebarOpen]);
 
-  const onNodesChange = useCallback(
-    (changes: NodeChange[]) => {
-      const positionChange = changes.find(
-        (change): change is NodePositionChange =>
-          change.type === 'position' && change.position !== undefined,
-      );
-
-      if (positionChange) {
-        const { horizontal, vertical, spacingGuides, centerGuides } =
-          getEnhancedHelperLines(positionChange, nodes, 20);
-        setHelperLines({ horizontal, vertical, spacingGuides, centerGuides });
-      } else {
-        setHelperLines({ spacingGuides: [], centerGuides: {} });
-      }
-
-      setNodes((nds) => applyNodeChanges(changes, nds));
-    },
-    [nodes, setNodes],
-  );
-
-  const onConnect = useCallback(
-    (params: Connection) => {
-      setEdges((eds) =>
-        addEdge({ ...params, type: 'smoothstep', animated: false }, eds),
-      );
-    },
-    [setEdges],
-  );
-
   const handleNodeClick = (event: React.MouseEvent, node: Node) => {
     setSelectedNode(node);
     setSelectedEdge(null);
@@ -173,53 +387,21 @@ const RoadmapEditor = () => {
     setSelectedNode(null);
     setIsRightSidebarOpen(true);
   };
-
- const handleUpdateNodeFromSidebar = (data: {
-   label: string;
-   description: string;
-   type: 'topic' | 'subTopic';
- }) => {
-   if (selectedNode) {
-     setNodes((prevNodes) =>
-       prevNodes.map((node) =>
-         node.id === selectedNode.id
-           ? { ...node, data: { ...node.data, ...data } }
-           : node,
-       ),
-     );
-     // Update the selected node's reference to match the state
-     setSelectedNode((prev) =>
-       prev ? { ...prev, data: { ...prev.data, ...data } } : null,
-     );
-   }
- };
-
- const handleUpdateEdgeFromSidebar = (
-   edgeId: string,
-   updates: Partial<Edge>,
- ) => {
-   setEdges((prevEdges) =>
-     prevEdges.map((edge) =>
-       edge.id === edgeId
-         ? {
-             ...edge,
-             ...updates,
-             style: {
-               ...edge.style,
-               ...updates.style,
-             },
-           }
-         : edge,
-     ),
-   );
-   // Update the selected edge to reflect changes in real time
-   setSelectedEdge((prev) =>
-     prev?.id === edgeId ? { ...prev, ...updates } : prev,
-   );
- };
+const onSave = useCallback(() => {
+  if (reactFlowInstance) {
+    const flow = reactFlowInstance.toObject();
+    localStorage.setItem('roadmap-flow', JSON.stringify(flow));
+    setHasUnsavedChanges(false);
+  }
+}, [reactFlowInstance]);
 
   const handleDeleteEdge = (edgeId: string) => {
-    setEdges((eds) => eds.filter((edge) => edge.id !== edgeId));
+    const newEdges = edges.filter((edge) => edge.id !== edgeId);
+    setEdges(newEdges);
+    saveToHistory({
+      nodes,
+      edges: newEdges,
+    });
     setIsRightSidebarOpen(false);
     setSelectedEdge(null);
   };
@@ -233,24 +415,13 @@ const RoadmapEditor = () => {
   };
 
   const handleUpdateNode = (nodeId: string, data: NodeData) => {
-    setNodes((nds) =>
-      nds.map((node) =>
-        node.id === nodeId
-          ? { ...node, data: { ...node.data, ...data } }
-          : node,
-      ),
+    const newNodes = nodes.map((node) =>
+      node.id === nodeId ? { ...node, data: { ...node.data, ...data } } : node,
     );
+    setNodes(newNodes);
   };
 
-  const handleDeleteNode = (nodeId: string) => {
-    setNodes((nds) => nds.filter((node) => node.id !== nodeId));
-    setEdges((eds) =>
-      eds.filter((edge) => edge.source !== nodeId && edge.target !== nodeId),
-    );
-    setIsRightSidebarOpen(false);
-    setSelectedNode(null);
-  };
-
+  // Update onDrop to include operation type
   const onDrop = useCallback(
     (event: React.DragEvent) => {
       event.preventDefault();
@@ -264,41 +435,40 @@ const RoadmapEditor = () => {
       });
 
       const newNode: Node = {
-        id: `${nodes.length + 1}`,
+        id: `${Date.now()}`, // Use timestamp for unique ID
         type: 'custom',
         position,
         data: { label: `New ${type}`, description: '', type },
       };
 
-      setNodes((nds) => nds.concat(newNode));
-    },
-    [reactFlowInstance, nodes.length, setNodes],
-  );
+      const newNodes = nodes.concat(newNode);
+      setNodes(newNodes);
 
+      // Save state immediately after adding new node
+      saveToHistory({
+        nodes: newNodes,
+        edges,
+      });
+    },
+    [
+      reactFlowInstance,
+      nodes,
+      edges,
+      selectedNode,
+      selectedEdge,
+      isRightSidebarOpen,
+    ],
+  );
   const onDragOver = useCallback((event: React.DragEvent) => {
     event.preventDefault();
     event.dataTransfer.dropEffect = 'move';
   }, []);
 
-  const onSave = useCallback(() => {
-    if (reactFlowInstance) {
-      const flow = reactFlowInstance.toObject();
-      localStorage.setItem('roadmap-flow', JSON.stringify(flow));
+  useEffect(() => {
+    if (nodes.length > 0 || edges.length > 0) {
+      setHasUnsavedChanges(true);
     }
-  }, [reactFlowInstance]);
-
-  const onRestore = useCallback(() => {
-    const restoreFlow = async () => {
-      const flow = JSON.parse(localStorage.getItem('roadmap-flow') || '{}');
-      if (flow.nodes && flow.edges) {
-        setNodes(flow.nodes);
-        setEdges(flow.edges);
-      }
-    };
-    restoreFlow();
-  }, [setNodes, setEdges]);
-
-
+  }, [nodes, edges]);
   return (
     <div className={styles.editorContainer}>
       <EditorSideBar
@@ -308,8 +478,9 @@ const RoadmapEditor = () => {
         setIsSidebarOpen={setIsSidebarOpen}
         setIsEditDialogOpen={setIsEditDialogOpen}
         handleEditNode={handleEditNode}
+        isPublished={isPublished}
+        onPublish={handlePublish}
         onSave={onSave}
-        onRestore={onRestore}
         onDragStart={(e, type) => {
           e.dataTransfer.setData('application/reactflow', type);
         }}
@@ -329,6 +500,7 @@ const RoadmapEditor = () => {
           nodeTypes={nodeTypes}
           edgeTypes={edgeTypes}
           onInit={setReactFlowInstance}
+          onNodeDragStop={onNodeDragStop}
           fitView
         >
           <Background />
@@ -350,16 +522,16 @@ const RoadmapEditor = () => {
         }`}
       >
         {selectedNode && (
-         <EditNodesSideBar 
+          <EditNodesSideBar
             styles={styles}
             selectedNode={selectedNode}
             handleUpdateNodeFromSidebar={handleUpdateNodeFromSidebar}
-            handleDeleteNode={handleDeleteNode}/>
-
+            handleDeleteNode={handleDeleteNode}
+          />
         )}
 
         {selectedEdge && (
-         <EditEdgesSideBar
+          <EditEdgesSideBar
             styles={styles}
             selectedEdge={selectedEdge}
             handleUpdateEdgeFromSidebar={handleUpdateEdgeFromSidebar}
@@ -374,7 +546,12 @@ const RoadmapEditor = () => {
         roadmapData={roadmapData}
         onSave={setRoadmapData}
       />
-
+      <ConfirmRefreshModal
+        isOpen={showRefreshConfirm}
+        onClose={() => setShowRefreshConfirm(false)}
+        onRefresh={handleRefreshAnyway}
+        onSaveAndRefresh={handleSaveAndRefresh}
+      />
       <EditNodeDialog
         isOpen={isEditNodeDialogOpen}
         onClose={() => {

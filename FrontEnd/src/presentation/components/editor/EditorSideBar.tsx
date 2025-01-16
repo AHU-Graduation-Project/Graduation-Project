@@ -1,15 +1,14 @@
-import { useState, useCallback } from 'react';
 import {
   Edit2,
-  Plus,
   ChevronRight,
   ChevronLeft,
   Save,
-  Upload,
   Sparkle,
   Sparkles,
+  ArrowLeft,
 } from 'lucide-react';
 import styles from './EditorSideBar.module.css';
+import { useNavigate } from 'react-router-dom';
 
 export type SidebarProps = {
   isSidebarOpen: boolean;
@@ -22,21 +21,24 @@ export type SidebarProps = {
   handleEditNode: (nodeId: string) => void;
   styles: CSSModuleClasses;
   onSave: () => void;
-  onRestore: () => void;
   onDragStart: (e: React.DragEvent, type: 'topic' | 'subTopic') => void;
+  isPublished?: boolean;
+  onPublish?: () => void;
 };
 
 const EditorSideBar = ({
   isSidebarOpen,
   setIsSidebarOpen,
-
   setIsEditDialogOpen,
   nodes,
   handleEditNode,
   onSave,
-  onRestore,
   onDragStart,
+  isPublished,
+  onPublish,
 }: SidebarProps) => {
+  const navigate = useNavigate();
+
   return (
     <>
       <button
@@ -51,7 +53,16 @@ const EditorSideBar = ({
         className={`${styles.sidebar} ${isSidebarOpen ? '' : styles.collapsed}`}
       >
         <div className={styles.sidebarContent}>
-          <h2 className={styles.sidebarTitle}>Roadmap Editor</h2>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className={styles.sidebarTitle}>Roadmap Editor</h2>
+            <button
+              onClick={() => navigate('/roadmaps')}
+              className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </button>
+          </div>
+
           <div className={styles.sidebarActions}>
             <button
               className={styles.actionButton}
@@ -82,13 +93,19 @@ const EditorSideBar = ({
                   <Save size={16} />
                   Save Changes
                 </button>
-                <button onClick={onRestore} className={styles.button}>
-                  <Upload size={16} />
-                  Restore
-                </button>
+                {onPublish && (
+                  <button 
+                    onClick={onPublish} 
+                    className={`${styles.button} ${isPublished ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    disabled={isPublished}
+                  >
+                    {isPublished ? 'Published' : 'Publish Roadmap'}
+                  </button>
+                )}
               </div>
             </div>
           </div>
+
           <hr className="border-t border-gray-300 my-4" />
           <div className={styles.nodeList}>
             <h3 className={styles.nodeListTitle}>Nodes</h3>
@@ -115,8 +132,6 @@ const EditorSideBar = ({
             ))}
           </div>
         </div>
-
-        <div className={styles.sidebar}></div>
       </div>
     </>
   );

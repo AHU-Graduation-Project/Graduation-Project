@@ -3,15 +3,20 @@
 }
 
 .flowContainer {
-  @apply flex-1 bg-slate-50 dark:bg-slate-900;
+  @apply flex-1 bg-muted;
 }
 
 .actionButton {
-  @apply px-6 py-3 bg-theme text-white rounded-lg hover:opacity-90 transition-colors flex items-center gap-2;
+  @apply px-6 py-3 bg-theme text-primary-foreground rounded-lg 
+         hover:opacity-90 hover:bg-theme-shadow transition-all 
+         flex items-center gap-2;
 }
 
 .rightSidebar {
-  @apply w-80 bg-white dark:bg-slate-800 border-l border-slate-200 dark:border-slate-700 p-6 fixed right-0 top-0 h-screen transform translate-x-full transition-transform duration-300 z-50 shadow-xl;
+  @apply w-96 bg-background border-l border-border p-4 
+         fixed right-0 top-0 h-screen 
+         transform translate-x-full transition-transform duration-300 
+         z-50 shadow-xl;
 }
 
 .rightSidebar.open {
@@ -19,27 +24,32 @@
 }
 
 .rightSidebarContent {
-  @apply flex flex-col gap-4;
+  @apply flex flex-col gap-4 ;
 }
 
 .rightSidebarTitle {
-  @apply text-2xl font-bold text-theme mb-6;
+  @apply text-2xl font-bold text-theme mb-6 text-center;
 }
 
 .rightSidebarField {
-  @apply mb-6;
+  @apply ml-6 mr-6 mb-3;
 }
 
 .rightSidebarLabel {
-  @apply block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2;
+  @apply block text-sm font-medium text-foreground mb-2;
 }
 
 .rightSidebarInput {
-  @apply w-full px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm focus:ring-2 focus:ring-theme focus:border-transparent outline-none;
+  @apply w-full px-4 py-3 bg-background border border-border 
+         rounded-lg shadow-sm outline-none
+         focus:ring-2 focus:ring-theme focus:border-transparent 
+         hover:border-theme transition-all;
 }
 
 .rightSidebarButton {
-  @apply px-6 py-3 bg-theme text-white rounded-lg hover:opacity-90 transition-colors w-full mt-4;
+  @apply  px-6 py-3 bg-red-500 text-primary-foreground rounded-lg 
+         hover:opacity-90 hover:bg-red-800 transition-all 
+         w-1/2 ml-auto mr-auto mt-4 mb-4;
 }
 
 .helperLines {
@@ -47,7 +57,7 @@
 }
 
 .helperLine {
-  @apply absolute bg-theme;
+  @apply absolute bg-theme opacity-50;
 }
 
 .helperLine.horizontal {
@@ -57,3 +67,37 @@
 .helperLine.vertical {
   @apply w-px h-full;
 }
+
+/* Added hover effects for buttons */
+.actionButton:active,
+.rightSidebarButton:active {
+  @apply transform scale-95;
+}
+
+/* Add focus states for accessibility */
+.rightSidebarInput:focus-visible {
+  @apply ring-2 ring-theme border-transparent;
+}
+
+/* Add loading state for buttons */
+.actionButton.loading,
+.rightSidebarButton.loading {
+  @apply opacity-75 cursor-wait;
+}
+
+/* Add disabled states */
+.rightSidebarInput:disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+/* Add error states */
+.rightSidebarInput.error {
+  @apply border-destructive focus:ring-destructive;
+}
+
+/* Add scrollbar styling for sidebar content */
+.rightSidebarContent {
+  @apply overflow-y-auto max-h-[calc(100vh-theme(spacing.12))];
+
+}
+

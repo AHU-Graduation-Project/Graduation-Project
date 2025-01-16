@@ -63,6 +63,49 @@ export default function EditNodesSideBar({
           }
         />
       </div>
+      <div className={styles.rightSidebarField}>
+        <label className={styles.rightSidebarLabel}>Keywords (comma-separated)</label>
+        <input
+          className={styles.rightSidebarInput}
+          value={selectedNode.data?.keywords || ''}
+          onChange={(e) =>
+            handleUpdateNodeFromSidebar({
+              ...selectedNode.data,
+              keywords: e.target.value,
+            })
+          }
+          placeholder="e.g., javascript, programming, web development"
+        />
+      </div>
+      <div className={styles.rightSidebarField}>
+        <label className={styles.rightSidebarLabel}>Skill Name</label>
+        <input
+          className={styles.rightSidebarInput}
+          value={selectedNode.data?.skillName || ''}
+          onChange={(e) =>
+            handleUpdateNodeFromSidebar({
+              ...selectedNode.data,
+              skillName: e.target.value,
+            })
+          }
+        />
+      </div>
+      <div className={styles.rightSidebarField}>
+        <label className={styles.rightSidebarLabel}>Analysis Needed</label>
+        <select
+          className={styles.rightSidebarInput}
+          value={selectedNode.data?.isAnalysisNeeded ? 'true' : 'false'}
+          onChange={(e) =>
+            handleUpdateNodeFromSidebar({
+              ...selectedNode.data,
+              isAnalysisNeeded: e.target.value === 'true',
+            })
+          }
+        >
+          <option value="true">Yes</option>
+          <option value="false">No</option>
+        </select>
+      </div>
       <button
         className={styles.rightSidebarButton}
         onClick={() => handleDeleteNode(selectedNode.id)}

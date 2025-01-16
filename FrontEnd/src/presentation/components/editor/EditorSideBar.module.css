@@ -1,5 +1,5 @@
 .sidebar {
-  @apply w-80 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 transition-all duration-300 flex flex-col flex-shrink-0 shadow-lg;
+  @apply w-80 bg-background border-r border-border transition-all duration-300 flex flex-col flex-shrink-0 shadow-lg;
 }
 
 .sidebar.collapsed {
@@ -11,7 +11,7 @@
 }
 
 .sidebarToggle {
-  @apply absolute left-0 top-5 w-8 h-11 bg-theme text-white border-none rounded-r-lg flex items-center justify-center cursor-pointer z-10 transition-all duration-300 shadow-lg hover:w-9;
+  @apply absolute left-0 top-5 w-8 h-11 bg-theme text-primary-foreground border-none rounded-r-lg flex items-center justify-center cursor-pointer z-10 transition-all duration-300 shadow-lg hover:w-9;
 }
 
 .sidebarToggle.open {
@@ -19,7 +19,7 @@
 }
 
 .sidebarContent {
-  @apply p-7 max-h-screen overflow-y-auto;
+  @apply p-7 max-h-screen overflow-y-auto bg-background;
 }
 
 .sidebarTitle {
@@ -31,7 +31,7 @@
 }
 
 .nodeTypeSelect {
-  @apply w-full p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white mb-4;
+  @apply w-full p-3 bg-muted border border-border rounded-lg text-foreground mb-4;
 }
 
 .nodeList {
@@ -39,19 +39,19 @@
 }
 
 .nodeListTitle {
-  @apply text-lg font-medium text-slate-600 dark:text-slate-400 mb-2;
+  @apply text-lg font-medium text-muted-foreground mb-2;
 }
 
 .nodeListItem {
-  @apply flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 transition-all duration-200 hover:shadow-md;
+  @apply flex items-center justify-between p-3 bg-muted rounded-lg border border-border transition-all duration-200 hover:shadow-md hover:bg-theme-blur;
 }
 
 .nodeListItem:hover {
-  @apply border-theme;
+  @apply border-theme ring-1 ring-theme;
 }
 
 .nodeListLabel {
-  @apply text-sm text-slate-600 dark:text-slate-400 flex items-center gap-2;
+  @apply text-sm text-muted-foreground flex items-center gap-2;
 }
 
 .nodeTypeIndicator {
@@ -71,34 +71,37 @@
 }
 
 .nodeListButton {
-  @apply p-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors;
+  @apply p-2 rounded-lg hover:bg-accent transition-colors;
 }
 
 .actionButton {
-  @apply flex items-center gap-3 px-5 py-3 bg-theme text-white rounded-lg cursor-pointer font-medium transition-all duration-200 hover:opacity-90 shadow-md w-full;
+  @apply flex items-center gap-3 px-5 py-3 bg-theme text-primary-foreground rounded-lg cursor-pointer font-medium transition-all duration-200 hover:opacity-90 shadow-md w-full hover:bg-theme-shadow;
 }
 
 .dndNode {
-  @apply p-4 border-2 border-slate-300 dark:border-slate-600 rounded-lg mb-3 cursor-grab transition-all duration-200 bg-slate-50 dark:bg-slate-900 hover:shadow-md;
+  @apply p-4 border-2 border-border rounded-lg mb-3 cursor-grab transition-all duration-200 bg-muted hover:shadow-md hover:bg-theme-blur;
 }
 
 .dndNode:hover {
-  @apply border-theme;
+  @apply border-theme ring-1 ring-theme;
 }
+
 .Topic {
   @apply flex items-center gap-2 border-theme;
 }
+
 .subTopic {
-  @apply  flex items-center gap-2  border-theme border-dashed;
+  @apply flex items-center gap-2 border-theme border-dashed;
 }
+
 .controls {
   @apply mt-8 flex flex-col gap-4;
 }
 
 .button {
-  @apply flex items-center gap-2 px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white transition-all duration-200 hover:shadow-md;
+  @apply flex items-center gap-2 px-4 py-3 rounded-lg border border-border bg-muted text-foreground transition-all duration-200 hover:shadow-md hover:bg-theme-blur;
 }
 
 .button:hover {
-  @apply border-theme;
+  @apply border-theme ring-1 ring-theme;
 }

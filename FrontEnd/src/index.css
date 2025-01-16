@@ -40,7 +40,7 @@ body {
     --fill: 0 0 0;
   }
   .dark {
-    --background: 0 0% 3.9%;
+    --background: 217 28% 15%;
     --foreground: 0 0% 98%;
     --card: 0 0% 3.9%;
     --card-foreground: 0 0% 98%;
@@ -104,7 +104,63 @@ body {
   -webkit-text-fill-color: transparent;
   color: transparent;
 }
+.react-flow__minimap {
+  @apply bg-background border border-border rounded-lg shadow-lg !important;
+}
 
+/* Minimap background */
+.react-flow__minimap-mask {
+  @apply fill-muted !important;
+}
+
+/* Viewport indicator */
+.react-flow__minimap-viewport {
+  @apply fill-accent/50 !important;
+}
+
+/* Node styles within minimap */
+.react-flow__minimap-node {
+  @apply fill-foreground stroke-border !important;
+}
+
+/* Custom node types in minimap */
+.react-flow__minimap-node.topic {
+  @apply  !important;
+}
+
+.react-flow__minimap-node.subTopic {
+  @apply  !important;
+}
+
+/* Interactive states */
+.react-flow__minimap:hover .react-flow__minimap-viewport {
+  @apply fill-accent/60 !important;
+}
+
+/* Ensure minimap is visible in both light and dark modes */
+.dark .react-flow__minimap {
+  @apply bg-background border-border !important;
+}
+
+.dark .react-flow__minimap-mask {
+  @apply fill-muted !important;
+}
+
+.dark .react-flow__minimap-viewport {
+  @apply fill-accent/50  !important;
+}
+
+.dark .react-flow__minimap-node {
+  @apply fill-foreground stroke-border !important;
+}
+
+/* Add transition for smooth theme switching */
+.react-flow__minimap,
+.react-flow__minimap-viewport,
+.react-flow__minimap-mask,
+.react-flow__minimap-node {
+  @apply transition-colors duration-200 !important;
+}
 .react-flow__attribution {
   display: none;
 }

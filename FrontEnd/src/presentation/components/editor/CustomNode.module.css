@@ -3,15 +3,17 @@
 @tailwind utilities;
 
 .customNode {
-  @apply relative rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl px-6 py-1 shadow-lg rounded-xl border-2 relative hover:scale-105 transition-transform;
+  @apply relative rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl px-6 py-1 
+         hover:scale-105 hover:bg-theme-blur border-2;
 }
 
 .topic {
-  @apply bg-white dark:bg-slate-800 border-2 border-theme;
+  @apply bg-background border-2 border-theme hover:ring-1 hover:ring-theme;
 }
 
 .subTopic {
-  @apply bg-white/50 dark:bg-slate-800/50 border border-dashed border-theme;
+  @apply bg-background/50 border border-dashed border-theme 
+         hover:bg-theme-blur hover:ring-1 hover:ring-theme;
 }
 
 .nodeContent {
@@ -23,18 +25,44 @@
 }
 
 .nodeLabel {
-  @apply text-xl font-semibold text-theme dark:text-white;
+  @apply text-xl font-semibold text-theme;
 }
 
 .nodeDescription {
-  @apply text-sm text-slate-600 dark:text-slate-400;
+  @apply text-sm text-muted-foreground;
 }
 
-/* Add these new classes */
-.customNode .handle{
+/* Handle visibility on hover */
+.customNode .handle {
   @apply opacity-0 transition-opacity duration-200;
 }
 
-.customNode:hover .handle{
+.customNode:hover .handle {
   @apply opacity-100;
+}
+
+/* Add subtle animations for interactive elements */
+.customNode:active {
+  @apply scale-[1.02] cursor-grabbing;
+}
+
+/* Add theme-specific focus states */
+.customNode:focus-within {
+  @apply ring-2 ring-theme outline-none;
+}
+
+/* Enhanced hover effects */
+.topic:hover, .subTopic:hover {
+  @apply bg-theme-blur shadow-lg;
+}
+
+/* Add gradient border animation on hover */
+.customNode::before {
+  content: '';
+  @apply absolute inset-[-2px] z-[-1] rounded-xl opacity-0 transition-opacity duration-300
+         bg-theme;
+}
+
+.customNode:hover::before {
+  @apply opacity-10;
 }
