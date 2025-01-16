@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Edit, Code, Map, Plus, Brain, Library } from "lucide-react";
+import { Edit, Code, Map, Plus, Brain, Library, Cpu } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Markdown from "../UI/Markdown";
 
@@ -14,7 +14,7 @@ const AddRoadmapModal = ({ isOpen, onClose, onAdd }) => {
   const navigate = useNavigate();
   const modalRef = useRef(null);
 
-  const icons = [Edit, Code, Map, Plus, Brain, Library];
+  const icons = [Edit, Code, Map, Plus, Brain, Library, Cpu];
   const baseUrl = "http://devpath/#/roadmaps/";
 
   const handleClickOutside = (e) => {
@@ -152,7 +152,6 @@ const AddRoadmapModal = ({ isOpen, onClose, onAdd }) => {
             Description
           </label>
           <Markdown description={description} setDescription={setDescription} />
-
         </div>
 
         <div className="mb-4">
