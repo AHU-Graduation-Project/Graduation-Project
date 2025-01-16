@@ -16,7 +16,6 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import CustomNodeEditor from './CustomNodeEditor';
 import EditRoadmapDialog from './EditRoadmapDialog';
-import EditNodeDialog from './EditNodeDialog';
 import styles from './RoadmapEditor.module.css';
 import EditorSideBar from './EditorSideBar';
 import CustomEdge from './CustomEdge';
@@ -28,6 +27,7 @@ import EditNodesSideBar from './EditNodesSideBar';
 import HelperLinesRenderer from './HelperLines';
 import { getEnhancedHelperLines } from '../../../infrastructure/utils/helperLines';
 import ConfirmRefreshModal from '../Modal/ConfirmRefreshModal';
+import { pre, use } from 'framer-motion/client';
 
 const nodeTypes = {
   custom: CustomNodeEditor,
@@ -48,6 +48,8 @@ export type NodeData = {
   label: string;
   description: string;
   type: 'topic' | 'subTopic';
+  prerequisites?: string[];
+  isSelected?: boolean;
 };
 
 const initialNodes: Node[] = [
@@ -59,6 +61,7 @@ const initialNodes: Node[] = [
       label: 'Start',
       description: 'Beginning of the roadmap',
       type: 'subTopic',
+      prerequisites: [],
     },
   },
 ];
@@ -69,6 +72,8 @@ const edgeTypes: EdgeTypes = {
 
 const RoadmapEditor = () => {
   const isDragging = useRef(false);
+  const [selectingPrerequisite, setSelectingPrerequisite] = useState(false);
+
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showRefreshConfirm, setShowRefreshConfirm] = useState(false);
   const [isPublished, setIsPublished] = useState(false);
@@ -242,15 +247,48 @@ const RoadmapEditor = () => {
 
   const onConnect = useCallback(
     (params: Connection) => {
-      const newEdges = addEdge(
-        { ...params, type: 'smoothstep', animated: false },
-        edges,
-      );
-      setEdges(newEdges);
-      saveToHistory({
-        nodes,
-        edges: newEdges,
-      });
+      if (params.source == params.target) return;
+
+      if (
+        nodes.find(
+          (node) =>
+            node.id == params.source &&
+            node.data.type == 'topic' &&
+            nodes.find(
+              (node) => node.id == params.target && node.data.type == 'topic',
+            ),
+        )
+      ) {
+        const newEdges = addEdge(
+          {
+            ...params,
+            type: 'smoothstep',
+            animated: false,
+            style: {}, // Empty style for 'topic'
+          },
+          edges,
+        );
+        setEdges(newEdges);
+        saveToHistory({
+          nodes,
+          edges: newEdges,
+        });
+      } else {
+        const newEdges = addEdge(
+          {
+            ...params,
+            type: 'smoothstep',
+            animated: false,
+            style: { strokeDasharray: '5,5' }, // Dashed style for other types
+          },
+          edges,
+        );
+        setEdges(newEdges);
+        saveToHistory({
+          nodes,
+          edges: newEdges,
+        });
+      }
     },
     [edges, nodes, selectedNode, selectedEdge],
   );
@@ -259,6 +297,7 @@ const RoadmapEditor = () => {
     label: string;
     description: string;
     type: 'topic' | 'subTopic';
+    prerequisites?: string[];
   }) => {
     if (selectedNode) {
       const newNodes = nodes.map((node) =>
@@ -361,11 +400,21 @@ const RoadmapEditor = () => {
       if (
         rightSidebarRef.current &&
         !rightSidebarRef.current.contains(event.target as HTMLElement) &&
-        isRightSidebarOpen
+        isRightSidebarOpen &&
+        !selectingPrerequisite
       ) {
         setIsRightSidebarOpen(false);
         setSelectedNode(null);
         setSelectedEdge(null);
+           setNodes((nds: Node[]) =>
+             nds.map((n) => ({
+               ...n,
+               data: {
+                 ...n.data,
+                 isSelected: false,
+               },
+             })),
+           );
       }
     };
 
@@ -373,13 +422,34 @@ const RoadmapEditor = () => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isRightSidebarOpen]);
+  }, [isRightSidebarOpen, selectingPrerequisite]);
 
-  const handleNodeClick = (event: React.MouseEvent, node: Node) => {
-    setSelectedNode(node);
-    setSelectedEdge(null);
-    setIsRightSidebarOpen(true);
-  };
+useEffect(() => {
+  if(selectingPrerequisite) {
+  setNodes((nds: Node[]) =>
+    nds.map((n) => ({
+      ...n,
+      data: {
+        ...n.data,
+        isSelectAblePrerequisite:
+          n.id !== selectedNode?.id &&
+          !selectedNode?.data?.prerequisites?.includes(n.id),
+      },
+    })),
+  );}
+  else
+  {
+    setNodes((nds: Node[]) =>
+    nds.map((n) => ({
+      ...n,
+      data: {
+        ...n.data,
+        isSelectAblePrerequisite: false,
+      },
+    })),
+  );
+  }
+}, [isRightSidebarOpen, selectingPrerequisite, selectedNode?.id, setNodes]);
 
   const handleEdgeClick = (event: React.MouseEvent, edge: Edge) => {
     setSelectedEdge(edge);
@@ -462,6 +532,52 @@ const RoadmapEditor = () => {
     event.preventDefault();
     event.dataTransfer.dropEffect = 'move';
   }, []);
+  const handleNodeClick = useCallback(
+    (event: React.MouseEvent, node: Node) => {
+      if (selectingPrerequisite && selectedNode) {
+        // Don't allow selecting the same node as a prerequisite
+        if (node.id === selectedNode.id) return;
+
+        // Add the clicked node as a prerequisite
+        const currentPrerequisites = selectedNode.data?.prerequisites || [];
+        if (!currentPrerequisites.includes(node.id)) {
+          const updatedNodes = nodes.map((n) =>
+            n.id === selectedNode.id
+              ? {
+                  ...n,
+                  data: {
+                    ...n.data,
+                    prerequisites: [...currentPrerequisites, node.id],
+                    isSelectAblePrerequisite: false,
+                  },
+                }
+              : n,
+          );
+          setNodes(updatedNodes);
+          setSelectedNode(updatedNodes.find(
+            (n) => n.id === selectedNode.id,
+          ) || null);
+          setSelectingPrerequisite(false);
+        }
+      } else {
+        // Normal node selection behavior
+        // 
+        setNodes((nds: Node[]) =>
+          nds.map((n) => ({
+            ...n,
+            data: {
+              ...n.data,
+              isSelected: n.id === node.id,
+            },
+          }))
+        );
+        setSelectedNode(node);
+        setSelectedEdge(null);
+        setIsRightSidebarOpen(true);
+      }
+    },
+    [selectingPrerequisite, selectedNode, nodes , setNodes],
+  );
 
   useEffect(() => {
     if (nodes.length > 0 || edges.length > 0) {
@@ -500,6 +616,7 @@ const RoadmapEditor = () => {
           edgeTypes={edgeTypes}
           onInit={setReactFlowInstance}
           onNodeDragStop={onNodeDragStop}
+          className={selectingPrerequisite ? 'cursor-crosshair' : ''}
           fitView
         >
           <Background />
@@ -512,6 +629,11 @@ const RoadmapEditor = () => {
             centerGuides={helperLines.centerGuides}
           />
         </ReactFlow>
+        {selectingPrerequisite && (
+          <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-theme text-white px-4 py-2 rounded-lg shadow-lg bg-theme-shadow animate-breath z-50">
+            Click a node to add it as a prerequisite
+          </div>
+        )}
       </div>
 
       <div
@@ -527,6 +649,7 @@ const RoadmapEditor = () => {
             handleUpdateNodeFromSidebar={handleUpdateNodeFromSidebar}
             handleDeleteNode={handleDeleteNode}
             allNodes={nodes}
+            setSelectingPrerequisite={setSelectingPrerequisite}
           />
         )}
 

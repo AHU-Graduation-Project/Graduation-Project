@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { X, Plus, BookMarked, Trash2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { X, Plus, BookMarked } from 'lucide-react';
 
 interface EditNodesSideBarProps {
   styles: {
@@ -14,6 +14,7 @@ interface EditNodesSideBarProps {
   handleUpdateNodeFromSidebar: (data: any) => void;
   handleDeleteNode: (id: string) => void;
   allNodes?: any[];
+  setSelectingPrerequisite: (value: boolean) => void;
 }
 
 export default function EditNodesSideBar({
@@ -22,11 +23,11 @@ export default function EditNodesSideBar({
   handleUpdateNodeFromSidebar,
   handleDeleteNode,
   allNodes = [],
+  setSelectingPrerequisite,
 }: EditNodesSideBarProps) {
   const [isAddingPrerequisite, setIsAddingPrerequisite] = useState(false);
   const [prerequisiteId, setPrerequisiteId] = useState('');
 
-  // Initialize trash from node data or empty array
   const [trash, setTrash] = useState<string[]>(
     selectedNode.data?.prerequisitesTrash || [],
   );
@@ -39,7 +40,6 @@ export default function EditNodesSideBar({
     );
 
     if (invalidPrerequisites.length > 0) {
-      // Remove invalid prerequisites and add them to trash
       const validPrerequisites = prerequisites.filter(
         (prereqId: string) => !invalidPrerequisites.includes(prereqId),
       );
@@ -85,6 +85,10 @@ export default function EditNodesSideBar({
     }
   }, [allNodes, trash]);
 
+  useEffect(() => {
+    setIsAddingPrerequisite(false);
+  }, [selectedNode.data?.prerequisites]);
+
   const availableNodes = allNodes.filter(
     (node) =>
       node.id !== selectedNode.id &&
@@ -93,6 +97,7 @@ export default function EditNodesSideBar({
 
   const handleAddPrerequisite = () => {
     if (!prerequisiteId) return;
+    setSelectingPrerequisite(false);
 
     const updatedPrerequisites = [
       ...(selectedNode.data?.prerequisites || []),
@@ -110,42 +115,15 @@ export default function EditNodesSideBar({
   };
 
   const handleRemovePrerequisite = (prereqId: string) => {
-    const updatedPrerequisites = (
-      selectedNode.data?.prerequisites || []
-    ).filter((id: string) => id !== prereqId);
-
-    // Add removed prerequisite to trash
-    const newTrash = [...trash];
-    if (!newTrash.includes(prereqId)) {
-      newTrash.push(prereqId);
-    }
+    const currentPrerequisites = selectedNode.data?.prerequisites || [];
+    const updatedPrerequisites = currentPrerequisites.filter(
+      (id: string) => id !== prereqId,
+    );
 
     handleUpdateNodeFromSidebar({
       ...selectedNode.data,
       prerequisites: updatedPrerequisites,
-      prerequisitesTrash: newTrash,
     });
-
-    setTrash(newTrash);
-  };
-
-  const handleRestoreFromTrash = (trashedId: string) => {
-    // Only restore if the node exists in allNodes
-    if (allNodes.some((node) => node.id === trashedId)) {
-      const newTrash = trash.filter((id) => id !== trashedId);
-      const updatedPrerequisites = [
-        ...(selectedNode.data?.prerequisites || []),
-        trashedId,
-      ];
-
-      handleUpdateNodeFromSidebar({
-        ...selectedNode.data,
-        prerequisites: updatedPrerequisites,
-        prerequisitesTrash: newTrash,
-      });
-
-      setTrash(newTrash);
-    }
   };
 
   const getNodeLabel = (nodeId: string) => {
@@ -155,7 +133,6 @@ export default function EditNodesSideBar({
   return (
     <div className={styles.rightSidebarContent}>
       <h3 className={styles.rightSidebarTitle}>Node Details</h3>
-      {/* Existing fields */}
       <div className={styles.rightSidebarField}>
         <label className={styles.rightSidebarLabel}>Label</label>
         <input
@@ -169,6 +146,8 @@ export default function EditNodesSideBar({
               label: e.target.value,
             })
           }
+          title="Node Label"
+          placeholder="Enter node label"
         />
       </div>
       <div className={styles.rightSidebarField}>
@@ -255,6 +234,7 @@ export default function EditNodesSideBar({
           <option value="false">No</option>
         </select>
       </div>
+
       {/* Enhanced Prerequisites Section with Trash */}
       <div className={styles.rightSidebarField}>
         <div className="flex items-center justify-between mb-2">
@@ -263,7 +243,10 @@ export default function EditNodesSideBar({
           </label>
           {!isAddingPrerequisite && (
             <button
-              onClick={() => setIsAddingPrerequisite(true)}
+              onClick={() => {
+                setIsAddingPrerequisite(true);
+                setSelectingPrerequisite(true);
+              }}
               className="flex items-center gap-1 text-blue-500 hover:text-blue-600 transition-colors"
             >
               <Plus size={16} />
@@ -283,6 +266,7 @@ export default function EditNodesSideBar({
                 value={prerequisiteId}
                 onChange={(e) => setPrerequisiteId(e.target.value)}
                 autoFocus
+                aria-label="Select prerequisite node"
               >
                 <option value="">Select a prerequisite node</option>
                 {availableNodes.map((node) => (
@@ -301,9 +285,10 @@ export default function EditNodesSideBar({
                 Add
               </button>
               <button
-                className="flex-1 px-3 py-2 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-200 rounded hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors"
+                className="flex-1 px-3 py-2 bg-red-500 dark:bg-red-600  text-gray-200 rounded hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors"
                 onClick={() => {
                   setIsAddingPrerequisite(false);
+                  setSelectingPrerequisite(false);
                   setPrerequisiteId('');
                 }}
               >
@@ -333,36 +318,6 @@ export default function EditNodesSideBar({
             </div>
           ))}
         </div>
-
-        {/* Trash Section
-        {trash.length > 0 && (
-          <div className="mt-4">
-            <div className="flex items-center gap-2 text-gray-500 mb-2">
-              <Trash2 size={16} />
-              <span className="text-sm font-medium">Removed Prerequisites</span>
-            </div>
-            <div className="space-y-2">
-              {trash.map((trashedId) => (
-                <div
-                  key={trashedId}
-                  className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-900 rounded group hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                >
-                  <div className="flex items-center gap-2 text-gray-500">
-                    <span>{getNodeLabel(trashedId)}</span>
-                  </div>
-                  {allNodes.some((node) => node.id === trashedId) && (
-                    <button
-                      onClick={() => handleRestoreFromTrash(trashedId)}
-                      className="text-gray-400 hover:text-green-500 transition-colors opacity-0 group-hover:opacity-100"
-                    >
-                      <Plus size={16} />
-                    </button>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        )} */}
       </div>
 
       <button

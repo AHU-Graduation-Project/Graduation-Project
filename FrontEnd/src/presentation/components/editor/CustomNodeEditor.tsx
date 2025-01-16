@@ -8,13 +8,25 @@ type CustomNodeData = {
   label: string;
   description: string;
   type: NodeType;
+  isSelected: boolean;
+  isSelectAblePrerequisite: boolean;
 };
 
 type CustomNodeProps = NodeProps<CustomNodeData>;
 
 const CustomNodeEditor = ({ data}: CustomNodeProps) => {
   return (
-    <div className={`${styles.customNode} ${styles[data.type]}`}>
+    <div
+      className={`${styles.customNode} ${styles[data.type]} ${
+        data.isSelected
+          ? data.type == 'topic'
+            ? ' bg-theme'
+            : 'border-theme border-2 text-theme'
+          : data.isSelectAblePrerequisite
+          ? 'bg-theme-shadow animate-breath'
+          : ''
+      } `}
+    >
       {/* Handles for all sides */}
       <Handle
         type="target"
