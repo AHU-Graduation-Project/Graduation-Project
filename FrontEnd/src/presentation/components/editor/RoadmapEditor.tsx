@@ -15,7 +15,7 @@ import ReactFlow, {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import CustomNodeEditor from './CustomNodeEditor';
-import EditRoadmapDialog from './EditRoadmapDialog';
+import EditRoadmapModal from './EditRoadmapModal';
 import styles from './RoadmapEditor.module.css';
 import EditorSideBar from './EditorSideBar';
 import CustomEdge from './CustomEdge';
@@ -27,7 +27,9 @@ import EditNodesSideBar from './EditNodesSideBar';
 import HelperLinesRenderer from './HelperLines';
 import { getEnhancedHelperLines } from '../../../infrastructure/utils/helperLines';
 import ConfirmRefreshModal from '../Modal/ConfirmRefreshModal';
-import { pre, use } from 'framer-motion/client';
+import AddResourceModal from './AddResourcesModal';
+import SavingOverlay from '../UI/savingOverlay';
+import { AnimatePresence } from 'framer-motion';
 
 const nodeTypes = {
   custom: CustomNodeEditor,
@@ -73,6 +75,8 @@ const edgeTypes: EdgeTypes = {
 const RoadmapEditor = () => {
   const isDragging = useRef(false);
   const [selectingPrerequisite, setSelectingPrerequisite] = useState(false);
+const [isResourcesDialogOpen, setIsResourcesDialogOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showRefreshConfirm, setShowRefreshConfirm] = useState(false);
@@ -82,7 +86,7 @@ const RoadmapEditor = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [roadmapData, setRoadmapData] = useState<RoadmapData>({
     title: 'My Roadmap',
-    description: 'A learning path',
+    description: '## hello',
     resources: [],
   });
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -456,11 +460,18 @@ useEffect(() => {
     setSelectedNode(null);
     setIsRightSidebarOpen(true);
   };
-  const onSave = useCallback(() => {
+  const onSave = useCallback(async () => {
     if (reactFlowInstance) {
-      const flow = reactFlowInstance.toObject();
-      localStorage.setItem('roadmap-flow', JSON.stringify(flow));
-      setHasUnsavedChanges(false);
+      setIsSaving(true);
+      try {
+        const flow = reactFlowInstance.toObject();
+        // Simulate API call with setTimeout
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        localStorage.setItem('roadmap-flow', JSON.stringify(flow));
+        setHasUnsavedChanges(false);
+      } finally {
+        setIsSaving(false);
+      }
     }
   }, [reactFlowInstance]);
 
@@ -586,6 +597,8 @@ useEffect(() => {
   }, [nodes, edges]);
   return (
     <div className={styles.editorContainer}>
+      <AnimatePresence>{isSaving && <SavingOverlay />}</AnimatePresence>
+
       <EditorSideBar
         nodes={nodes}
         styles={styles}
@@ -596,6 +609,7 @@ useEffect(() => {
         isPublished={isPublished}
         onPublish={handlePublish}
         onSave={onSave}
+        setIsResourcesDialogOpen={setIsResourcesDialogOpen}
         onDragStart={(e, type) => {
           e.dataTransfer.setData('application/reactflow', type);
         }}
@@ -665,17 +679,27 @@ useEffect(() => {
         )}
       </div>
 
-      <EditRoadmapDialog
+      <EditRoadmapModal
         isOpen={isEditDialogOpen}
         onClose={() => setIsEditDialogOpen(false)}
         roadmapData={roadmapData}
         onSave={setRoadmapData}
       />
+
       <ConfirmRefreshModal
         isOpen={showRefreshConfirm}
         onClose={() => setShowRefreshConfirm(false)}
         onRefresh={handleRefreshAnyway}
         onSaveAndRefresh={handleSaveAndRefresh}
+      />
+      <AddResourceModal
+        isOpen={isResourcesDialogOpen}
+        onClose={() => setIsResourcesDialogOpen(false)}
+        onSave={(resources) => {
+          // Handle saving resources
+          console.log('Saving resources:', resources);
+          setIsResourcesDialogOpen(false);
+        }}
       />
     </div>
   );
