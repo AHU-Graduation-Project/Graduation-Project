@@ -1,5 +1,5 @@
 import axios, { AxiosError } from "axios";
-import { useAuthStore } from "../../application/state/authStore";
+import useTokkenStore from "../../application/state//tokkenStore";
 
 interface PostUserDto {
   fname: string;
@@ -14,7 +14,7 @@ interface IResponse {
 }
 
 export const signUp = async (userData: PostUserDto): Promise<void> => {
-  const { setToken } = useAuthStore.getState(); // Assuming `useAuthStore` has a method to set the token.
+  const { setToken } = useTokkenStore.getState();
 
   try {
     const res = await axios.post<IResponse>(
@@ -31,7 +31,6 @@ export const signUp = async (userData: PostUserDto): Promise<void> => {
       setToken(res.data.token); // Save the token in the store.
       console.log("Registration successful. Token:", res.data.token);
       localStorage.setItem("accessToken", res.data.token);
-      // TODO: Add navigation logic to the survey page.
     } else {
       console.error("Registration failed:", res.data);
     }

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../../application/state/authStore";
 import SignupForm from "./SignUpForm";
 
-export default function LoginForm() {
+export default function LoginForm({ setShowServey }) {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -13,7 +13,7 @@ export default function LoginForm() {
   const [isSign, setIsSign] = useState(false);
 
   const userName = "ahmad@gmail.com";
-  const userPassword = "1234";
+  const userPassword = "12345678";
 
   const { login, user } = useAuthStore();
 
@@ -23,7 +23,9 @@ export default function LoginForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email === userName && password === userPassword) {
+    if (password.length < 8) {
+      setError("password must be more than 8 charcters long");
+    } else if (email === userName && password === userPassword) {
       login(email, password);
       navigate("/profile");
     } else {
@@ -34,7 +36,7 @@ export default function LoginForm() {
   return (
     <div className="form-container">
       {isSign ? (
-        <SignupForm />
+        <SignupForm setShowServey={setShowServey} />
       ) : (
         <>
           <h2 className="text-3xl sm:text-2xl font-bold mb-4 text-theme">
@@ -62,6 +64,8 @@ export default function LoginForm() {
               showToggle
               inputClickHandler={() => setShowPassword((current) => !current)}
             />
+            <input className="" type="checkbox" />{" "}
+            <span>Keep Me Signed in</span>
             {error && <p className="text-sm text-red-500">{error}</p>}
             <button
               type="submit"

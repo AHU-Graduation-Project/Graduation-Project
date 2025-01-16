@@ -4,12 +4,13 @@ interface SearchBarProps {
   value: string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder: string;
+  className:string;
 }
 
-function SearchBar({ value, onChange, placeholder }: SearchBarProps) {
+function SearchBar({ value, onChange, placeholder,className }: SearchBarProps) {
   return (
     <div className="relative">
-      <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400" />
+      <Search className={"absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 " + className} />
       <input
         type="text"
         placeholder={placeholder}

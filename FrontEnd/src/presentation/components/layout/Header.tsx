@@ -9,6 +9,7 @@ export default function Header() {
   const [activeDropdown, setActiveDropdown] = useState<
     "header" | "dropdown" | null
   >(null);
+  const [userEmailConfirmed, setUserEmailConfirmed] = useState(true); // Replace with actual logic
   const location = useLocation();
   const headerRef = useRef<HTMLDivElement | null>(null);
 
@@ -50,8 +51,6 @@ export default function Header() {
     { to: "/generate", icon: Sparkles, label: "Generate" },
   ];
 
-
-
   return (
     <header
       ref={headerRef}
@@ -65,7 +64,6 @@ export default function Header() {
           <h1 className="text-2xl font-bold text-theme">DevPath</h1>
         </Link>
 
-      
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-6 relative">
           {menuItems.map((item) => (
@@ -113,7 +111,6 @@ export default function Header() {
         {/* Mobile Menu */}
         {activeDropdown === "header" && (
           <div className="md:hidden fixed inset-x-0 top-20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-b border-slate-200 dark:border-slate-700 p-4">
-          
             <nav className="flex flex-col gap-4">
               {menuItems.map((item) => (
                 <Link
@@ -134,6 +131,16 @@ export default function Header() {
           </div>
         )}
       </div>
+
+      {/* Warning Message */}
+      {!userEmailConfirmed && (
+        <div className="bg-transparent text-red-700 text-center  text-xl py-2">
+          <p>
+            Please confirm your email to unlock full access, you'll lose accsess
+            in after 5 Days.
+          </p>
+        </div>
+      )}
     </header>
   );
 }

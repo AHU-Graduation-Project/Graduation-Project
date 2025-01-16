@@ -25,7 +25,7 @@ export function InputField({
 
   const validateInput = () => {
     if (type === "password" && value.trim().length < 8) {
-      setError("Password must be at least 8 characters long.");
+      setError("");
     } else if (value.trim() === "") {
       setError("This field is required.");
     } else {

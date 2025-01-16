@@ -20,8 +20,7 @@ interface IAuthState {
     level: string,
     country: string,
     aboutme: string,
-    isEmailConformed: boolean,
-    tokken: string
+    isEmailConformed: boolean
   ) => void;
   logout: () => void;
   updateProgress: (
@@ -61,7 +60,6 @@ export const useAuthStore = create<IAuthState>()(
           "",
           "",
           false,
-          "",
           [],
           [],
           [],
@@ -83,8 +81,7 @@ export const useAuthStore = create<IAuthState>()(
         level,
         country,
         aboutme,
-        isEmailConformed,
-        tokken
+        isEmailConformed
       ) => {
         const user = new UserEntity(
           "1",
@@ -98,7 +95,6 @@ export const useAuthStore = create<IAuthState>()(
           country,
           aboutme,
           isEmailConformed,
-          tokken,
           [],
           [],
           [],
@@ -146,7 +142,6 @@ export const useAuthStore = create<IAuthState>()(
             state.user.country,
             state.user.aboutme,
             state.user.isEmailConformed,
-            state.user.tokken,
             state.user.selectedRoadmaps,
             state.user.completedRoadmaps,
             state.user.generatedRoadmaps,
