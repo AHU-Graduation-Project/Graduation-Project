@@ -1,28 +1,38 @@
-import { useState, useRef, useEffect } from "react";
-import { Edit, Code, Map, Plus, Brain, Library, Cpu } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import Markdown from "../UI/Markdown";
+import { useState, useRef, useEffect } from 'react';
+import { Edit, Code, Map, Plus, Brain, Library, Cpu } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import Markdown from '../UI/Markdown';
 import ThemeIcon from '../UI/ThemeIcon';
 
-interface AddRoadmapModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onAdd: (roadmap: { title: string; route: string; description: string; icon: any }) => void;
+interface RoadmapData {
+  id: string;
+  title: string;
+  route: string;
+  description: string;
+  icon: any;
 }
 
-const AddRoadmapModal = ({ isOpen, onClose, onAdd }: AddRoadmapModalProps) => {
-  const [title, setTitle] = useState("");
-  const [route, setRoute] = useState("");
-  const [description, setDescription] = useState("");
-  const [selectedIcon, setSelectedIcon] = useState(null);
-  const [routeError, setRouteError] = useState("");
+interface EditRoadmapModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onEdit: (data: RoadmapData) => void;
+  roadmapData: RoadmapData;
+}
+
+const EditRoadmapModal = ({ isOpen, onClose, onEdit, roadmapData }: EditRoadmapModalProps) => {
+  const icons = [Edit, Code, Map, Plus, Brain, Library, Cpu];
+  const [title, setTitle] = useState(roadmapData?.title || '');
+  const [route, setRoute] = useState(roadmapData?.route || '');
+  const [description, setDescription] = useState(roadmapData?.description || '');
+  const [selectedIcon, setSelectedIcon] = useState(roadmapData?.icon || null);
+  const [routeError, setRouteError] = useState('');
   const [isCheckingRoute, setIsCheckingRoute] = useState(false);
-  const [selectedIconIndex, setSelectedIconIndex] = useState(null);
+  const [selectedIconIndex, setSelectedIconIndex] = useState(
+    roadmapData?.icon ? icons.indexOf(roadmapData.icon) : null
+  );
   const navigate = useNavigate();
   const modalRef = useRef(null);
-
-  const icons = [Edit, Code, Map, Plus, Brain, Library, Cpu];
-  const baseUrl = "http://devpath/#/roadmaps/";
+  const baseUrl = 'http://devpath/#/roadmaps/';
 
   const handleClickOutside = (e) => {
     if (modalRef.current && !modalRef.current.contains(e.target)) {
@@ -32,16 +42,16 @@ const AddRoadmapModal = ({ isOpen, onClose, onAdd }: AddRoadmapModalProps) => {
 
   useEffect(() => {
     if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener('mousedown', handleClickOutside);
     }
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isOpen]);
 
   useEffect(() => {
     if (!route) {
-      setRouteError("");
+      setRouteError('');
       setIsCheckingRoute(false);
       return;
     }
@@ -54,17 +64,17 @@ const AddRoadmapModal = ({ isOpen, onClose, onAdd }: AddRoadmapModalProps) => {
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(data.message || "Failed to check route");
+          throw new Error(data.message || 'Failed to check route');
         }
 
         if (data.exists) {
-          setRouteError("This route is already taken");
+          setRouteError('This route is already taken');
         } else {
-          setRouteError("");
+          setRouteError('');
         }
       } catch (error) {
-        setRouteError("Error checking route availability");
-        console.error("Route check error:", error);
+        setRouteError('Error checking route availability');
+        console.error('Route check error:', error);
       } finally {
         setIsCheckingRoute(false);
       }
@@ -73,6 +83,16 @@ const AddRoadmapModal = ({ isOpen, onClose, onAdd }: AddRoadmapModalProps) => {
     return () => clearTimeout(timeoutId);
   }, [route]);
 
+  useEffect(() => {
+    if (roadmapData) {
+      setTitle(roadmapData.title);
+      setRoute(roadmapData.route);
+      setDescription(roadmapData.description);
+      setSelectedIcon(roadmapData.icon);
+      setSelectedIconIndex(icons.indexOf(roadmapData.icon));
+    }
+  }, [roadmapData]);
+
   const handleIconSelect = (icon, index) => {
     setSelectedIcon(icon);
     setSelectedIconIndex(index);
@@ -80,7 +100,7 @@ const AddRoadmapModal = ({ isOpen, onClose, onAdd }: AddRoadmapModalProps) => {
 
   if (!isOpen) return null;
 
-  const handleAdd = () => {
+  const handleEdit = () => {
     if (!title || !route || !selectedIcon) {
       return;
     }
@@ -89,20 +109,21 @@ const AddRoadmapModal = ({ isOpen, onClose, onAdd }: AddRoadmapModalProps) => {
       return;
     }
 
-    // onAdd({
-    //   title,
-    //   route,
-    //   description,
-    //   icon: selectedIcon,
-    // });
+    onEdit({
+      id: roadmapData.id,
+      title,
+      route,
+      description,
+      icon: selectedIcon,
+    });
 
-    setTitle("");
-    setRoute("");
-    setDescription("");
+    setTitle('');
+    setRoute('');
+    setDescription('');
     setSelectedIcon(null);
     setSelectedIconIndex(null);
     onClose();
-    navigate("/editor");
+    navigate('/roadmaps');
   };
 
   return (
@@ -112,7 +133,7 @@ const AddRoadmapModal = ({ isOpen, onClose, onAdd }: AddRoadmapModalProps) => {
         className="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-4xl p-6"
       >
         <h2 className="text-xl font-bold mb-4 text-theme dark:text-white">
-          Add New Roadmap
+          Edit Roadmap
         </h2>
 
         <div className="mb-4">
@@ -198,7 +219,7 @@ const AddRoadmapModal = ({ isOpen, onClose, onAdd }: AddRoadmapModalProps) => {
           </button>
           <button
             className="px-4 py-2 rounded-md bg-theme text-white hover:bg-theme disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            onClick={handleAdd}
+            onClick={handleEdit}
             disabled={
               !title ||
               !route ||
@@ -208,7 +229,7 @@ const AddRoadmapModal = ({ isOpen, onClose, onAdd }: AddRoadmapModalProps) => {
               isCheckingRoute
             }
           >
-            Add Roadmap
+            Save Changes
           </button>
         </div>
       </div>
@@ -216,4 +237,4 @@ const AddRoadmapModal = ({ isOpen, onClose, onAdd }: AddRoadmapModalProps) => {
   );
 };
 
-export default AddRoadmapModal;
+export default EditRoadmapModal;
