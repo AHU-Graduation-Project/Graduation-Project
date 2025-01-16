@@ -10,7 +10,8 @@ import ReactFlow, {
   applyNodeChanges,
   MiniMap,
   ReactFlowInstance,
-  EdgeTypes
+  EdgeTypes,
+  useKeyPress,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import CustomNodeEditor from './CustomNodeEditor';
@@ -19,11 +20,11 @@ import EditNodeDialog from './EditNodeDialog';
 import styles from './RoadmapEditor.module.css';
 import EditorSideBar from './EditorSideBar';
 import CustomEdge from './CustomEdge';
-
+import EditEdgesSideBar from './EditEdgesSideBar';
 import { useRef } from 'react';
 import { useNodesState, useEdgesState, NodePositionChange } from 'reactflow';
 import 'reactflow/dist/style.css';
-
+import EditNodesSideBar from './EditNodesSideBar';
 import HelperLinesRenderer from './HelperLines';
 import { getEnhancedHelperLines } from '../../../infrastructure/utils/helperLines';
 
@@ -65,7 +66,6 @@ const edgeTypes: EdgeTypes = {
   custom: CustomEdge,
 };
 
-
 const RoadmapEditor = () => {
   const [nodes, setNodes] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
@@ -77,6 +77,7 @@ const RoadmapEditor = () => {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
+  const [selectedEdge, setSelectedEdge] = useState<Edge | null>(null);
   const [isEditNodeDialogOpen, setIsEditNodeDialogOpen] = useState(false);
   const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(false);
   const [reactFlowInstance, setReactFlowInstance] =
@@ -100,6 +101,18 @@ const RoadmapEditor = () => {
     centerGuides: {},
   });
   const rightSidebarRef = useRef<HTMLDivElement>(null);
+  const deleteKeyPressed = useKeyPress('Delete');
+
+  useEffect(() => {
+    if (deleteKeyPressed) {
+      if (selectedNode) {
+        handleDeleteNode(selectedNode.id);
+      }
+      if (selectedEdge) {
+        handleDeleteEdge(selectedEdge.id);
+      }
+    }
+  }, [deleteKeyPressed, selectedNode, selectedEdge]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -110,6 +123,7 @@ const RoadmapEditor = () => {
       ) {
         setIsRightSidebarOpen(false);
         setSelectedNode(null);
+        setSelectedEdge(null);
       }
     };
 
@@ -128,7 +142,7 @@ const RoadmapEditor = () => {
 
       if (positionChange) {
         const { horizontal, vertical, spacingGuides, centerGuides } =
-          getEnhancedHelperLines(positionChange, nodes, 20); // Increased distance threshold to 20
+          getEnhancedHelperLines(positionChange, nodes, 20);
         setHelperLines({ horizontal, vertical, spacingGuides, centerGuides });
       } else {
         setHelperLines({ spacingGuides: [], centerGuides: {} });
@@ -138,32 +152,76 @@ const RoadmapEditor = () => {
     },
     [nodes, setNodes],
   );
+
   const onConnect = useCallback(
     (params: Connection) => {
-      setEdges((eds) => addEdge({ ...params, type: 'smoothstep' }, eds));
+      setEdges((eds) =>
+        addEdge({ ...params, type: 'smoothstep', animated: false }, eds),
+      );
     },
     [setEdges],
   );
 
   const handleNodeClick = (event: React.MouseEvent, node: Node) => {
     setSelectedNode(node);
+    setSelectedEdge(null);
     setIsRightSidebarOpen(true);
   };
 
-  const handleUpdateNodeFromSidebar = (data: {
-    label: string;
-    description: string;
-    type: 'topic' | 'subTopic';
-  }) => {
-    if (selectedNode) {
-      setNodes((nds) =>
-        nds.map((node) =>
-          node.id === selectedNode.id
-            ? { ...node, data: { ...node.data, ...data } }
-            : node,
-        ),
-      );
-    }
+  const handleEdgeClick = (event: React.MouseEvent, edge: Edge) => {
+    setSelectedEdge(edge);
+    setSelectedNode(null);
+    setIsRightSidebarOpen(true);
+  };
+
+ const handleUpdateNodeFromSidebar = (data: {
+   label: string;
+   description: string;
+   type: 'topic' | 'subTopic';
+ }) => {
+   if (selectedNode) {
+     setNodes((prevNodes) =>
+       prevNodes.map((node) =>
+         node.id === selectedNode.id
+           ? { ...node, data: { ...node.data, ...data } }
+           : node,
+       ),
+     );
+     // Update the selected node's reference to match the state
+     setSelectedNode((prev) =>
+       prev ? { ...prev, data: { ...prev.data, ...data } } : null,
+     );
+   }
+ };
+
+ const handleUpdateEdgeFromSidebar = (
+   edgeId: string,
+   updates: Partial<Edge>,
+ ) => {
+   setEdges((prevEdges) =>
+     prevEdges.map((edge) =>
+       edge.id === edgeId
+         ? {
+             ...edge,
+             ...updates,
+             style: {
+               ...edge.style,
+               ...updates.style,
+             },
+           }
+         : edge,
+     ),
+   );
+   // Update the selected edge to reflect changes in real time
+   setSelectedEdge((prev) =>
+     prev?.id === edgeId ? { ...prev, ...updates } : prev,
+   );
+ };
+
+  const handleDeleteEdge = (edgeId: string) => {
+    setEdges((eds) => eds.filter((edge) => edge.id !== edgeId));
+    setIsRightSidebarOpen(false);
+    setSelectedEdge(null);
   };
 
   const handleEditNode = (nodeId: string) => {
@@ -192,33 +250,6 @@ const RoadmapEditor = () => {
     setIsRightSidebarOpen(false);
     setSelectedNode(null);
   };
-
-  useEffect(() => {
-    const handleEditNodeEvent = (event: CustomEvent) => {
-      handleEditNode(event.detail);
-    };
-
-    const handleDeleteNodeEvent = (event: CustomEvent) => {
-      handleDeleteNode(event.detail);
-    };
-
-    window.addEventListener('editNode', handleEditNodeEvent as EventListener);
-    window.addEventListener(
-      'deleteNode',
-      handleDeleteNodeEvent as EventListener,
-    );
-
-    return () => {
-      window.removeEventListener(
-        'editNode',
-        handleEditNodeEvent as EventListener,
-      );
-      window.removeEventListener(
-        'deleteNode',
-        handleDeleteNodeEvent as EventListener,
-      );
-    };
-  }, []);
 
   const onDrop = useCallback(
     (event: React.DragEvent) => {
@@ -267,6 +298,7 @@ const RoadmapEditor = () => {
     restoreFlow();
   }, [setNodes, setEdges]);
 
+
   return (
     <div className={styles.editorContainer}>
       <EditorSideBar
@@ -293,7 +325,7 @@ const RoadmapEditor = () => {
           onDragOver={onDragOver}
           onDrop={onDrop}
           onNodeClick={handleNodeClick}
-          onEdgeClick={(event, edge) => console.log('edge clicked', edge)}
+          onEdgeClick={handleEdgeClick}
           nodeTypes={nodeTypes}
           edgeTypes={edgeTypes}
           onInit={setReactFlowInstance}
@@ -318,57 +350,21 @@ const RoadmapEditor = () => {
         }`}
       >
         {selectedNode && (
-          <div className={styles.rightSidebarContent}>
-            <h3 className={styles.rightSidebarTitle}>Node Details</h3>
-            <div className={styles.rightSidebarField}>
-              <label className={styles.rightSidebarLabel}>Label</label>
-              <input
-                className={styles.rightSidebarInput}
-                value={selectedNode.data.label}
-                onChange={(e) =>
-                  handleUpdateNodeFromSidebar({
-                    ...selectedNode.data,
-                    label: e.target.value,
-                  })
-                }
-              />
-            </div>
-            <div className={styles.rightSidebarField}>
-              <label className={styles.rightSidebarLabel}>Type</label>
-              <select
-                className={styles.rightSidebarInput}
-                value={selectedNode.data.type}
-                onChange={(e) =>
-                  handleUpdateNodeFromSidebar({
-                    ...selectedNode.data,
-                    type: e.target.value as 'topic' | 'subTopic',
-                  })
-                }
-              >
-                <option value="topic">Topic</option>
-                <option value="subTopic">Sub Topic</option>
-              </select>
-            </div>
-            <div className={styles.rightSidebarField}>
-              <label className={styles.rightSidebarLabel}>Description</label>
-              <textarea
-                className={styles.rightSidebarInput}
-                value={selectedNode.data.description}
-                onChange={(e) =>
-                  handleUpdateNodeFromSidebar({
-                    ...selectedNode.data,
-                    description: e.target.value,
-                  })
-                }
-              />
-            </div>
-            <button
-              className={styles.rightSidebarButton}
-              onClick={() => handleDeleteNode(selectedNode.id)}
-            >
-              Delete Node
-            </button>
-          </div>
+         <EditNodesSideBar 
+            styles={styles}
+            selectedNode={selectedNode}
+            handleUpdateNodeFromSidebar={handleUpdateNodeFromSidebar}
+            handleDeleteNode={handleDeleteNode}/>
+
+        )}
+
+        {selectedEdge && (
+         <EditEdgesSideBar
+            styles={styles}
+            selectedEdge={selectedEdge}
+            handleUpdateEdgeFromSidebar={handleUpdateEdgeFromSidebar}
+            handleDeleteEdge={handleDeleteEdge}
+          />
         )}
       </div>
 
