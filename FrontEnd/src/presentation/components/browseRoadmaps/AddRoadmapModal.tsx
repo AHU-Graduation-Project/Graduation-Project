@@ -1,22 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Edit, Code, Map, Plus, Brain, Library } from "lucide-react";
-import "@mdxeditor/editor/style.css";
-import {
-  MDXEditor,
-  UndoRedo,
-  BoldItalicUnderlineToggles,
-  toolbarPlugin,
-  BlockTypeSelect,
-  CodeToggle,
-  CreateLink,
-  ListsToggle,
-  InsertTable,
-  InsertThematicBreak,
-  InsertFrontmatter,
-  Separator,
-} from "@mdxeditor/editor";
 import { useNavigate } from "react-router-dom";
-import "@mdxeditor/editor/style.css";
+import Markdown from "../UI/Markdown";
 
 const AddRoadmapModal = ({ isOpen, onClose, onAdd }) => {
   const [title, setTitle] = useState("");
@@ -117,7 +102,7 @@ const AddRoadmapModal = ({ isOpen, onClose, onAdd }) => {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div
         ref={modalRef}
-        className="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-xl p-6"
+        className="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-4xl p-6"
       >
         <h2 className="text-xl font-bold mb-4 text-theme dark:text-white">
           Add New Roadmap
@@ -162,36 +147,18 @@ const AddRoadmapModal = ({ isOpen, onClose, onAdd }) => {
           )}
         </div>
 
-        <div className="mb-4  ">
+        <div className="mb-4 ">
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             Description
           </label>
-          <MDXEditor
-            markdown={description}
-            // .rich-editor .editable  {color white}
-            contentEditableClassName="text-gray-700 dark:text-gray-300"
-            className="h-80 overflow-y-scroll bg-white dark:bg-slate-800  "
-            onChange={setDescription}
-            plugins={[
-              toolbarPlugin({
-                toolbarClassName: " ",
-                toolbarContents: () => (
-                  <>
-                    <UndoRedo />
-                    <Separator />
-                    <BoldItalicUnderlineToggles />
-                    <Separator />
-                    <BlockTypeSelect />
-                    <CodeToggle /> <CreateLink />
-                    <Separator /> <ListsToggle />
-                    <InsertTable />
-                    <InsertThematicBreak />
-                    <Separator /> <InsertFrontmatter />
-                  </>
-                ),
-              }),
-            ]}
-          />
+          <Markdown description={description} setDescription={setDescription} />
+          <button
+            onClick={() => {
+              console.log();
+            }}
+          >
+            get dis
+          </button>
         </div>
 
         <div className="mb-4">

@@ -23,7 +23,7 @@ export default function RoadmapInfo({
 
   if (!isOpen || !roadmap) return null;
 
-
+const f = "<p style=\"text-align: center\"><strong><em><u>asffasfd</u></em></strong></p>"
   const resources = [
     {
       label: "Documentation",
@@ -84,7 +84,7 @@ export default function RoadmapInfo({
 
         <div className="space-y-6">
           <div className="prose dark:prose-invert prose-sm max-w-none">
-            <ReactMarkdown>{roadmap.description}</ReactMarkdown>
+            <ReactMarkdown>{f}</ReactMarkdown>
           </div>
 
           <div className="space-y-4">
