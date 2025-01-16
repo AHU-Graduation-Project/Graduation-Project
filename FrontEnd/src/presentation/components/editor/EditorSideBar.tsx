@@ -53,14 +53,14 @@ const EditorSideBar = ({
         className={`${styles.sidebar} ${isSidebarOpen ? '' : styles.collapsed}`}
       >
         <div className={styles.sidebarContent}>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className={styles.sidebarTitle}>Roadmap Editor</h2>
+          <div className="flex items-center justify-center  mb-6 mr-4">
             <button
               onClick={() => navigate('/roadmaps')}
               className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
+            <h2 className={styles.sidebarTitle}>Roadmap Editor</h2>
           </div>
 
           <div className={styles.sidebarActions}>
@@ -94,9 +94,11 @@ const EditorSideBar = ({
                   Save Changes
                 </button>
                 {onPublish && (
-                  <button 
-                    onClick={onPublish} 
-                    className={`${styles.button} ${isPublished ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  <button
+                    onClick={onPublish}
+                    className={`${styles.button} ${
+                      isPublished ? 'opacity-50 cursor-not-allowed' : ''
+                    }`}
                     disabled={isPublished}
                   >
                     {isPublished ? 'Published' : 'Publish Roadmap'}

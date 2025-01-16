@@ -29,7 +29,6 @@ import HelperLinesRenderer from './HelperLines';
 import { getEnhancedHelperLines } from '../../../infrastructure/utils/helperLines';
 import ConfirmRefreshModal from '../Modal/ConfirmRefreshModal';
 
-
 const nodeTypes = {
   custom: CustomNodeEditor,
 };
@@ -70,9 +69,9 @@ const edgeTypes: EdgeTypes = {
 
 const RoadmapEditor = () => {
   const isDragging = useRef(false);
-const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-const [showRefreshConfirm, setShowRefreshConfirm] = useState(false);
-const [isPublished, setIsPublished] = useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [showRefreshConfirm, setShowRefreshConfirm] = useState(false);
+  const [isPublished, setIsPublished] = useState(false);
 
   const [nodes, setNodes] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
@@ -323,28 +322,28 @@ const [isPublished, setIsPublished] = useState(false);
     window.location.reload();
   };
   // Add event listener for beforeunload to prevent accidental refresh
-// useEffect(() => {
-//     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-//       if (hasUnsavedChanges) {
-        
-//         e.preventDefault();
-        
-//         // Prevent the default alert from showing
-//         e.returnValue = '';
-//         // Show custom modal instead
-//         // setShowRefreshConfirm(true);
-//       }
-//       e.preventDefault();
-//     };
-    
-//     window.addEventListener('beforeunload', handleBeforeUnload);
-//     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-//   }, [hasUnsavedChanges]);
-  
-const handlePublish = () => {
-  // Here you would typically make an API call to publish the roadmap
-  setIsPublished(true);
-};
+  // useEffect(() => {
+  //     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+  //       if (hasUnsavedChanges) {
+
+  //         e.preventDefault();
+
+  //         // Prevent the default alert from showing
+  //         e.returnValue = '';
+  //         // Show custom modal instead
+  //         // setShowRefreshConfirm(true);
+  //       }
+  //       e.preventDefault();
+  //     };
+
+  //     window.addEventListener('beforeunload', handleBeforeUnload);
+  //     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  //   }, [hasUnsavedChanges]);
+
+  const handlePublish = () => {
+    // Here you would typically make an API call to publish the roadmap
+    setIsPublished(true);
+  };
 
   useEffect(() => {
     if (deleteKeyPressed) {
@@ -387,13 +386,13 @@ const handlePublish = () => {
     setSelectedNode(null);
     setIsRightSidebarOpen(true);
   };
-const onSave = useCallback(() => {
-  if (reactFlowInstance) {
-    const flow = reactFlowInstance.toObject();
-    localStorage.setItem('roadmap-flow', JSON.stringify(flow));
-    setHasUnsavedChanges(false);
-  }
-}, [reactFlowInstance]);
+  const onSave = useCallback(() => {
+    if (reactFlowInstance) {
+      const flow = reactFlowInstance.toObject();
+      localStorage.setItem('roadmap-flow', JSON.stringify(flow));
+      setHasUnsavedChanges(false);
+    }
+  }, [reactFlowInstance]);
 
   const handleDeleteEdge = (edgeId: string) => {
     const newEdges = edges.filter((edge) => edge.id !== edgeId);
@@ -527,6 +526,7 @@ const onSave = useCallback(() => {
             selectedNode={selectedNode}
             handleUpdateNodeFromSidebar={handleUpdateNodeFromSidebar}
             handleDeleteNode={handleDeleteNode}
+            allNodes={nodes}
           />
         )}
 
@@ -551,31 +551,6 @@ const onSave = useCallback(() => {
         onClose={() => setShowRefreshConfirm(false)}
         onRefresh={handleRefreshAnyway}
         onSaveAndRefresh={handleSaveAndRefresh}
-      />
-      <EditNodeDialog
-        isOpen={isEditNodeDialogOpen}
-        onClose={() => {
-          setIsEditNodeDialogOpen(false);
-          setSelectedNode(null);
-        }}
-        node={selectedNode}
-        onSave={(data) => {
-          if (selectedNode) {
-            handleUpdateNode(selectedNode.id, {
-              ...data,
-              type: selectedNode.data.type,
-            });
-          }
-          setIsEditNodeDialogOpen(false);
-          setSelectedNode(null);
-        }}
-        onDelete={() => {
-          if (selectedNode) {
-            handleDeleteNode(selectedNode.id);
-          }
-          setIsEditNodeDialogOpen(false);
-          setSelectedNode(null);
-        }}
       />
     </div>
   );

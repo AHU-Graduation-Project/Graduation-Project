@@ -23,7 +23,9 @@ export default function EditEdgesSideBar(
           <label className={styles.rightSidebarLabel}>Type</label>
           <select
             aria-label="Edge type selector"
-            className={styles.rightSidebarInput}
+            className={
+              styles.rightSidebarInput + ' bg-[#f5f5f5] dark:bg-[#262626]'
+            }
             value={selectedEdge.type || 'default'}
             onChange={(e) =>
               handleUpdateEdgeFromSidebar(selectedEdge.id, {
@@ -62,7 +64,9 @@ export default function EditEdgesSideBar(
           <label className={styles.rightSidebarLabel}>Line Style</label>
           <select
             aria-label="Line style selector"
-            className={styles.rightSidebarInput}
+            className={
+              styles.rightSidebarInput + ' bg-[#f5f5f5] dark:bg-[#262626]'
+            }
             value={selectedEdge.style?.strokeDasharray ? 'dashed' : 'solid'}
             onChange={(e) =>
               handleUpdateEdgeFromSidebar(selectedEdge.id, {

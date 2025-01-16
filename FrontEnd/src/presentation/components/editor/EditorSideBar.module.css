@@ -23,7 +23,7 @@
 }
 
 .sidebarTitle {
-  @apply text-2xl font-bold text-theme mb-6;
+  @apply text-2xl font-bold text-theme ml-3 mb-2;
 }
 
 .sidebarActions {
