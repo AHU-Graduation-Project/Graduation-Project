@@ -7,7 +7,7 @@ import Auth from "../pages/Auth";
 import Profile from "../pages/Profile";
 import NotFoundPage from "../pages/NotFoundPage";
 import Background from "../components/layout/Background";
-
+import Editor from "../pages/editor";
 export default function AppRoutes() {
 
   return (
@@ -26,6 +26,7 @@ export default function AppRoutes() {
         }
       />
       <Route path="/profile" element={<Profile />} />
+      <Route path="/editor" element={<Editor />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
