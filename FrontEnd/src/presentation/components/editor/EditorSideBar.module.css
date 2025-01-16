@@ -1,0 +1,107 @@
+.sidebar {
+  @apply w-80 bg-background border-r border-border transition-all duration-300 flex flex-col flex-shrink-0 shadow-lg;
+}
+
+.sidebar.collapsed {
+  @apply w-0 opacity-0 -translate-x-2;
+}
+
+.sidebar.collapsed * {
+  @apply hidden;
+}
+
+.sidebarToggle {
+  @apply absolute left-0 top-5 w-8 h-11 bg-theme text-primary-foreground border-none rounded-r-lg flex items-center justify-center cursor-pointer z-10 transition-all duration-300 shadow-lg hover:w-9;
+}
+
+.sidebarToggle.open {
+  @apply left-80;
+}
+
+.sidebarContent {
+  @apply p-7 max-h-screen overflow-y-auto bg-background;
+}
+
+.sidebarTitle {
+  @apply text-2xl font-bold text-theme ml-3 mb-2;
+}
+
+.sidebarActions {
+  @apply flex flex-col gap-3 mb-8;
+}
+
+.nodeTypeSelect {
+  @apply w-full p-3 bg-muted border border-border rounded-lg text-foreground mb-4;
+}
+
+.nodeList {
+  @apply flex flex-col gap-2 overflow-y-auto max-h-[400px];
+}
+
+.nodeListTitle {
+  @apply text-lg font-medium text-muted-foreground mb-2;
+}
+
+.nodeListItem {
+  @apply flex items-center justify-between p-3 bg-muted rounded-lg border border-border transition-all duration-200 hover:shadow-md hover:bg-theme-blur;
+}
+
+.nodeListItem:hover {
+  @apply border-theme ring-1 ring-theme;
+}
+
+.nodeListLabel {
+  @apply text-sm text-muted-foreground flex items-center gap-2;
+}
+
+.nodeTypeIndicator {
+  @apply w-2 h-2 rounded-full;
+}
+
+.nodeTypeIndicator.topic {
+  @apply bg-theme;
+}
+
+.nodeTypeIndicator.subTopic {
+  @apply bg-theme;
+}
+
+.nodeListActions {
+  @apply flex gap-2;
+}
+
+.nodeListButton {
+  @apply p-2 rounded-lg hover:bg-accent transition-colors;
+}
+
+.actionButton {
+  @apply flex items-center gap-3 px-5 py-3 bg-theme text-primary-foreground rounded-lg cursor-pointer font-medium transition-all duration-200 hover:opacity-90 shadow-md w-full hover:bg-theme-shadow;
+}
+
+.dndNode {
+  @apply p-4 border-2 border-border rounded-lg mb-3 cursor-grab transition-all duration-200 bg-muted hover:shadow-md hover:bg-theme-blur;
+}
+
+.dndNode:hover {
+  @apply border-theme ring-1 ring-theme;
+}
+
+.Topic {
+  @apply flex items-center gap-2 border-theme;
+}
+
+.subTopic {
+  @apply flex items-center gap-2 border-theme border-dashed;
+}
+
+.controls {
+  @apply mt-8 flex flex-col gap-4;
+}
+
+.button {
+  @apply flex items-center gap-2 px-4 py-3 rounded-lg border border-border bg-muted text-foreground transition-all duration-200 hover:shadow-md hover:bg-theme-blur;
+}
+
+.button:hover {
+  @apply border-theme ring-1 ring-theme;
+}

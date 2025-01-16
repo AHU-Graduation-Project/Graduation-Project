@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@google/generative-ai": "^0.2.1",
-    "@mdxeditor/editor": "^3.20.0",
+    "@radix-ui/react-dialog": "^1.1.4",
     "@react-pdf/renderer": "^3.4.0",
     "@tiptap/extension-color": "^2.11.2",
     "@tiptap/extension-highlight": "^2.11.2",
