@@ -16,14 +16,54 @@ const CustomNodeEditor = ({ data}: CustomNodeProps) => {
   return (
     <div className={`${styles.customNode} ${styles[data.type]}`}>
       {/* Handles for all sides */}
-      <Handle type="target" position={Position.Left} id="left-target" />
-      <Handle type="source" position={Position.Left} id="left-source" />
-      <Handle type="target" position={Position.Right} id="right-target" />
-      <Handle type="source" position={Position.Right} id="right-source" />
-      <Handle type="target" position={Position.Top} id="top-target" />
-      <Handle type="source" position={Position.Top} id="top-source" />
-      <Handle type="target" position={Position.Bottom} id="bottom-target" />
-      <Handle type="source" position={Position.Bottom} id="bottom-source" />
+      <Handle
+        type="target"
+        position={Position.Left}
+        id="left-target"
+        className={styles.handle}
+      />
+      <Handle
+        type="source"
+        position={Position.Left}
+        id="left-source"
+        className={styles.handle}
+      />
+      <Handle
+        type="target"
+        position={Position.Right}
+        id="right-target"
+        className={styles.handle}
+      />
+      <Handle
+        type="source"
+        position={Position.Right}
+        id="right-source"
+        className={styles.handle}
+      />
+      <Handle
+        type="target"
+        position={Position.Top}
+        id="top-target"
+        className={styles.handle}
+      />
+      <Handle
+        type="source"
+        position={Position.Top}
+        id="top-source"
+        className={styles.handle}
+      />
+      <Handle
+        type="target"
+        position={Position.Bottom}
+        id="bottom-target"
+        className={styles.handle}
+      />
+      <Handle
+        type="source"
+        position={Position.Bottom}
+        id="bottom-source"
+        className={styles.handle}
+      />
 
       <div className={'nodeContent'}>
         <div className={'nodeHeader'}>

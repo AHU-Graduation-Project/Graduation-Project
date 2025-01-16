@@ -29,3 +29,12 @@
 .nodeDescription {
   @apply text-sm text-slate-600 dark:text-slate-400;
 }
+
+/* Add these new classes */
+.customNode .handle{
+  @apply opacity-0 transition-opacity duration-200;
+}
+
+.customNode:hover .handle{
+  @apply opacity-100;
+}
