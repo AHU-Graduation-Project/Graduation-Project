@@ -7,25 +7,23 @@ import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import { motion } from "framer-motion";
 import Cv from "../components/profile/CvModal";
+import useTokenStore from "../../application/state/tokenStore";
 // import BackgroundRays from "../components/OverView/BackgroundRays";
 
 export default function Profile() {
   const navigate = useNavigate();
+  const isValid = useTokenStore();
   const [showCv, setShowCv] = useState(true);
-
-  const { user, isAuthenticated } = useAuthStore();
 
   const handleShowCv = () => {
     setShowCv(!showCv);
   };
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!isValid) {
       navigate("/auth");
     }
-  }, [isAuthenticated, navigate]);
-
-  if (!user) return null;
+  }, [isValid, navigate]);
 
   return (
     <>
