@@ -16,7 +16,7 @@ interface NodeData {
   averageSalary: string;
   requiredSkills: string[];
   isAchieved: boolean;
-  requiredNodes?: string[];
+  prerequisites?: string[];
   onShowDetails: (data: any) => void;
   onShowCourses: (data: any) => void;
   isAnalysisNeeded: boolean;
@@ -26,7 +26,7 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
   const { user, updateProgress } = useAuthStore();
   const { id: roadmapId } = useParams();
   const isCompleted = user?.progress[roadmapId || '']?.includes(id);
-  const isFirstNode = id === '1';
+  const isFirstNode = data.prerequisites?.length === 0;
   const shouldBeActive = isCompleted || isFirstNode || data.isAchieved;
   const [showToolbar, setShowToolbar] = useState(false);
   const toolbarContainerRef = useRef<HTMLDivElement>(null);

@@ -13,7 +13,7 @@ interface NodeData {
   averageSalary: string;
   requiredSkills: string[];
   isAchieved: boolean;
-  requiredNodes?: string[];
+  prerequisites?: string[];
   onShowDetails: (data: any) => void;
   jobs?: number;
   isSelected?: boolean;
