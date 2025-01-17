@@ -49,10 +49,10 @@ export default function Profile() {
           <EditProfile />
 
           <button
-            className="my-3 bg-theme border rounded-lg text-white py-2 px-3"
+            className="my-3 w-full bg-theme border rounded-lg text-white py-2 px-3"
             onClick={handleShowCv}
           >
-            Show CV
+            Create CV
           </button>
 
           {showCv ? <Cv /> : null}
