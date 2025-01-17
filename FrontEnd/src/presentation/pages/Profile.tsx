@@ -6,7 +6,7 @@ import { useAuthStore } from "../../application/state/authStore";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import { motion } from "framer-motion";
-
+import Cv from "../components/profile/CvModal";
 // import BackgroundRays from "../components/OverView/BackgroundRays";
 
 export default function Profile() {
@@ -56,6 +56,8 @@ export default function Profile() {
           >
             Show CV
           </button>
+
+          {showCv ? <Cv /> : null}
         </motion.div>
       </div>
       <Footer />
