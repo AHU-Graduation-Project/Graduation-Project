@@ -117,14 +117,9 @@ export default function RoadmapTopBar({
             </div>
           </div>
           <div className="flex items-center gap-3 text-sm md:text-base">
-            <div className="px-3 py-1.5 rounded-lg bg-theme/10 text-theme">
-              <span className="font-bold">{completedNodes}</span>
-              <span className="ml-1">completed</span>
-            </div>
-            <div className="px-3 py-1.5 rounded-lg bg-theme/10 text-theme">
-              <span className="font-bold">{totalNodes}</span>
-              <span className="ml-1">total</span>
-            </div>
+          <button className="px-4 py-2 rounded-lg bg-theme text-white hover:opacity-90 transition-colors">
+            edit roadmap
+          </button>
           </div>
         </div>
 

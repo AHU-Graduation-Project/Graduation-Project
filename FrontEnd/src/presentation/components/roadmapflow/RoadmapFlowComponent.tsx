@@ -41,7 +41,7 @@ export default function RoadmapFlowComponent() {
       const subtopics = initialNodes.filter(
         (n) =>
           n.data?.type === "subtopic" &&
-          n.data?.requiredNodes?.includes(node.id)
+          n.data?.prerequisites?.includes(node.id)
       );
 
       if (subtopics.length > 0) {
@@ -59,8 +59,8 @@ export default function RoadmapFlowComponent() {
     }
 
     // Original achievement logic for dependencies
-    if (nodeData?.requiredNodes) {
-      nodeData.isAchieved = nodeData.requiredNodes.every((requiredId) =>
+    if (nodeData?.prerequisites) {
+      nodeData.isAchieved = nodeData.prerequisites.every((requiredId) =>
         completedNodes.includes(requiredId)
       );
     }

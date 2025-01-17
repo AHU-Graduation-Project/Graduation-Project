@@ -27,7 +27,7 @@ export const initialNodes: Node[] = [
       isSkill: true,
       isAnalysisNeeded: true,
 
-      requiredNodes: ["1"],
+      prerequisites: ["1"],
       jobs: 200,
     },
   },
@@ -43,7 +43,7 @@ export const initialNodes: Node[] = [
       isSkill: true,
       isAnalysisNeeded: true,
 
-      requiredNodes: ["2"],
+      prerequisites: ["2"],
     },
   },
   {
@@ -58,7 +58,7 @@ export const initialNodes: Node[] = [
       isSkill: false,
       isAnalysisNeeded: false,
 
-      requiredNodes: ["3"],
+      prerequisites: ["3"],
     },
   },
   {
@@ -73,7 +73,7 @@ export const initialNodes: Node[] = [
       isSkill: false,
       isAnalysisNeeded: false,
 
-      requiredNodes: ["3"],
+      prerequisites: ["3"],
     },
   },
   {
@@ -87,7 +87,7 @@ export const initialNodes: Node[] = [
       isAchieved: false,
       isSkill: true,
       isAnalysisNeeded: true,
-      requiredNodes: ["3"],
+      prerequisites: ["3"],
     },
   },
   {
@@ -101,7 +101,7 @@ export const initialNodes: Node[] = [
       isAchieved: false,
       isSkill: true,
       isAnalysisNeeded: true,
-      requiredNodes: ["3"],
+      prerequisites: ["3"],
     },
   },
   {
@@ -115,7 +115,7 @@ export const initialNodes: Node[] = [
       isAchieved: false,
       isSkill: true,
       isAnalysisNeeded: true,
-      requiredNodes: ["6", "7"],
+      prerequisites: ["6", "7"],
     },
   },
   {
@@ -129,7 +129,7 @@ export const initialNodes: Node[] = [
       isAchieved: false,
       isSkill: false,
       isAnalysisNeeded: false,
-      requiredNodes: ["8"],
+      prerequisites: ["8"],
     },
   },
 ];
