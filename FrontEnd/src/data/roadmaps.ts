@@ -6,6 +6,7 @@ import {
   Brain,
   Database,
 } from "lucide-react";
+import GeneratorResources from "../presentation/components/generator/GeneratorResources";
 
 export const roadmaps = [
   {
@@ -14,6 +15,7 @@ export const roadmaps = [
     description:
       "Learn to build modern web interfaces with HTML, CSS, JavaScript, and React",
     icon: Code2,
+  Resources: [{title : "example" , icon : "icon" , link : "link"}],
     color: "from-blue-500 to-purple-500",
     image:
       "https://images.unsplash.com/photo-1593720219276-0b1eacd0aef4?auto=format&fit=crop&q=80&w=800",

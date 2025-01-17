@@ -32,8 +32,8 @@ export default function BackgroundRays({
       const updateHeight = () =>
         setPageHeight(`${document.documentElement.scrollHeight}px`);
       updateHeight();
-      window.addEventListener("resize", updateHeight);
-      return () => window.removeEventListener("resize", updateHeight);
+      // window.addEventListener("resize", updateHeight);
+      // return () => window.removeEventListener("resize", updateHeight);
     } else {
       setPageHeight("100vh"); // Reset height if not fullPage
     }
@@ -157,7 +157,7 @@ export default function BackgroundRays({
 
   const rays = configurations[option] || configurations[1];
 
-  const isMobile = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+const isMobile = /iPhone|iPad|iPod|Macintosh/i.test(navigator.userAgent);
 
   return (
     <div
