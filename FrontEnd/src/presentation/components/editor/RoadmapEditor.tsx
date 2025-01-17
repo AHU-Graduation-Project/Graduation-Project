@@ -28,7 +28,7 @@ import HelperLinesRenderer from './HelperLines';
 import { getEnhancedHelperLines } from '../../../infrastructure/utils/helperLines';
 import ConfirmRefreshModal from '../Modal/ConfirmRefreshModal';
 import AddResourceModal from './AddResourcesModal';
-import SavingOverlay from '../UI/savingOverlay';
+import SavingOverlay from '../UI/SavingOverlay';
 import { AnimatePresence } from 'framer-motion';
 
 const nodeTypes = {
