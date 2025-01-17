@@ -1,18 +1,20 @@
-import { useState } from 'react';
-import { InputField } from '../UI/TextInput';
-import { useNavigate } from 'react-router-dom';
-import SignupForm from './SignUpForm';
-import Login from '../../../infrastructure/api/login';
-import useTokenStore from '../../../application/state/tokenStore';
+import { useState } from "react";
+import { InputField } from "../UI/TextInput";
+import { useNavigate } from "react-router-dom";
+import SignupForm from "./SignUpForm";
+import Login from "../../../infrastructure/api/login";
+import useTokenStore from "../../../application/state/tokenStore";
+import PasswordReset from "./PasswordReset";
 
 export default function LoginForm({ setShowServey }) {
   const { setToken } = useTokenStore();
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSign, setIsSign] = useState(false);
+  const [showPasswordReset, setShowPasswordReset] = useState(false);
 
   const handleSignToggle = () => {
     setIsSign((prev) => !prev);
@@ -23,11 +25,11 @@ export default function LoginForm({ setShowServey }) {
     setError(null);
 
     if (password.length < 8) {
-      setError('password must be at least 8 characters long');
+      setError("password must be at least 8 characters long");
       return;
     }
     if (!password || !email) {
-      setError('Please check for all input fields!');
+      setError("Please check for all input fields!");
       return;
     }
 
@@ -40,16 +42,18 @@ export default function LoginForm({ setShowServey }) {
       if (response.success) {
         setToken(response.token);
 
-        navigate('/');
+        navigate("/");
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Registration failed');
+      setError(err instanceof Error ? err.message : "Registration failed");
     }
   };
 
   return (
     <div className="form-container">
-      {isSign ? (
+      {showPasswordReset ? (
+        <PasswordReset onClose={() => setShowPasswordReset(false)} />
+      ) : isSign ? (
         <SignupForm setShowServey={setShowServey} />
       ) : (
         <>
@@ -70,7 +74,7 @@ export default function LoginForm({ setShowServey }) {
             />
             <InputField
               id="login-password"
-              type={showPassword ? 'text' : 'password'}
+              type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               label="Password"
@@ -78,8 +82,17 @@ export default function LoginForm({ setShowServey }) {
               showToggle
               inputClickHandler={() => setShowPassword((current) => !current)}
             />
-            <input className="" type="checkbox" />{' '}
+            <input className="" type="checkbox" />{" "}
             <span>Keep Me Signed in</span>
+            <div className="flex  mt-2 mb-2">
+              <button
+                type="button"
+                onClick={() => setShowPasswordReset(true)}
+                className="text-sm text-theme hover:underline"
+              >
+                Forgot Password?
+              </button>
+            </div>
             {error && <p className="text-sm text-red-500">{error}</p>}
             <button
               type="submit"
@@ -90,16 +103,16 @@ export default function LoginForm({ setShowServey }) {
           </form>
         </>
       )}
-      <div className="sm:hidden text-sm text-center text-gray-400 mt-4">
+      <div className="sm:hidden mt-4">
         <span>
-          {isSign ? 'Already have an account? ' : "Don't have an account? "}
+          {isSign ? "Already have an account? " : "Don't have an account? "}
         </span>
         <button
           type="button"
           onClick={handleSignToggle}
           className="text-theme transition"
         >
-          {isSign ? 'Login' : 'Sign Up'}
+          {isSign ? "Login" : "Sign Up"}
         </button>
       </div>
     </div>
