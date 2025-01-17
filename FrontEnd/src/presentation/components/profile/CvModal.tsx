@@ -1,9 +1,83 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Phone, Plus, X } from "lucide-react";
 import html2pdf from "html2pdf.js";
 import CVGenerator from "./CVGenerator";
+import { useAuthStore } from "../../../application/state/authStore";
 
-const TextArea = ({ label, value, onChange, ...props }) => (
+interface PersonalInfo {
+  fullName: string;
+  email: string;
+  phone: string;
+  linkedin: string;
+}
+
+interface Skill {
+  title: string;
+}
+interface Experience {
+  title: string;
+  company: string;
+  location: string;
+  period: string;
+  responsibilities: string;
+}
+
+interface Education {
+  degree: string;
+  institution: string;
+  years: string;
+}
+
+interface Certification {
+  name: string;
+  organization?: string;
+  dateObtained?: string;
+}
+
+interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  children: React.ReactNode;
+}
+
+interface TextAreaProps {
+  label: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  [key: string]: any;
+}
+
+interface InputProps {
+  label: string;
+  name: string;
+  type: string;
+  placeholder?: string;
+  required?: boolean;
+  [key: string]: any;
+}
+
+interface ButtonProps {
+  onClick?: () => void;
+  children: React.ReactNode;
+  type?: "button" | "submit" | "reset";
+}
+
+interface CardProps {
+  children: React.ReactNode;
+}
+
+interface EntryCardProps {
+  data: Record<string, string>;
+  onDelete: () => void;
+}
+
+const TextArea: React.FC<TextAreaProps> = ({
+  label,
+  value,
+  onChange,
+  ...props
+}) => (
   <div className="mb-4">
     <label className="block text-sm font-medium mb-1 dark:text-gray-200">
       {label}
@@ -16,8 +90,8 @@ const TextArea = ({ label, value, onChange, ...props }) => (
     />
   </div>
 );
-// Modal component remains the same
-const Modal = ({ isOpen, onClose, title, children }) => {
+
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
   if (!isOpen) return null;
 
   return (
@@ -36,13 +110,13 @@ const Modal = ({ isOpen, onClose, title, children }) => {
   );
 };
 
-const Card = ({ children }) => (
+const Card: React.FC<CardProps> = ({ children }) => (
   <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
     {children}
   </div>
 );
 
-const EntryCard = ({ data, onDelete }) => (
+const EntryCard: React.FC<EntryCardProps> = ({ data, onDelete }) => (
   <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-md relative">
     <button
       onClick={onDelete}
@@ -59,7 +133,11 @@ const EntryCard = ({ data, onDelete }) => (
   </div>
 );
 
-const Button = ({ onClick, children, type = "button" }) => (
+const Button: React.FC<ButtonProps> = ({
+  onClick,
+  children,
+  type = "button",
+}) => (
   <button
     type={type}
     onClick={onClick}
@@ -69,7 +147,7 @@ const Button = ({ onClick, children, type = "button" }) => (
   </button>
 );
 
-const Input = ({ label, ...props }) => (
+const Input: React.FC<InputProps> = ({ label, ...props }) => (
   <div className="mb-4">
     <label className="block text-sm font-medium mb-1 dark:text-gray-200">
       {label}
@@ -82,31 +160,68 @@ const Input = ({ label, ...props }) => (
 );
 
 const CVSurveyForm = () => {
-  const [personalInfo, setPersonalInfo] = useState(null);
-  const [education, setEducation] = useState([]);
-  const [experience, setExperience] = useState([]);
-  const [certifications, setCertifications] = useState([]);
-  const [summary, setSummary] = useState(""); // Summary state
-  const [skills, setSkills] = useState([]);
-  const [activeModal, setActiveModal] = useState(null);
+  const { user } = useAuthStore();
 
+  const defaultSkills: Skill[] = [
+    { title: "Programming Languages: JavaScript, Python, Java" },
+    { title: "Frameworks: React, Angular, Node.js" },
+    { title: "Tools: Git, Docker, Jenkins" },
+    { title: "Database Management: SQL, MongoDB" },
+    { title: "Cloud Services: AWS, Azure" },
+  ];
+  const [personalInfo, setPersonalInfo] = useState<PersonalInfo | null>(null);
+  const [education, setEducation] = useState<Education[]>([]);
+  const [experience, setExperience] = useState<Experience[]>([]);
+  const [certifications, setCertifications] = useState<Certification[]>([]);
+  const [summary, setSummary] = useState<string>("");
+  const [skills, setSkills] = useState<Skill[]>(
+    user?.selectedSkills?.length ? user.selectedSkills : defaultSkills
+  );
+  const [activeModal, setActiveModal] = useState<string | null>(null);
+  const [preview, setPreview] = useState(false);
+
+  // Generate PDF using html2pdf.js
   const generatePDF = () => {
     const element = document.getElementById("cv-container");
-    const opt = {
-      margin: 1,
-      filename: "resume.pdf",
-      image: { type: "jpeg", quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-    };
+    if (element) {
+      const options = {
+        margin: 1,
+        filename: "resume.pdf",
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+      };
 
-    html2pdf().set(opt).from(element).save();
+      html2pdf().set(options).from(element).save();
+    }
   };
+
+  // Handle changes to the summary field
   const handleSummaryChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setSummary(e.target.value);
   };
-  // Transform experience data to match CVGenerator format
-  const transformExperience = (exp) => ({
+
+  const handleDeleteSkill = (index: number) => {
+    setSkills(skills.filter((_, i) => i !== index));
+  };
+
+  const formatCertificationData = (cert: Certification) => {
+    const formattedData: Record<string, string> = {
+      Certification: cert.name,
+    };
+    if (cert.organization) {
+      formattedData["Organization"] = cert.organization;
+    }
+    if (cert.dateObtained) {
+      formattedData["Date Obtained"] = new Date(
+        cert.dateObtained
+      ).toLocaleDateString();
+    }
+    return formattedData;
+  };
+
+  // Transform experience data for the CV generator
+  const transformExperience = (exp: Experience) => ({
     title: exp.title,
     company: exp.company,
     location: exp.location,
@@ -124,15 +239,7 @@ const CVSurveyForm = () => {
     summary:
       summary ||
       "Results-driven professional with experience in delivering high-quality solutions...",
-    skills: skills.length
-      ? skills
-      : [
-          "Programming Languages: JavaScript, Python, Java",
-          "Frameworks: React, Angular, Node.js",
-          "Tools: Git, Docker, Jenkins",
-          "Database Management: SQL, MongoDB",
-          "Cloud Services: AWS, Azure",
-        ],
+    skills: skills.map((skill) => skill),
     experience: experience.length
       ? experience.map(transformExperience)
       : [
@@ -164,7 +271,7 @@ const CVSurveyForm = () => {
 
   return (
     <div className="min-h-screen bg-transparent dark:bg-gray-900 p-4">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         <Card>
           <form className="space-y-8">
             {/* Personal Information */}
@@ -230,6 +337,29 @@ const CVSurveyForm = () => {
               </div>
             </section>
 
+            {/* Skills */}
+            <section>
+              <h2 className="text-xl font-semibold mb-4 dark:text-white">
+                Skills
+              </h2>
+              <div className="space-y-4">
+                {skills.map((skill, index) => (
+                  <EntryCard
+                    key={index}
+                    data={{ Skill: skill }}
+                    onDelete={() => handleDeleteSkill(index)}
+                  />
+                ))}
+                <button
+                  onClick={() => setActiveModal("skills")}
+                  className="flex items-center gap-2 p-2 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+                >
+                  <Plus size={20} />
+                  <span>Add Skill</span>
+                </button>
+              </div>
+            </section>
+
             {/* Experience */}
             <section>
               <h2 className="text-xl font-semibold mb-4 dark:text-white">
@@ -264,7 +394,7 @@ const CVSurveyForm = () => {
                 {certifications.map((cert, index) => (
                   <EntryCard
                     key={index}
-                    data={cert}
+                    data={formatCertificationData(cert)}
                     onDelete={() =>
                       setCertifications(
                         certifications.filter((_, i) => i !== index)
@@ -282,11 +412,23 @@ const CVSurveyForm = () => {
               </div>
             </section>
 
+            <section className="flex justify-center">
+              <button
+                onClick={() => setPreview(!preview)}
+                className=" p-2 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+              >
+                Preview CV
+              </button>
+            </section>
+
             {/* Preview and Download */}
             <div>
-              <div id="cv-container">
-                <CVGenerator userData={cvData} />
-              </div>
+              {preview ? (
+                <div id="cv-container">
+                  <CVGenerator userData={cvData} />
+                </div>
+              ) : null}
+
               <button
                 onClick={generatePDF}
                 className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
@@ -296,6 +438,7 @@ const CVSurveyForm = () => {
             </div>
           </form>
         </Card>
+
         {/* Modals */}
         <Modal
           isOpen={activeModal === "personal"}
@@ -320,6 +463,33 @@ const CVSurveyForm = () => {
             <Input label="Phone" name="phone" type="tel" required />
             <Input label="LinkedIn" name="linkedin" type="text" required />
             <Button type="submit">Save</Button>
+          </form>
+        </Modal>
+
+        <Modal
+          isOpen={activeModal === "skills"}
+          onClose={() => setActiveModal(null)}
+          title="Add Skill"
+        >
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              const formData = new FormData(e.target as HTMLFormElement);
+              const skillTitle = formData.get("skill") as string;
+              if (skillTitle.trim()) {
+                setSkills([...skills, { title: skillTitle }]);
+                setActiveModal(null);
+              }
+            }}
+          >
+            <Input
+              label="Skill Description"
+              name="skill"
+              type="text"
+              placeholder="e.g., Programming Languages: JavaScript, Python"
+              required
+            />
+            <Button type="submit">Add Skill</Button>
           </form>
         </Modal>
 
@@ -411,15 +581,14 @@ const CVSurveyForm = () => {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              const formData = new FormData(e.target);
-              setCertifications([
-                ...certifications,
-                {
-                  name: formData.get("name"),
-                  organization: formData.get("organization"),
-                  dateObtained: formData.get("dateObtained"),
-                },
-              ]);
+              const formData = new FormData(e.target as HTMLFormElement);
+              const newCertification: Certification = {
+                name: formData.get("name") as string,
+                organization: formData.get("organization") as string,
+                dateObtained: formData.get("dateObtained") as string,
+              };
+              setCertifications([...certifications, newCertification]);
+              (e.target as HTMLFormElement).reset();
               setActiveModal(null);
             }}
           >
@@ -427,12 +596,14 @@ const CVSurveyForm = () => {
               label="Certification Name"
               name="name"
               type="text"
+              placeholder="e.g., AWS Certified Solutions Architect"
               required
             />
             <Input
               label="Issuing Organization"
               name="organization"
               type="text"
+              placeholder="e.g., Amazon Web Services"
               required
             />
             <Input
