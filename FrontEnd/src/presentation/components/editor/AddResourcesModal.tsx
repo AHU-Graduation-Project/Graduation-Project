@@ -21,6 +21,7 @@ interface AddResourceModalProps {
   onClose: () => void;
   onSave: (resources: Resource[]) => void;
   initialResources?: Resource[];
+  
 }
 
 export default function AddResourceModal({

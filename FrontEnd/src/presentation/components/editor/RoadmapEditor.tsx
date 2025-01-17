@@ -52,6 +52,11 @@ export type NodeData = {
   type: 'topic' | 'subTopic';
   prerequisites?: string[];
   isSelected?: boolean;
+  resources?: Array<{
+    label: string;
+    icon: string;
+    url: string;
+  }>;
 };
 
 const initialNodes: Node[] = [
@@ -64,6 +69,7 @@ const initialNodes: Node[] = [
       description: 'Beginning of the roadmap',
       type: 'subTopic',
       prerequisites: [],
+      resources: [],
     },
   },
 ];
@@ -75,7 +81,7 @@ const edgeTypes: EdgeTypes = {
 const RoadmapEditor = () => {
   const isDragging = useRef(false);
   const [selectingPrerequisite, setSelectingPrerequisite] = useState(false);
-const [isResourcesDialogOpen, setIsResourcesDialogOpen] = useState(false);
+  const [isResourcesDialogOpen, setIsResourcesDialogOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
@@ -410,15 +416,15 @@ const [isResourcesDialogOpen, setIsResourcesDialogOpen] = useState(false);
         setIsRightSidebarOpen(false);
         setSelectedNode(null);
         setSelectedEdge(null);
-           setNodes((nds: Node[]) =>
-             nds.map((n) => ({
-               ...n,
-               data: {
-                 ...n.data,
-                 isSelected: false,
-               },
-             })),
-           );
+        setNodes((nds: Node[]) =>
+          nds.map((n) => ({
+            ...n,
+            data: {
+              ...n.data,
+              isSelected: false,
+            },
+          })),
+        );
       }
     };
 
@@ -428,32 +434,31 @@ const [isResourcesDialogOpen, setIsResourcesDialogOpen] = useState(false);
     };
   }, [isRightSidebarOpen, selectingPrerequisite]);
 
-useEffect(() => {
-  if(selectingPrerequisite) {
-  setNodes((nds: Node[]) =>
-    nds.map((n) => ({
-      ...n,
-      data: {
-        ...n.data,
-        isSelectAblePrerequisite:
-          n.id !== selectedNode?.id &&
-          !selectedNode?.data?.prerequisites?.includes(n.id),
-      },
-    })),
-  );}
-  else
-  {
-    setNodes((nds: Node[]) =>
-    nds.map((n) => ({
-      ...n,
-      data: {
-        ...n.data,
-        isSelectAblePrerequisite: false,
-      },
-    })),
-  );
-  }
-}, [isRightSidebarOpen, selectingPrerequisite, selectedNode?.id, setNodes]);
+  useEffect(() => {
+    if (selectingPrerequisite) {
+      setNodes((nds: Node[]) =>
+        nds.map((n) => ({
+          ...n,
+          data: {
+            ...n.data,
+            isSelectAblePrerequisite:
+              n.id !== selectedNode?.id &&
+              !selectedNode?.data?.prerequisites?.includes(n.id),
+          },
+        })),
+      );
+    } else {
+      setNodes((nds: Node[]) =>
+        nds.map((n) => ({
+          ...n,
+          data: {
+            ...n.data,
+            isSelectAblePrerequisite: false,
+          },
+        })),
+      );
+    }
+  }, [isRightSidebarOpen, selectingPrerequisite, selectedNode?.id, setNodes]);
 
   const handleEdgeClick = (event: React.MouseEvent, edge: Edge) => {
     setSelectedEdge(edge);
@@ -565,14 +570,14 @@ useEffect(() => {
               : n,
           );
           setNodes(updatedNodes);
-          setSelectedNode(updatedNodes.find(
-            (n) => n.id === selectedNode.id,
-          ) || null);
+          setSelectedNode(
+            updatedNodes.find((n) => n.id === selectedNode.id) || null,
+          );
           setSelectingPrerequisite(false);
         }
       } else {
         // Normal node selection behavior
-        // 
+        //
         setNodes((nds: Node[]) =>
           nds.map((n) => ({
             ...n,
@@ -580,14 +585,14 @@ useEffect(() => {
               ...n.data,
               isSelected: n.id === node.id,
             },
-          }))
+          })),
         );
         setSelectedNode(node);
         setSelectedEdge(null);
         setIsRightSidebarOpen(true);
       }
     },
-    [selectingPrerequisite, selectedNode, nodes , setNodes],
+    [selectingPrerequisite, selectedNode, nodes, setNodes],
   );
 
   useEffect(() => {
@@ -652,32 +657,29 @@ useEffect(() => {
         )}
       </div>
 
-      <div
-        ref={rightSidebarRef}
-        className={`${styles.rightSidebar} ${
-          isRightSidebarOpen ? styles.open : ''
-        }`}
-      >
-        {selectedNode && (
-          <EditNodesSideBar
-            styles={styles}
-            selectedNode={selectedNode}
-            handleUpdateNodeFromSidebar={handleUpdateNodeFromSidebar}
-            handleDeleteNode={handleDeleteNode}
-            allNodes={nodes}
-            setSelectingPrerequisite={setSelectingPrerequisite}
-          />
-        )}
+      {selectedNode && (
+        <EditNodesSideBar
+          styles={styles}
+          selectedNode={selectedNode}
+          handleUpdateNodeFromSidebar={handleUpdateNodeFromSidebar}
+          handleDeleteNode={handleDeleteNode}
+          allNodes={nodes}
+          setSelectingPrerequisite={setSelectingPrerequisite}
+          rightSidebarRef={rightSidebarRef}
+          isRightSidebarOpen={isRightSidebarOpen}
+        />
+      )}
 
-        {selectedEdge && (
-          <EditEdgesSideBar
-            styles={styles}
-            selectedEdge={selectedEdge}
-            handleUpdateEdgeFromSidebar={handleUpdateEdgeFromSidebar}
-            handleDeleteEdge={handleDeleteEdge}
-          />
-        )}
-      </div>
+      {selectedEdge && (
+        <EditEdgesSideBar
+          styles={styles}
+          selectedEdge={selectedEdge}
+          handleUpdateEdgeFromSidebar={handleUpdateEdgeFromSidebar}
+          handleDeleteEdge={handleDeleteEdge}
+          rightSidebarRef={rightSidebarRef}
+          isRightSidebarOpen={isRightSidebarOpen}
+        />
+      )}
 
       <EditRoadmapModal
         isOpen={isEditDialogOpen}
