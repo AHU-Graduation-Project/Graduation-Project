@@ -14,8 +14,8 @@ interface IAuthState {
   signup: (
     email: string,
     password: string,
-    fname: string,
-    lname: string,
+    first_name: string,
+    last_name: string,
     position: string,
     level: string,
     country: string,
@@ -75,8 +75,8 @@ export const useAuthStore = create<IAuthState>()(
       signup: (
         email,
         password,
-        fname,
-        lname,
+        first_name,
+        last_name,
         position,
         level,
         country,
@@ -86,8 +86,8 @@ export const useAuthStore = create<IAuthState>()(
         const user = new UserEntity(
           "1",
           email,
-          fname,
-          lname,
+          first_name,
+          last_name,
           password,
           img,
           position,
@@ -133,8 +133,8 @@ export const useAuthStore = create<IAuthState>()(
           const updatedUser = new UserEntity(
             state.user.id,
             state.user.email,
-            state.user.fname,
-            state.user.lname,
+            state.user.first_name,
+            state.user.last_name,
             state.user.password,
             state.user.profilePicture,
             state.user.position,

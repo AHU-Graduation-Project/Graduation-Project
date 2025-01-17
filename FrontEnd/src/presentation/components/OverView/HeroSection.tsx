@@ -3,9 +3,11 @@ import { useAuthStore } from "../../../application/state/authStore";
 import { motion } from "framer-motion";
 import { ArrowRight, Code2, Brain, Rocket } from "lucide-react";
 import ThemeIcon from "../UI/ThemeIcon";
+import useTokenStore from "../../../application/state/tokenStore";
 
 export default function HeroSection() {
   const { isAuthenticated } = useAuthStore();
+  const {isValid} = useTokenStore();
 
   return (
     <div className="relative min-h-screen">
@@ -48,7 +50,7 @@ export default function HeroSection() {
             master new skills, and accelerate your tech career.
           </motion.p>
 
-          {!isAuthenticated && (
+          {!isValid() && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}

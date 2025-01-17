@@ -1,21 +1,18 @@
-import { useState } from "react";
-import { InputField } from "../UI/TextInput";
-import { useNavigate } from "react-router-dom";
-import { useAuthStore } from "../../../application/state/authStore";
-import SignupForm from "./SignUpForm";
+import { useState } from 'react';
+import { InputField } from '../UI/TextInput';
+import { useNavigate } from 'react-router-dom';
+import SignupForm from './SignUpForm';
+import Login from '../../../infrastructure/api/login';
+import useTokenStore from '../../../application/state/tokenStore';
 
 export default function LoginForm({ setShowServey }) {
+  const { setToken } = useTokenStore();
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSign, setIsSign] = useState(false);
-
-  const userName = "ahmad@gmail.com";
-  const userPassword = "12345678";
-
-  const { login, user } = useAuthStore();
 
   const handleSignToggle = () => {
     setIsSign((prev) => !prev);
@@ -23,13 +20,30 @@ export default function LoginForm({ setShowServey }) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+
     if (password.length < 8) {
-      setError("password must be more than 8 charcters long");
-    } else if (email === userName && password === userPassword) {
-      login(email, password);
-      navigate("/profile");
-    } else {
-      setError("Login failed. Please try again.");
+      setError('password must be at least 8 characters long');
+      return;
+    }
+    if (!password || !email) {
+      setError('Please check for all input fields!');
+      return;
+    }
+
+    try {
+      const response = await Login({
+        email,
+        password,
+      });
+
+      if (response.success) {
+        setToken(response.token);
+
+        navigate('/');
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Registration failed');
     }
   };
 
@@ -56,7 +70,7 @@ export default function LoginForm({ setShowServey }) {
             />
             <InputField
               id="login-password"
-              type={showPassword ? "text" : "password"}
+              type={showPassword ? 'text' : 'password'}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               label="Password"
@@ -64,7 +78,7 @@ export default function LoginForm({ setShowServey }) {
               showToggle
               inputClickHandler={() => setShowPassword((current) => !current)}
             />
-            <input className="" type="checkbox" />{" "}
+            <input className="" type="checkbox" />{' '}
             <span>Keep Me Signed in</span>
             {error && <p className="text-sm text-red-500">{error}</p>}
             <button
@@ -78,14 +92,14 @@ export default function LoginForm({ setShowServey }) {
       )}
       <div className="sm:hidden text-sm text-center text-gray-400 mt-4">
         <span>
-          {isSign ? "Already have an account? " : "Don't have an account? "}
+          {isSign ? 'Already have an account? ' : "Don't have an account? "}
         </span>
         <button
           type="button"
           onClick={handleSignToggle}
           className="text-theme transition"
         >
-          {isSign ? "Login" : "Sign Up"}
+          {isSign ? 'Login' : 'Sign Up'}
         </button>
       </div>
     </div>

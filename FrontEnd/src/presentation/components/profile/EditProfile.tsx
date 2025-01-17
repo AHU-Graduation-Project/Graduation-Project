@@ -28,8 +28,8 @@ const levels = ["Junior", "Middle", "Senior", "Team Leader", "Project Manager"];
 const EditProfile: React.FC = () => {
   const { user, updateUser } = useAuthStore();
   const [showChangePassword, setShowChangePassword] = useState(false);
-  const [fname, setFirstName] = useState(user?.fname || "");
-  const [lname, setLastName] = useState(user?.lname || "");
+  const [first_name, setfirst_name] = useState(user?.first_name || "");
+  const [last_name, setlast_name] = useState(user?.last_name || "");
   const [email, setEmail] = useState(user?.email || "");
   const [aboutme, setAboutMe] = useState(user?.aboutme || "");
   const [isEmailConf, setIsEmailConf] = useState(
@@ -45,8 +45,8 @@ const EditProfile: React.FC = () => {
 
   const handleSaveChanges = () => {
     updateUser({
-      fname,
-      lname,
+      first_name,
+      last_name,
       email,
       country,
       position,
@@ -87,13 +87,13 @@ const EditProfile: React.FC = () => {
 
         {/* Personal Information */}
         <PersonalInfo
-          fname={fname}
-          lname={lname}
+          first_name={first_name}
+          last_name={last_name}
           email={email}
           isEmailConf={isEmailConf}
           position={position}
-          onFirstNameChange={setFirstName}
-          onLastNameChange={setLastName}
+          onfirst_nameChange={setfirst_name}
+          onlast_nameChange={setlast_name}
           onEmailChange={setEmail}
           onPositionChange={setPosition}
         />

@@ -115,7 +115,7 @@ const CVSurveyForm = () => {
   });
 
   const cvData = {
-    name: personalInfo?.fullName || "John Doe",
+    name: personalInfo?.fullast_name || "John Doe",
     contact: {
       email: personalInfo?.email || "johndoe@example.com",
       phone: personalInfo?.phone || "+123 456 7890",
@@ -178,7 +178,7 @@ const CVSurveyForm = () => {
               >
                 {personalInfo ? (
                   <div className="dark:text-gray-200">
-                    <h3 className="font-medium">{personalInfo.fullName}</h3>
+                    <h3 className="font-medium">{personalInfo.fullast_name}</h3>
                     <p className="text-sm text-gray-500 dark:text-gray-400">
                       {personalInfo.email}
                     </p>
@@ -307,7 +307,7 @@ const CVSurveyForm = () => {
               e.preventDefault();
               const formData = new FormData(e.target);
               setPersonalInfo({
-                fullName: formData.get("fullName"),
+                fullast_name: formData.get("fullast_name"),
                 email: formData.get("email"),
                 phone: formData.get("phone"),
                 linkedin: formData.get("linkedin"),
@@ -315,7 +315,7 @@ const CVSurveyForm = () => {
               setActiveModal(null);
             }}
           >
-            <Input label="Full Name" name="fullName" type="text" required />
+            <Input label="Full Name" name="fullast_name" type="text" required />
             <Input label="Email" name="email" type="email" required />
             <Input label="Phone" name="phone" type="tel" required />
             <Input label="LinkedIn" name="linkedin" type="text" required />

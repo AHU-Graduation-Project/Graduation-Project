@@ -1,10 +1,11 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { User, Info, Palette, LogOut, LogIn } from "lucide-react";
-import ThemeIcon from "./ThemeIcon";
-import ThemeSelector from "./ThemeSelector";
-import { useAuthStore } from "../../../application/state/authStore";
-import { useNavigate } from "react-router-dom";
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { User, Info, Palette, LogOut, LogIn } from 'lucide-react';
+import ThemeIcon from './ThemeIcon';
+import ThemeSelector from './ThemeSelector';
+import { useAuthStore } from '../../../application/state/authStore';
+import { useNavigate } from 'react-router-dom';
+import useTokenStore from '../../../application/state/tokenStore';
 
 function DropdownToggle({
   isOpen,
@@ -15,18 +16,16 @@ function DropdownToggle({
   onOpen: () => void;
   onClose: () => void;
 }) {
+  const { isValid, removeToken } = useTokenStore();
   const [isColors, setIsColors] = useState(false);
   const logout = useAuthStore((state) => state.logout);
-  const { user } = useAuthStore();
   const navigate = useNavigate();
 
   const handleToggle = () => (isOpen ? onClose() : onOpen());
   const handleColors = () => setIsColors(!isColors);
   const handleLogout = () => {
-    if (user) {
-      logout();
-      navigate("/");
-    }
+    removeToken();
+    navigate('/');
   };
 
   return (
@@ -36,7 +35,7 @@ function DropdownToggle({
         <div className="absolute top-full right-0 w-60 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg py-2 px-4 z-40">
           <nav className="flex flex-col gap-2">
             <ul>
-              {user && (
+              {isValid() && (
                 <Link
                   to="/Profile"
                   className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
@@ -46,7 +45,7 @@ function DropdownToggle({
                 </Link>
               )}
               <li>
-                {user ? (
+                {isValid() ? (
                   <button
                     onClick={handleLogout}
                     className="flex items-center gap-3 p-2 w-full rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"

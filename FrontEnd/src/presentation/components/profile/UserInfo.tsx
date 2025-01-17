@@ -36,7 +36,7 @@ const UserInfo = () => {
   return (
     <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-2xl p-8 mb-12">
       <h1 className="text-4xl font-bold mb-4 text-theme">
-        Welcome, {user.fname} {user.lname}
+        Welcome, {user.first_name} {user.last_name}
       </h1>
 
       {/* Stats Section */}

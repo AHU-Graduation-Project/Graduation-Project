@@ -1,4 +1,4 @@
-import { HashRouter } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import { useEffect } from "react";
 import { ThemeProvider } from "./context/ThemeContext";
 import { useThemeStore } from "./store/themeStore";
@@ -29,10 +29,10 @@ function AppContent() {
 
 export default function App() {
   return (
-    <ThemeProvider>
-      <HashRouter>
+    <BrowserRouter>
+      <ThemeProvider>
         <AppContent />
-      </HashRouter>
-    </ThemeProvider>
+      </ThemeProvider>
+    </BrowserRouter>
   );
 }

@@ -223,11 +223,11 @@ export default function EditNodesSideBar({
               className={
                 styles.rightSidebarInput + ' bg-[#f5f5f5] dark:bg-[#262626]'
               }
-              value={selectedNode.data?.skillName || ''}
+              value={selectedNode.data?.skillast_name || ''}
               onChange={(e) =>
                 handleUpdateNodeFromSidebar({
                   ...selectedNode.data,
-                  skillName: e.target.value,
+                  skillast_name: e.target.value,
                 })
               }
             />
