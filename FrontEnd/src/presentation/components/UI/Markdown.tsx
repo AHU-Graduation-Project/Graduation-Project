@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { Markdown } from "tiptap-markdown";
 
+// Update MenuButton component styles to handle dark mode
 const MenuButton = ({
   onClick,
   active,
@@ -39,8 +40,8 @@ const MenuButton = ({
 }) => (
   <button
     onClick={onClick}
-    className={`p-2 rounded hover:bg-gray-100 transition-colors ${
-      active ? "text-blue-600 bg-blue-50" : "text-gray-600"
+    className={`p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ${
+      active ? "text-blue-600 bg-blue-50 dark:bg-blue-900/50" : "text-gray-600 dark:text-gray-300"
     }`}
   >
     {children}
@@ -120,8 +121,8 @@ export default function Editor({ description, setDescription }: EditorProps) {
 
   return (
     <div className="w-full  mx-auto">
-      <div className=" bg-transparent dark:bg-slate-800 text-gray-700 dark:text-gray-100 rounded-lg shadow border border-gray-200">
-        <div className="border-b border-gray-200 p-2 flex flex-wrap gap-1 sticky top-0 bg-white z-10">
+      <div className="bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-100 rounded-lg shadow border border-gray-200 dark:border-gray-700">
+        <div className="border-b border-gray-200 dark:border-gray-700 p-2 flex flex-wrap gap-1 sticky top-0 bg-white dark:bg-slate-800 z-10">
           <MenuButton
             onClick={() => editor.chain().focus().toggleBold().run()}
             active={editor.isActive("bold")}
@@ -198,7 +199,7 @@ export default function Editor({ description, setDescription }: EditorProps) {
 
       {editor && (
         <BubbleMenu
-          className="bg-white shadow-lg border border-gray-200 rounded-lg overflow-hidden flex"
+          className="bg-white dark:bg-slate-800 shadow-lg border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden flex"
           tippyOptions={{ duration: 100 }}
           editor={editor}
         >

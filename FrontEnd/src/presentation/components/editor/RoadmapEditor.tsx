@@ -15,7 +15,7 @@ import ReactFlow, {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import CustomNodeEditor from './CustomNodeEditor';
-import EditRoadmapDialog from './EditRoadmapDialog';
+import EditRoadmapModal from './EditRoadmapModal';
 import styles from './RoadmapEditor.module.css';
 import EditorSideBar from './EditorSideBar';
 import CustomEdge from './CustomEdge';
@@ -27,7 +27,9 @@ import EditNodesSideBar from './EditNodesSideBar';
 import HelperLinesRenderer from './HelperLines';
 import { getEnhancedHelperLines } from '../../../infrastructure/utils/helperLines';
 import ConfirmRefreshModal from '../Modal/ConfirmRefreshModal';
-import { pre, use } from 'framer-motion/client';
+import AddResourceModal from './AddResourcesModal';
+import SavingOverlay from '../UI/savingOverlay';
+import { AnimatePresence } from 'framer-motion';
 
 const nodeTypes = {
   custom: CustomNodeEditor,
@@ -50,6 +52,11 @@ export type NodeData = {
   type: 'topic' | 'subTopic';
   prerequisites?: string[];
   isSelected?: boolean;
+  resources?: Array<{
+    label: string;
+    icon: string;
+    url: string;
+  }>;
 };
 
 const initialNodes: Node[] = [
@@ -62,6 +69,7 @@ const initialNodes: Node[] = [
       description: 'Beginning of the roadmap',
       type: 'subTopic',
       prerequisites: [],
+      resources: [],
     },
   },
 ];
@@ -73,6 +81,8 @@ const edgeTypes: EdgeTypes = {
 const RoadmapEditor = () => {
   const isDragging = useRef(false);
   const [selectingPrerequisite, setSelectingPrerequisite] = useState(false);
+  const [isResourcesDialogOpen, setIsResourcesDialogOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showRefreshConfirm, setShowRefreshConfirm] = useState(false);
@@ -82,7 +92,7 @@ const RoadmapEditor = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [roadmapData, setRoadmapData] = useState<RoadmapData>({
     title: 'My Roadmap',
-    description: 'A learning path',
+    description: '## hello',
     resources: [],
   });
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -406,15 +416,15 @@ const RoadmapEditor = () => {
         setIsRightSidebarOpen(false);
         setSelectedNode(null);
         setSelectedEdge(null);
-           setNodes((nds: Node[]) =>
-             nds.map((n) => ({
-               ...n,
-               data: {
-                 ...n.data,
-                 isSelected: false,
-               },
-             })),
-           );
+        setNodes((nds: Node[]) =>
+          nds.map((n) => ({
+            ...n,
+            data: {
+              ...n.data,
+              isSelected: false,
+            },
+          })),
+        );
       }
     };
 
@@ -424,43 +434,49 @@ const RoadmapEditor = () => {
     };
   }, [isRightSidebarOpen, selectingPrerequisite]);
 
-useEffect(() => {
-  if(selectingPrerequisite) {
-  setNodes((nds: Node[]) =>
-    nds.map((n) => ({
-      ...n,
-      data: {
-        ...n.data,
-        isSelectAblePrerequisite:
-          n.id !== selectedNode?.id &&
-          !selectedNode?.data?.prerequisites?.includes(n.id),
-      },
-    })),
-  );}
-  else
-  {
-    setNodes((nds: Node[]) =>
-    nds.map((n) => ({
-      ...n,
-      data: {
-        ...n.data,
-        isSelectAblePrerequisite: false,
-      },
-    })),
-  );
-  }
-}, [isRightSidebarOpen, selectingPrerequisite, selectedNode?.id, setNodes]);
+  useEffect(() => {
+    if (selectingPrerequisite) {
+      setNodes((nds: Node[]) =>
+        nds.map((n) => ({
+          ...n,
+          data: {
+            ...n.data,
+            isSelectAblePrerequisite:
+              n.id !== selectedNode?.id &&
+              !selectedNode?.data?.prerequisites?.includes(n.id),
+          },
+        })),
+      );
+    } else {
+      setNodes((nds: Node[]) =>
+        nds.map((n) => ({
+          ...n,
+          data: {
+            ...n.data,
+            isSelectAblePrerequisite: false,
+          },
+        })),
+      );
+    }
+  }, [isRightSidebarOpen, selectingPrerequisite, selectedNode?.id, setNodes]);
 
   const handleEdgeClick = (event: React.MouseEvent, edge: Edge) => {
     setSelectedEdge(edge);
     setSelectedNode(null);
     setIsRightSidebarOpen(true);
   };
-  const onSave = useCallback(() => {
+  const onSave = useCallback(async () => {
     if (reactFlowInstance) {
-      const flow = reactFlowInstance.toObject();
-      localStorage.setItem('roadmap-flow', JSON.stringify(flow));
-      setHasUnsavedChanges(false);
+      setIsSaving(true);
+      try {
+        const flow = reactFlowInstance.toObject();
+        // Simulate API call with setTimeout
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        localStorage.setItem('roadmap-flow', JSON.stringify(flow));
+        setHasUnsavedChanges(false);
+      } finally {
+        setIsSaving(false);
+      }
     }
   }, [reactFlowInstance]);
 
@@ -554,14 +570,14 @@ useEffect(() => {
               : n,
           );
           setNodes(updatedNodes);
-          setSelectedNode(updatedNodes.find(
-            (n) => n.id === selectedNode.id,
-          ) || null);
+          setSelectedNode(
+            updatedNodes.find((n) => n.id === selectedNode.id) || null,
+          );
           setSelectingPrerequisite(false);
         }
       } else {
         // Normal node selection behavior
-        // 
+        //
         setNodes((nds: Node[]) =>
           nds.map((n) => ({
             ...n,
@@ -569,14 +585,14 @@ useEffect(() => {
               ...n.data,
               isSelected: n.id === node.id,
             },
-          }))
+          })),
         );
         setSelectedNode(node);
         setSelectedEdge(null);
         setIsRightSidebarOpen(true);
       }
     },
-    [selectingPrerequisite, selectedNode, nodes , setNodes],
+    [selectingPrerequisite, selectedNode, nodes, setNodes],
   );
 
   useEffect(() => {
@@ -586,6 +602,8 @@ useEffect(() => {
   }, [nodes, edges]);
   return (
     <div className={styles.editorContainer}>
+      <AnimatePresence>{isSaving && <SavingOverlay />}</AnimatePresence>
+
       <EditorSideBar
         nodes={nodes}
         styles={styles}
@@ -596,6 +614,7 @@ useEffect(() => {
         isPublished={isPublished}
         onPublish={handlePublish}
         onSave={onSave}
+        setIsResourcesDialogOpen={setIsResourcesDialogOpen}
         onDragStart={(e, type) => {
           e.dataTransfer.setData('application/reactflow', type);
         }}
@@ -638,44 +657,51 @@ useEffect(() => {
         )}
       </div>
 
-      <div
-        ref={rightSidebarRef}
-        className={`${styles.rightSidebar} ${
-          isRightSidebarOpen ? styles.open : ''
-        }`}
-      >
-        {selectedNode && (
-          <EditNodesSideBar
-            styles={styles}
-            selectedNode={selectedNode}
-            handleUpdateNodeFromSidebar={handleUpdateNodeFromSidebar}
-            handleDeleteNode={handleDeleteNode}
-            allNodes={nodes}
-            setSelectingPrerequisite={setSelectingPrerequisite}
-          />
-        )}
+      {selectedNode && (
+        <EditNodesSideBar
+          styles={styles}
+          selectedNode={selectedNode}
+          handleUpdateNodeFromSidebar={handleUpdateNodeFromSidebar}
+          handleDeleteNode={handleDeleteNode}
+          allNodes={nodes}
+          setSelectingPrerequisite={setSelectingPrerequisite}
+          rightSidebarRef={rightSidebarRef}
+          isRightSidebarOpen={isRightSidebarOpen}
+        />
+      )}
 
-        {selectedEdge && (
-          <EditEdgesSideBar
-            styles={styles}
-            selectedEdge={selectedEdge}
-            handleUpdateEdgeFromSidebar={handleUpdateEdgeFromSidebar}
-            handleDeleteEdge={handleDeleteEdge}
-          />
-        )}
-      </div>
+      {selectedEdge && (
+        <EditEdgesSideBar
+          styles={styles}
+          selectedEdge={selectedEdge}
+          handleUpdateEdgeFromSidebar={handleUpdateEdgeFromSidebar}
+          handleDeleteEdge={handleDeleteEdge}
+          rightSidebarRef={rightSidebarRef}
+          isRightSidebarOpen={isRightSidebarOpen}
+        />
+      )}
 
-      <EditRoadmapDialog
+      <EditRoadmapModal
         isOpen={isEditDialogOpen}
         onClose={() => setIsEditDialogOpen(false)}
         roadmapData={roadmapData}
         onSave={setRoadmapData}
       />
+
       <ConfirmRefreshModal
         isOpen={showRefreshConfirm}
         onClose={() => setShowRefreshConfirm(false)}
         onRefresh={handleRefreshAnyway}
         onSaveAndRefresh={handleSaveAndRefresh}
+      />
+      <AddResourceModal
+        isOpen={isResourcesDialogOpen}
+        onClose={() => setIsResourcesDialogOpen(false)}
+        onSave={(resources) => {
+          // Handle saving resources
+          console.log('Saving resources:', resources);
+          setIsResourcesDialogOpen(false);
+        }}
       />
     </div>
   );

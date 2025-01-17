@@ -6,6 +6,7 @@ import {
   Sparkle,
   Sparkles,
   ArrowLeft,
+  LibrarySquare
 } from 'lucide-react';
 import styles from './EditorSideBar.module.css';
 import { useNavigate } from 'react-router-dom';
@@ -24,8 +25,12 @@ export type SidebarProps = {
   onDragStart: (e: React.DragEvent, type: 'topic' | 'subTopic') => void;
   isPublished?: boolean;
   onPublish?: () => void;
-  setSelectedNode: (node: { id: string; data: { label: string; type: 'topic' | 'subTopic' } }) => void;
+  setSelectedNode: (node: {
+    id: string;
+    data: { label: string; type: 'topic' | 'subTopic' };
+  }) => void;
   setShowRightSidebar: (show: boolean) => void;
+  setIsResourcesDialogOpen: (open: boolean) => void;
 };
 
 const EditorSideBar = ({
@@ -40,6 +45,7 @@ const EditorSideBar = ({
   onPublish,
   setSelectedNode,
   setShowRightSidebar,
+  setIsResourcesDialogOpen,
 }: SidebarProps) => {
   const navigate = useNavigate();
 
@@ -77,9 +83,9 @@ const EditorSideBar = ({
             </button>
             <button
               className={styles.actionButton}
-              onClick={() => setIsEditDialogOpen(true)}
+              onClick={() => setIsResourcesDialogOpen(true)}
             >
-              <Edit2 size={20} />
+              <LibrarySquare size={20} />
               Edit Resources
             </button>
             <div className="flex flex-col gap-2">

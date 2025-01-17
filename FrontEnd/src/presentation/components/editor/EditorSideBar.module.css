@@ -75,7 +75,7 @@
 }
 
 .actionButton {
-  @apply flex items-center gap-3 px-5 py-3 bg-theme text-primary-foreground rounded-lg cursor-pointer font-medium transition-all duration-200 hover:opacity-90 shadow-md w-full hover:bg-theme-shadow;
+  @apply flex items-center gap-3 px-5 py-3 bg-theme text-primary-foreground rounded-lg cursor-pointer font-medium transition-all duration-200 hover:opacity-90 shadow-md w-full active:scale-95 mt-1 mb-1;
 }
 
 .dndNode {

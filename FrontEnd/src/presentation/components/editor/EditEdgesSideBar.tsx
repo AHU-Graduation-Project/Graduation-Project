@@ -1,20 +1,26 @@
 interface EditNodesSideBarProps {
-    styles: any;
-    selectedEdge: any;
-    handleUpdateEdgeFromSidebar: (id: string, params: any) => void;
-    handleDeleteEdge: (id: string) => void;
+  styles: any;
+  selectedEdge: any;
+  handleUpdateEdgeFromSidebar: (id: string, params: any) => void;
+  handleDeleteEdge: (id: string) => void;
+  rightSidebarRef: any;
+  isRightSidebarOpen: boolean;
 }
 
-export default function EditEdgesSideBar(
-    {
-        styles,
-        selectedEdge,
-        handleUpdateEdgeFromSidebar,
-        handleDeleteEdge,
-
-    }: EditNodesSideBarProps
-) {
-    return (
+export default function EditEdgesSideBar({
+  styles,
+  selectedEdge,
+  handleUpdateEdgeFromSidebar,
+  handleDeleteEdge,
+  rightSidebarRef,
+  isRightSidebarOpen,
+}: EditNodesSideBarProps) {
+  return (
+    <div
+        ref={rightSidebarRef}
+        className={`${styles.rightSidebar} ${
+          isRightSidebarOpen ? styles.open : ''
+        }`}>
       <div className={styles.rightSidebarContent}>
         <h3 className={styles.rightSidebarTitle}>Edge Details</h3>
 
@@ -90,5 +96,6 @@ export default function EditEdgesSideBar(
           Delete Edge
         </button>
       </div>
-    );
-    }
+    </div>
+  );
+}

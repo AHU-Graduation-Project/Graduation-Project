@@ -33,7 +33,7 @@ const EXAMPLE_STRUCTURE = `{
       isSkill: true,
       isAnalysisNeeded: true,
       isAchieved: false,
-      requiredNodes: ["1"],
+      prerequisites: ["1"],
     },
   },
   {
@@ -47,7 +47,7 @@ const EXAMPLE_STRUCTURE = `{
       isSkill: true,
       isAnalysisNeeded: true,
       isAchieved: false,
-      requiredNodes: ["2"],
+      prerequisites: ["2"],
     },
   },
   {
@@ -61,7 +61,7 @@ const EXAMPLE_STRUCTURE = `{
       isSkill: false,
       isAnalysisNeeded: false,
       isAchieved: false,
-      requiredNodes: ["3"],
+      prerequisites: ["3"],
     },
   },
   {
@@ -75,7 +75,7 @@ const EXAMPLE_STRUCTURE = `{
       isSkill: false,
       isAnalysisNeeded: false,
       isAchieved: false,
-      requiredNodes: ["3"],
+      prerequisites: ["3"],
     },
   },
   {
@@ -89,7 +89,7 @@ const EXAMPLE_STRUCTURE = `{
       isSkill: true,
       isAnalysisNeeded: true,
       isAchieved: false,
-      requiredNodes: ["3"],
+      prerequisites: ["3"],
     },
   },
   {
@@ -103,7 +103,7 @@ const EXAMPLE_STRUCTURE = `{
       isAchieved: false,
       isSkill: true,
       isAnalysisNeeded: true,
-      requiredNodes: ["3"],
+      prerequisites: ["3"],
     },
   },
   {
@@ -117,7 +117,7 @@ const EXAMPLE_STRUCTURE = `{
       isSkill: ture,
       isAnalysisNeeded: true,
       isAchieved: true,
-      requiredNodes: ["6", "7"],
+      prerequisites: ["6", "7"],
     },
   },
   {
@@ -131,7 +131,7 @@ const EXAMPLE_STRUCTURE = `{
       isAchieved: false,
       isSkill: false,
       isAnalysisNeeded: false,
-      requiredNodes: ["8"],
+      prerequisites: ["8"],
     },
   },
 ],
