@@ -35,7 +35,7 @@ function DropdownToggle({
         <div className="absolute top-full right-0 w-60 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg py-2 px-4 z-40">
           <nav className="flex flex-col gap-2">
             <ul>
-              {userRole() && (
+              {!!userRole() && (
                 <Link
                   to="/Profile"
                   className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
@@ -45,7 +45,7 @@ function DropdownToggle({
                 </Link>
               )}
               <li>
-                {userRole() ? (
+                {!!userRole() ? (
                   <button
                     onClick={handleLogout}
                     className="flex items-center gap-3 p-2 w-full rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"

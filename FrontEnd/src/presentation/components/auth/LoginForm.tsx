@@ -6,7 +6,7 @@ import Login from "../../../infrastructure/api/login";
 import useTokenStore from "../../../application/state/tokenStore";
 import PasswordReset from "./PasswordReset";
 
-export default function LoginForm({ setShowServey }) {
+export default function LoginForm({ setChangePassword, setShowServey }) {
   const { setToken } = useTokenStore();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -45,6 +45,7 @@ export default function LoginForm({ setShowServey }) {
         navigate("/");
       }
     } catch (err) {
+      console.log("err", err);
       setError(err instanceof Error ? err.message : "Registration failed");
     }
   };
@@ -52,7 +53,10 @@ export default function LoginForm({ setShowServey }) {
   return (
     <div className="form-container">
       {showPasswordReset ? (
-        <PasswordReset onClose={() => setShowPasswordReset(false)} />
+        <PasswordReset
+          setChangePassword={setChangePassword}
+          onClose={() => setShowPasswordReset(false)}
+        />
       ) : isSign ? (
         <SignupForm setShowServey={setShowServey} />
       ) : (

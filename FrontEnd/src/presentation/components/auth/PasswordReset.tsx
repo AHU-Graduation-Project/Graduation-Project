@@ -2,25 +2,34 @@ import { useState } from "react";
 import axios from "axios";
 import { InputField } from "../UI/TextInput";
 
-const PasswordReset = ({ onClose }) => {
+const PasswordReset = ({ setChangePassword, onClose }) => {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setError(null);
+    setError("");
 
     try {
-      const response = await axios.post("/api/reset-password", { email });
-
+      const response = await axios.post(
+        `${import.meta.env.VITE_PATH_API}/auth/request-password-recovery`,
+        {
+          email,
+        }
+      );
       if (response.status === 200) {
         setSuccess(true);
+        setChangePassword(true);
         setTimeout(() => {
           onClose?.();
-        }, 3000);
+        }, 15000);
+      } else if (response.status / 100 === 5) {
+        setError("try again later");
+      } else if (Math.floor(response.status / 100) === 4) {
+        setError("wrong email");
       }
     } catch (err) {
       setError(
