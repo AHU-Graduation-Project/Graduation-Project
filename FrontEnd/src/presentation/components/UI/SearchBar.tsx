@@ -8,19 +8,12 @@ interface SearchBarProps {
   inputClassName?: string;
 }
 
-function SearchBar({
-  value,
-  onChange,
-  placeholder,
-  className,
-  inputClassName: containerClassName = "",
-}: SearchBarProps) {
+function SearchBar({ value, onChange, placeholder }: SearchBarProps) {
   return (
     <div className="relative w-full">
       <Search
         className={
-          "absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 " +
-          className
+          "absolute  left-4 top-1/2 transform -translate-y-1/2 text-slate-400 "
         }
       />
       <input

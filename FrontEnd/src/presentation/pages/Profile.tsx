@@ -12,7 +12,7 @@ import useTokenStore from "../../application/state/tokenStore";
 
 export default function Profile() {
   const navigate = useNavigate();
-  const isValid = useTokenStore();
+  const { userRole } = useTokenStore();
   const [showCv, setShowCv] = useState(true);
 
   const handleShowCv = () => {
@@ -20,10 +20,10 @@ export default function Profile() {
   };
 
   useEffect(() => {
-    if (!isValid) {
+    if (!userRole()) {
       navigate("/auth");
     }
-  }, [isValid, navigate]);
+  }, [userRole, navigate]);
 
   return (
     <>

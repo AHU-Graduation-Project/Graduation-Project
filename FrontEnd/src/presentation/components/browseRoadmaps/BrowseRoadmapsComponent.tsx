@@ -7,6 +7,7 @@ import SearchBar from "../UI/SearchBar";
 import SelectedRoadmapCard from "./SelectedRoadmapCard";
 import AnimationWrapper from "../UI/Animation/Animation";
 import AddRoadmapModal from "./AddRoadmapModal";
+import useTokenStore from "../../../application/state/tokenStore";
 
 export default function BrowseRoadmapsComponent() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -14,6 +15,7 @@ export default function BrowseRoadmapsComponent() {
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage, setPostsPerPage] = useState(9);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { userRole } = useTokenStore();
 
   const handleAddRoadmap = (newRoadmap) => {
     console.log("New Roadmap:", newRoadmap);
@@ -56,14 +58,16 @@ export default function BrowseRoadmapsComponent() {
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search roadmaps..."
               className="bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-md flex-grow"
-              inputClassName="w-full"
             />
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="bg-theme text-white px-4 py-2 rounded-md ml-2 w-[230px] max-h-[50px]"
-            >
-              Create Roadmap
-            </button>
+            {userRole() == 0 && (
+              <button
+                onClick={() => setIsModalOpen(true)}
+                //w-[230px] max-h-[50px]
+                className="bg-theme text-white px-4 py-1 rounded-md ml-2 "
+              >
+                Create Roadmap
+              </button>
+            )}
           </div>
         </AnimationWrapper>
       </div>

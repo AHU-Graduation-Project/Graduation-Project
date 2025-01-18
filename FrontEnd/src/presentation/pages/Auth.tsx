@@ -8,18 +8,20 @@ import Servey from "../components/auth/Servey";
 import useTokenStore from "../../application/state/tokenStore";
 
 export default function Auth() {
-  const { isValid } = useTokenStore();
+  const { userRole } = useTokenStore();
   const [isSignUp, setIsSignUp] = useState(false);
   const [showServey, setShowServey] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isValid()) {
+    if (userRole()) {
       navigate("/");
     }
   }, []);
+
+  //bg-[#111827]
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-[#111827]">
+    <div className="relative w-full h-screen overflow-hidden ">
       <BackgroundRays option={2} fullPage={true} />
       {/* Back to Home Button */}
       <div
