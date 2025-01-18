@@ -76,6 +76,7 @@ export default function RoadmapInfo({
           <button
             onClick={onClose}
             className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+            aria-label="Close roadmap info"
           >
             <X className="w-5 h-5" />
           </button>

@@ -8,7 +8,7 @@ import Profile from '../pages/Profile';
 import NotFoundPage from '../pages/NotFoundPage';
 import Editor from '../pages/editor';
 import ConfirmPage from '../pages/ConfirmPage';
-import RecoveryPassword from '../pages/RecoveryPassword';
+import RecoveryPassword from '../pages/recoveryPassword';
 import TermsAndPrivacy from '../pages/TermsAndPrivacy';
 
 export default function AppRoutes() {
