@@ -28,6 +28,7 @@ export const signUp = async (userData: PostUserDto): Promise<IResponse> => {
     );
 
     if (res.data.success) {
+      console.log(res.data)
       setToken(res.data.token); // Save the token in the store.
       return res.data;
     } else {

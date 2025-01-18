@@ -37,34 +37,33 @@ import useTokenStore from "../../application/state/tokenStore";
 export const confirmEmail = async (
   confirmToken: string
 ): Promise<IConfirmEmailResponse> => {
-  const { setToken } = useTokenStore.getState();
+  const { setToken, clearConfirmToken } = useTokenStore.getState();
 
   try {
-    const res = await axios.post<IConfirmEmailResponse>(
+    const response = await axios.post<IConfirmEmailResponse>(
       `${import.meta.env.VITE_PATH_API}/auth/confirm-email`,
-      null,
+      {},  // empty body as per API spec
       {
         headers: {
-          Authorization: `Bearer ${confirmToken}`,
-          "Content-Type": "application/json",
+          'Authorization': `Bearer ${confirmToken}`,
+          'Content-Type': 'application/json',
         },
       }
     );
 
-    if (res.data.success) {
-      setToken(res.data.token); // Save the new token in the store
-      return res.data;
-    } else {
-      throw new Error("Email confirmation failed");
+    if (response.data.success) {
+      setToken(response.data.token);
+      clearConfirmToken();
+      return response.data;
     }
+    
+    throw new Error("Email confirmation failed");
   } catch (error) {
+    clearConfirmToken();
     if (error instanceof AxiosError) {
-      throw new Error(
-        error.response?.data?.message || "Email confirmation failed"
-      );
-    } else {
-      throw error;
+      throw new Error(error.response?.data?.message || "Email confirmation failed");
     }
+    throw error;
   }
 };
 

@@ -28,8 +28,8 @@ import HelperLinesRenderer from './HelperLines';
 import { getEnhancedHelperLines } from '../../../infrastructure/utils/helperLines';
 import ConfirmRefreshModal from '../Modal/ConfirmRefreshModal';
 import AddResourceModal from './AddResourcesModal';
-import SavingOverlay from '../UI/savingOverlay';
 import { AnimatePresence } from 'framer-motion';
+import LoadingOverlay from '../UI/SavingOverlay';
 
 const nodeTypes = {
   custom: CustomNodeEditor,
@@ -602,7 +602,7 @@ const RoadmapEditor = () => {
   }, [nodes, edges]);
   return (
     <div className={styles.editorContainer}>
-      <AnimatePresence>{isSaving && <SavingOverlay />}</AnimatePresence>
+      <AnimatePresence>{isSaving && <LoadingOverlay text = {"saving"}/>}</AnimatePresence>
 
       <EditorSideBar
         nodes={nodes}

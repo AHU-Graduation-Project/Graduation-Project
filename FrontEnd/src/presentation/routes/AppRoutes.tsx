@@ -7,6 +7,7 @@ import Auth from '../pages/Auth';
 import Profile from '../pages/Profile';
 import NotFoundPage from '../pages/NotFoundPage';
 import Editor from '../pages/editor';
+import ConfirmPage from '../pages/ConfirmPage';
 export default function AppRoutes() {
   return (
     <Routes>
@@ -14,6 +15,7 @@ export default function AppRoutes() {
       <Route path="/roadmaps" element={<BrowseRoadmaps />} />
       <Route path="/generate" element={<GenerateRoadmap />} />
       <Route path="/roadmap/:id" element={<RoadmapFlow />} />
+      <Route path="/confirm-email" element={<ConfirmPage />} />  
       <Route
         path="/auth"
         element={
