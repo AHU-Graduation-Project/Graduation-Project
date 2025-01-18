@@ -7,6 +7,7 @@ interface TokenState {
   expiresAt: string | null;
   isEditor: boolean | null;
   confirmToken: string | null;
+  recoveryToken: string | null;
   setToken: (newToken: string, expirationMinutes?: number) => void;
   removeToken: () => void;
   updateToken: (updatedToken: string, expirationMinutes?: number) => void;
@@ -15,6 +16,8 @@ interface TokenState {
   extendExpiration: (additionalMinutes: number) => void;
   setConfirmToken: (token: string) => void;
   clearConfirmToken: () => void;
+  setRecoveryToken: (token: string) => void;
+  clearRecoveryToken: () => void;
 }
 enum permitions {
   GUEST = 0,
@@ -29,6 +32,7 @@ const useTokenStore = create<TokenState>()(
       expiresAt: null,
       isEditor: null,
       confirmToken: null,
+      recoveryToken: null,
 
       setToken: (newToken: string, expirationMinutes: number = 60): void => {
         const expiresAt = new Date(
@@ -111,6 +115,8 @@ const useTokenStore = create<TokenState>()(
 
       setConfirmToken: (token: string): void => set({ confirmToken: token }),
       clearConfirmToken: (): void => set({ confirmToken: null }),
+      setRecoveryToken: (token: string): void => set({ recoveryToken: token }),
+      clearRecoveryToken: (): void => set({ recoveryToken: null }),
     }),
     {
       name: "token-storage",
@@ -118,6 +124,7 @@ const useTokenStore = create<TokenState>()(
         token: state.token,
         expiresAt: state.expiresAt,
         confirmToken: state.confirmToken,
+        recoveryToken: state.recoveryToken,
       }),
     }
   )

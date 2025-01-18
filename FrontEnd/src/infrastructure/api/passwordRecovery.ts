@@ -3,7 +3,7 @@ import useTokenStore from "../../application/state/tokenStore";
 
 interface PostPasswordDTO {
   password: string;
-  revoveryToken: any;
+  recoveryToken: string;
 }
 
 interface IResponse {
@@ -11,36 +11,37 @@ interface IResponse {
   token: string;
 }
 
-export const passwordRecovery = async (
-  userData: PostPasswordDTO
-): Promise<IResponse> => {
-  const { setToken } = useTokenStore.getState();
+export const passwordRecovery = async ({
+  password,
+  recoveryToken
+}: PostPasswordDTO): Promise<IResponse> => {
+  const { setToken, clearRecoveryToken } = useTokenStore.getState();
 
   try {
-    const res = await axios.post<IResponse>(
+    const response = await axios.post<IResponse>(
       `${import.meta.env.VITE_PATH_API}/auth/change-password`,
-      userData.password, // Send the user data as an object in the request body
+      { password },
       {
         headers: {
-          Authorization: `Bearer ${userData.revoveryToken}`,
+          Authorization: `Bearer ${recoveryToken}`,
           "Content-Type": "application/json",
         },
       }
     );
 
-    if (res.data.success) {
-      
-      setToken(res.data.token); // Save the token in the store.
-      return res.data;
-    } else {
-      throw new Error("password can not like the old password");
+    if (response.data.success) {
+      setToken(response.data.token);
+      clearRecoveryToken();
+      return response.data;
     }
+    
+    throw new Error("Password update failed");
   } catch (error) {
+    clearRecoveryToken();
     if (error instanceof AxiosError) {
-      throw new Error(error.response?.data?.message || "Registration failed");
-    } else {
-      throw error;
+      throw new Error(error.response?.data?.message || "Password update failed");
     }
+    throw error;
   }
 };
 

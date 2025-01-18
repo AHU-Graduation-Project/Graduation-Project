@@ -21,6 +21,7 @@ const PasswordReset = ({ setChangePassword, onClose }) => {
         }
       );
       if (response.status === 200) {
+        console.log(response.data)
         setSuccess(true);
         setChangePassword(true);
         setTimeout(() => {

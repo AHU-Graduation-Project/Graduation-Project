@@ -8,6 +8,8 @@ import Profile from '../pages/Profile';
 import NotFoundPage from '../pages/NotFoundPage';
 import Editor from '../pages/editor';
 import ConfirmPage from '../pages/ConfirmPage';
+import RecoveryPassword from '../pages/RecoveryPassword';
+
 export default function AppRoutes() {
   return (
     <Routes>
@@ -15,7 +17,8 @@ export default function AppRoutes() {
       <Route path="/roadmaps" element={<BrowseRoadmaps />} />
       <Route path="/generate" element={<GenerateRoadmap />} />
       <Route path="/roadmap/:id" element={<RoadmapFlow />} />
-      <Route path="/confirm-email" element={<ConfirmPage />} />  
+      <Route path="/confirm-email" element={<ConfirmPage />} />
+      <Route path="/password-recovery" element={<RecoveryPassword />} />
       <Route
         path="/auth"
         element={

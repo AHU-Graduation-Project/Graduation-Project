@@ -6,7 +6,6 @@ import { ArrowLeft } from "lucide-react";
 import BackgroundRays from "../components/OverView/BackgroundRays";
 import Servey from "../components/auth/Servey";
 import useTokenStore from "../../application/state/tokenStore";
-import PasswordRest from "../components/auth/PasswordRest";
 
 export default function Auth() {
   const { userRole } = useTokenStore();
@@ -26,9 +25,7 @@ export default function Auth() {
     <div className="relative w-full h-screen overflow-hidden ">
       <BackgroundRays option={2} fullPage={true} />
       {/* Back to Home Button */}
-      {showChangePassowrd ? (
-        <PasswordRest />
-      ) : (
+      {(
         <>
           <div
             className="absolute top-4 left-4 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center bg-gray-800 text-white rounded-full shadow-lg cursor-pointer hover:bg-gray-700 transition-colors"
