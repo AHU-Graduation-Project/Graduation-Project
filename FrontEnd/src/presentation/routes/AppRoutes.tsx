@@ -9,6 +9,7 @@ import NotFoundPage from '../pages/NotFoundPage';
 import Editor from '../pages/editor';
 import ConfirmPage from '../pages/ConfirmPage';
 import RecoveryPassword from '../pages/RecoveryPassword';
+import TermsAndPrivacy from '../pages/TermsAndPrivacy';
 
 export default function AppRoutes() {
   return (
@@ -28,6 +29,7 @@ export default function AppRoutes() {
           </div>
         }
       />
+      <Route path="term&privacy" element={<TermsAndPrivacy />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/editor" element={<Editor />} />
       <Route path="*" element={<NotFoundPage />} />

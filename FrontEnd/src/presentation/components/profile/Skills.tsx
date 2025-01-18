@@ -16,7 +16,7 @@ const skills: Skill[] = [
   { title: "Git/GitHub" },
 ];
 
-const SkillSelector: React.FC = () => {
+const SkillSelector: React.FC = ({ skillList, setSkillList }) => {
   const { user, addSkill, removeSkill } = useAuthStore();
   const [selectedSkills, setSelectedSkills] = useState<Skill[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -30,6 +30,7 @@ const SkillSelector: React.FC = () => {
         skills.find((skill) => skill.title === skillTitle)
       );
       setSelectedSkills(userSkills.filter((skill): skill is Skill => !!skill));
+      setSkillList(userSkills.filter((skill): skill is Skill => !!skill));
     }
   }, [user?.selectedSkills]);
 
@@ -41,6 +42,8 @@ const SkillSelector: React.FC = () => {
         !selectedSkills.some((s) => s.title === skill.title)
     );
     setFilteredSkills(filtered);
+    setSkillList(selectedSkills);
+    // console.log(selectedSkills);
   }, [searchTerm, selectedSkills]);
 
   const handleAddSkill = (skill: Skill) => {
