@@ -230,7 +230,7 @@ const CVSurveyForm = () => {
   });
 
   const cvData = {
-    name: personalInfo?.fullast_name || "John Doe",
+    name: personalInfo?.fullName || "John Doe",
     contact: {
       email: personalInfo?.email || "johndoe@example.com",
       phone: personalInfo?.phone || "+123 456 7890",
@@ -346,7 +346,7 @@ const CVSurveyForm = () => {
                 {skills.map((skill, index) => (
                   <EntryCard
                     key={index}
-                    data={{ Skill: skill }}
+                    data={{ Skill: skill.title }}
                     onDelete={() => handleDeleteSkill(index)}
                   />
                 ))}

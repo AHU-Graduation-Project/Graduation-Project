@@ -13,17 +13,17 @@ import useTokenStore from "../../application/state/tokenStore";
 export default function Profile() {
   const navigate = useNavigate();
   const { userRole } = useTokenStore();
-  const [showCv, setShowCv] = useState(true);
+  const [showCv, setShowCv] = useState(false);
 
   const handleShowCv = () => {
     setShowCv(!showCv);
   };
 
-  useEffect(() => {
-    if (!userRole()) {
-      navigate("/auth");
-    }
-  }, [userRole, navigate]);
+  // useEffect(() => {
+  //   if (!userRole()) {
+  //     navigate("/auth");
+  //   }
+  // }, [userRole, navigate]);
 
   return (
     <>

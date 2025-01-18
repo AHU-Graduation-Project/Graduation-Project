@@ -70,7 +70,7 @@ const EditProfile: React.FC = () => {
     }
   };
 
-  if (!user) return null;
+  // if (!user) return null;
 
   return (
     <div className="p-4 bg-gradient-to-r from-blue-500/10 to-purple-500/10 sm:p-6 lg:p-8 w-full max-w-screen-xl shadow-md rounded-lg mx-auto space-y-6">
