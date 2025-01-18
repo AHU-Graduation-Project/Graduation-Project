@@ -17,7 +17,7 @@ import PromptInput from "./PromptInput";
 import AdvancedOptions from "./AdvancedOptions";
 import GeneratorNodeDetail from "../Modal/GeneratorNodeDetailModal";
 import { motion, AnimatePresence } from "framer-motion";
-import GeneratorResources from "./GeneratorResources";
+import GeneratorReferences from './GeneratorReferences';
 import GenerateButton from "./GeneratorButton";
 import GeneratingIndicator from "./GeneratingIndicator";
 
@@ -50,7 +50,7 @@ export default function GenerateRoadmapComponent() {
   const [selectedNode, setSelectedNode] = useState<FlowNode | null>(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showNodeDetails, setShowNodeDetails] = useState(false);
-  const [sources, setSources] = useState<any[]>([]);
+  const [references, setReferences] = useState<any[]>([]);
 
   const [prompt, setPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
@@ -97,7 +97,7 @@ export default function GenerateRoadmapComponent() {
     setError("");
     setNodes([]);
     setEdges([]);
-    setSources([]); // Clear previous sources
+    setReferences([]); 
     setWasStopped(false);
 
     // Initialize AbortController
@@ -131,7 +131,7 @@ export default function GenerateRoadmapComponent() {
 
       setNodes(processedNodes);
       setEdges(result.edges);
-      setSources(result.sources || []);
+      setReferences(result.references || []);
     } catch (err: unknown) {
       if (err instanceof Error) {
         if (err.name === "AbortError") {
@@ -259,7 +259,7 @@ export default function GenerateRoadmapComponent() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
           >
             <ReactFlow
               nodes={nodes}
@@ -309,8 +309,8 @@ export default function GenerateRoadmapComponent() {
         onSave={handleSaveRoadmap}
       />
 
-      {/* Sources Section */}
-      {sources.length > 0 && <GeneratorResources sources={sources} />}
+      {/* references Section */}
+      {references.length > 0 && <GeneratorReferences references={references} />}
     </div>
   );
 }

@@ -11,7 +11,7 @@ const GeneratingIndicator: React.FC = () => {
     >
       <div className="text-center space-y-4">
         <motion.div
-          className="w-16 h-16 border-4 border-theme border-t-transparent rounded-full mx-auto"
+          className="w-16 h-16 border-4 border-x-black dark:border-x-white border-t-transparent rounded-full mx-auto"
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
         />
