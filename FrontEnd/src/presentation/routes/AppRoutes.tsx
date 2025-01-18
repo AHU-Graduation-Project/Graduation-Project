@@ -29,7 +29,7 @@ export default function AppRoutes() {
           </div>
         }
       />
-      <Route path="term&privacy" element={<TermsAndPrivacy />} />
+      <Route path="/term&privacy" element={<TermsAndPrivacy />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/editor" element={<Editor />} />
       <Route path="*" element={<NotFoundPage />} />
