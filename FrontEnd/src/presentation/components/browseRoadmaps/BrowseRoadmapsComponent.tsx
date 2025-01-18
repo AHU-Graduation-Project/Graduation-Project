@@ -52,7 +52,7 @@ export default function BrowseRoadmapsComponent() {
 
       <div className="max-w-2xl mx-auto mb-12">
         <AnimationWrapper animationType={5}>
-          <div className="flex flex-row">
+          <div className="flex flex-col sm:flex-row">
             <SearchBar
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -63,7 +63,7 @@ export default function BrowseRoadmapsComponent() {
               <button
                 onClick={() => setIsModalOpen(true)}
                 //w-[230px] max-h-[50px]
-                className="bg-theme text-white px-4 py-1 rounded-md ml-2 "
+                className="bg-theme py-2 mt-2 sm:mt-0  text-sm sm:ml-2 text-white px-1 sm:px-3 sm:py-1 rounded-md  "
               >
                 Create Roadmap
               </button>
