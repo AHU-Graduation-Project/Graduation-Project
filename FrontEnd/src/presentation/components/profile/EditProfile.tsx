@@ -30,6 +30,7 @@ const EditProfile: React.FC = () => {
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [first_name, setfirst_name] = useState(user?.first_name || "");
   const [last_name, setlast_name] = useState(user?.last_name || "");
+  const [skillList, setSkillList] = useState(user?.selectedSkills || []);
   const [email, setEmail] = useState(user?.email || "");
   const [aboutme, setAboutMe] = useState(user?.aboutme || "");
   const [isEmailConf, setIsEmailConf] = useState(
@@ -123,7 +124,7 @@ const EditProfile: React.FC = () => {
         <h3 className="text-lg font-semibold text-theme dark:text-white mb-4">
           Skills
         </h3>
-        <Skills />
+        <Skills skillList={skillList} setSkillList={setSkillList} />
       </div>
 
       {/* Change Password Modal */}
