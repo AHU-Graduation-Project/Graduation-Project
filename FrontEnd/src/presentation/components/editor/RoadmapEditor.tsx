@@ -29,7 +29,7 @@ import { getEnhancedHelperLines } from '../../../infrastructure/utils/helperLine
 import ConfirmRefreshModal from '../Modal/ConfirmRefreshModal';
 import AddResourceModal from './AddResourcesModal';
 import { AnimatePresence } from 'framer-motion';
-import LoadingOverlay from '../UI/SavingOverlay';
+import LoadingOverlay from '../UI/LoadingOverlay';
 
 const nodeTypes = {
   custom: CustomNodeEditor,

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BackgroundRays from "../OverView/BackgroundRays";
 import { InputField } from "../UI/TextInput";
+import passwordRecovery from "../../../infrastructure/api/passwordRecovery";
 
 const PasswordRest = () => {
   const navigate = useNavigate();
@@ -12,7 +13,9 @@ const PasswordRest = () => {
   const [confPassword, setConfPassword] = useState("");
 
   const handleSubmit = () => {
-    navigate("/");
+    setIsLoading(true);
+
+    
   };
 
   return (

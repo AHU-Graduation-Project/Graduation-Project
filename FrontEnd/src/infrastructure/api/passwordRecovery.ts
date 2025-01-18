@@ -29,6 +29,7 @@ export const passwordRecovery = async (
     );
 
     if (res.data.success) {
+      
       setToken(res.data.token); // Save the token in the store.
       return res.data;
     } else {
