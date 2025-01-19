@@ -17,10 +17,7 @@ export default function BrowseRoadmapsComponent() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { userRole } = useTokenStore();
 
-  const handleAddRoadmap = (newRoadmap) => {
-    console.log("New Roadmap:", newRoadmap);
-    setIsModalOpen(false);
-  };
+
 
   const filteredRoadmaps = roadmaps.filter((roadmap) =>
     [roadmap.title, roadmap.description].some((field) =>
@@ -59,7 +56,7 @@ export default function BrowseRoadmapsComponent() {
               placeholder="Search roadmaps..."
               className="bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-md flex-grow"
             />
-            {userRole() == 0 && (
+            {userRole() == 2 && (
               <button
                 onClick={() => setIsModalOpen(true)}
                 //w-[230px] max-h-[50px]
@@ -123,7 +120,6 @@ export default function BrowseRoadmapsComponent() {
       <AddRoadmapModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onAdd={handleAddRoadmap}
       />
 
       <div className="pt-6 z-40">

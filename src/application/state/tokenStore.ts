@@ -75,7 +75,6 @@ const useTokenStore = create<TokenState>()(
         const expirationDate = new Date(state.expiresAt);
 
         if (now > expirationDate) {
-          console.log("HELLO FROM EXOPIRTW", expirationDate, now);
           return permitions.GUEST;
         }
         if (state.isEditor) {
