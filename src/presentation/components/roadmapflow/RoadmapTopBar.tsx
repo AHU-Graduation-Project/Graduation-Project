@@ -7,6 +7,7 @@ import html2canvas from 'html2canvas';
 import ThemeIcon from '../UI/ThemeIcon';
 import { Image as ImageIcon, ChevronDown, ChevronUp } from 'lucide-react';
 import useTokenStore from '../../../application/state/tokenStore';
+import { useParams } from 'react-router-dom';
 export default function RoadmapTopBar({
   roadmap,
   progress,
@@ -28,6 +29,7 @@ export default function RoadmapTopBar({
     }
     selectRoadmap(roadmap.id);
   };
+  const { id } = useParams();
 
   const captureFlow = useCallback(async () => {
     const flowElement = document.querySelector('.react-flow');
@@ -118,7 +120,9 @@ export default function RoadmapTopBar({
           </div>
           {userRole() == 2 && (
             <div className="flex items-center gap-3 text-sm md:text-base">
-              <button className="px-4 py-2 rounded-lg bg-theme text-white hover:opacity-90 transition-colors">
+              <button 
+              onClick={() => navigate(`/editor/${id}`)}
+              className="px-4 py-2 rounded-lg bg-theme text-white hover:opacity-90 transition-colors">
                 edit roadmap
               </button>
             </div>

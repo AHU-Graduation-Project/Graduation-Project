@@ -6,10 +6,13 @@ import {
   Sparkle,
   Sparkles,
   ArrowLeft,
-  LibrarySquare
+  LibrarySquare,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import styles from './EditorSideBar.module.css';
 import { useNavigate } from 'react-router-dom';
+import { ToggleRoadmapVisibility } from '../../../infrastructure/api/publishandhidin';
 
 export type SidebarProps = {
   isSidebarOpen: boolean;
@@ -31,6 +34,9 @@ export type SidebarProps = {
   }) => void;
   setShowRightSidebar: (show: boolean) => void;
   setIsResourcesDialogOpen: (open: boolean) => void;
+  roadmapId: string;
+  visibility: boolean;  // Changed from string to boolean
+  onVisibilityChange: (newVisibility: boolean) => void;  // Changed to boolean
 };
 
 const EditorSideBar = ({
@@ -46,8 +52,24 @@ const EditorSideBar = ({
   setSelectedNode,
   setShowRightSidebar,
   setIsResourcesDialogOpen,
+  roadmapId,
+  visibility,
+  onVisibilityChange,
 }: SidebarProps) => {
+  const toggleVisibility = ToggleRoadmapVisibility();
   const navigate = useNavigate();
+
+  const handleVisibilityToggle = async () => {
+    try {
+      const response = await toggleVisibility.execute(roadmapId);
+      window.location.reload();
+      console.log(response);
+    } catch (error) {
+      console.error('Failed to toggle visibility:', error);
+      // You might want to show an error toast here
+    }
+  };
+  console.log(visibility)
 
   return (
     <>
@@ -110,17 +132,23 @@ const EditorSideBar = ({
                   <Save size={16} />
                   Save Changes
                 </button>
-                {onPublish && (
-                  <button
-                    onClick={onPublish}
-                    className={`${styles.button} ${
-                      isPublished ? 'opacity-50 cursor-not-allowed' : ''
-                    }`}
-                    disabled={isPublished}
-                  >
-                    {isPublished ? 'Published' : 'Publish Roadmap'}
-                  </button>
-                )}
+                <button
+                  onClick={handleVisibilityToggle}
+                  className={styles.button}
+                >
+                  {visibility ==="publish" ? (
+                    <>
+                      <Eye size={16} />
+                      Publish Roadmap
+                    </>
+                  ) : (
+                    <>
+                      <EyeOff size={16} />
+                      Hide Roadmap
+                    </>
+                  )}
+                </button>
+             
               </div>
             </div>
           </div>

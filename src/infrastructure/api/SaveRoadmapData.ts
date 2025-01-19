@@ -74,7 +74,7 @@ export function SaveRoadmapData(): SaveRoadmapData {
       if (!token) {
         throw new Error('Authentication token is missing');
       }
-
+ console.log(params.id)
       try {
         const transformedData = {
           topics: transformNodes(params.nodes),

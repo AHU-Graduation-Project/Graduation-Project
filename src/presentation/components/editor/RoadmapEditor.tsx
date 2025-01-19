@@ -35,6 +35,8 @@ import { SaveRoadmapData } from '../../../infrastructure/api/SaveRoadmapData';
 const nodeTypes = {
   custom: CustomNodeEditor,
 };
+import { useParams } from 'react-router-dom';
+import { GetRoadmapById } from '../../../infrastructure/api/getroadmapbyid';
 
 export type RoadmapData = {
   id: string;
@@ -81,6 +83,8 @@ const edgeTypes: EdgeTypes = {
 };
 
 const RoadmapEditor = () => {
+  const { slug } = useParams(); // Extract the ID from the route
+  const [getingRoadmap, setGetingRoadmap] = useState(false);
   const isDragging = useRef(false);
   const [selectingPrerequisite, setSelectingPrerequisite] = useState(false);
   const [isResourcesDialogOpen, setIsResourcesDialogOpen] = useState(false);
@@ -126,6 +130,7 @@ const RoadmapEditor = () => {
   });
   const rightSidebarRef = useRef<HTMLDivElement>(null);
   const deleteKeyPressed = useKeyPress('Delete');
+  const getRoadmap = GetRoadmapById();
 
   const [undoStack, setUndoStack] = useState<
     {
@@ -153,7 +158,6 @@ const RoadmapEditor = () => {
   //   edges: [],
   // });
 
-
   // const [newContainer, setNewContainer] = useState<{
   //   nodes: Node[];
   //   edges: Edge[];
@@ -162,10 +166,28 @@ const RoadmapEditor = () => {
   //   edges: [],
   // });
 
+  useEffect(() => {
+    const fetchRoadmap = async () => {
+      setGetingRoadmap(true);
+      try {
+        const response = await getRoadmap.execute(slug);
+        const { roadmap } = response;
+        setRoadmapData(roadmap);
+        setNodes(roadmap.topics as unknown as Node[]);
+        setEdges(roadmap.edges as unknown as Edge[]);
+        setGetingRoadmap(false);
+      } catch (error) {
+        console.error('Failed to fetch roadmap:', error);
+        setGetingRoadmap(false);
+      }
+    };
+
+    fetchRoadmap();
+  }, [slug]);
+
   // Save state to history for all changes
   const saveToHistory = useCallback(
     (newState: { nodes: Node[]; edges: Edge[] }) => {
-
       setUndoStack((prev) => [...prev, newState]);
       setRedoStack([]); // Clear redo stack when new changes are made
     },
@@ -227,63 +249,61 @@ const RoadmapEditor = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [undoStack, redoStack, setEdges, setNodes]);
 
+  //   useEffect(() => {
+  //     const previousState = undoStack[undoStack.length - 2];
+  //     const currentState = undoStack[undoStack.length - 1];
 
-//   useEffect(() => {
-//     const previousState = undoStack[undoStack.length - 2];
-//     const currentState = undoStack[undoStack.length - 1];
+  //     if (previousState && currentState) {
+  //       const previousNodes = previousState.nodes;
+  //       const currentNodes = currentState.nodes;
+  //       const previousEdges = previousState.edges;
+  //       const currentEdges = currentState.edges;
 
-//     if (previousState && currentState) {
-//       const previousNodes = previousState.nodes;
-//       const currentNodes = currentState.nodes;
-//       const previousEdges = previousState.edges;
-//       const currentEdges = currentState.edges;
+  //       const trashNodes = previousNodes.filter(
+  //         (prevNode) =>
+  //           !currentNodes.some((currNode) => currNode.id === prevNode.id),
+  //       );
+  //       const newNodes = currentNodes.filter(
+  //         (currNode) =>
+  //           !previousNodes.some((prevNode) => prevNode.id === currNode.id),
+  //       );
+  //       const editedNodes = currentNodes.filter((currNode) => {
+  //         const prevNode = previousNodes.find(
+  //           (prevNode) => prevNode.id === currNode.id,
+  //         );
+  //         return (
+  //           prevNode &&
+  //           JSON.stringify(prevNode.data) !== JSON.stringify(currNode.data)
+  //         );
+  //       });
 
-//       const trashNodes = previousNodes.filter(
-//         (prevNode) =>
-//           !currentNodes.some((currNode) => currNode.id === prevNode.id),
-//       );
-//       const newNodes = currentNodes.filter(
-//         (currNode) =>
-//           !previousNodes.some((prevNode) => prevNode.id === currNode.id),
-//       );
-//       const editedNodes = currentNodes.filter((currNode) => {
-//         const prevNode = previousNodes.find(
-//           (prevNode) => prevNode.id === currNode.id,
-//         );
-//         return (
-//           prevNode &&
-//           JSON.stringify(prevNode.data) !== JSON.stringify(currNode.data)
-//         );
-//       });
+  //       const trashEdges = previousEdges.filter(
+  //         (prevEdge) =>
+  //           !currentEdges.some((currEdge) => currEdge.id === prevEdge.id),
+  //       );
+  //       const newEdges = currentEdges.filter(
+  //         (currEdge) =>
+  //           !previousEdges.some((prevEdge) => prevEdge.id === currEdge.id),
+  //       );
+  //       const editedEdges = currentEdges.filter((currEdge) => {
+  //         const prevEdge = previousEdges.find(
+  //           (prevEdge) => prevEdge.id === currEdge.id,
+  //         );
+  //         return (
+  //           prevEdge && JSON.stringify(prevEdge) !== JSON.stringify(currEdge)
+  //         );
+  //       });
 
-//       const trashEdges = previousEdges.filter(
-//         (prevEdge) =>
-//           !currentEdges.some((currEdge) => currEdge.id === prevEdge.id),
-//       );
-//       const newEdges = currentEdges.filter(
-//         (currEdge) =>
-//           !previousEdges.some((prevEdge) => prevEdge.id === currEdge.id),
-//       );
-//       const editedEdges = currentEdges.filter((currEdge) => {
-//         const prevEdge = previousEdges.find(
-//           (prevEdge) => prevEdge.id === currEdge.id,
-//         );
-//         return (
-//           prevEdge && JSON.stringify(prevEdge) !== JSON.stringify(currEdge)
-//         );
-//       });
+  //       setTrash({ nodes: trashNodes, edges: trashEdges });
+  //       setNewContainer({ nodes: newNodes, edges: newEdges });
+  //       setEditorContainer({ nodes: editedNodes, edges: editedEdges });
+  //     }
 
-//       setTrash({ nodes: trashNodes, edges: trashEdges });
-//       setNewContainer({ nodes: newNodes, edges: newEdges });
-//       setEditorContainer({ nodes: editedNodes, edges: editedEdges });
-//     }
-    
-//   }, [undoStack]);
+  //   }, [undoStack]);
 
-
-// console.log('trash', trash);
-// console.log('new', newContainer);
-// console.log('edit', editedContainer);
+  // console.log('trash', trash);
+  // console.log('new', newContainer);
+  // console.log('edit', editedContainer);
 
   const onNodesChange = useCallback(
     (changes: NodeChange[]) => {
@@ -444,7 +464,6 @@ const RoadmapEditor = () => {
     onSave();
     setHasUnsavedChanges(false);
     setShowRefreshConfirm(false);
-    window.location.reload();
   };
   const handleRefreshAnyway = () => {
     setHasUnsavedChanges(false);
@@ -453,22 +472,21 @@ const RoadmapEditor = () => {
   };
   // Add event listener for beforeunload to prevent accidental refresh
   useEffect(() => {
-      const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-        if (hasUnsavedChanges) {
-
-          e.preventDefault();
-
-          // Prevent the default alert from showing
-          e.returnValue = '';
-          // Show custom modal instead
-          // setShowRefreshConfirm(true);
-        }
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hasUnsavedChanges) {
         e.preventDefault();
-      };
 
-      window.addEventListener('beforeunload', handleBeforeUnload);
-      return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-    }, [hasUnsavedChanges]);
+        // Prevent the default alert from showing
+        e.returnValue = '';
+        // Show custom modal instead
+        // setShowRefreshConfirm(true);
+      }
+      e.preventDefault();
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [hasUnsavedChanges]);
 
   const handlePublish = () => {
     // Here you would typically make an API call to publish the roadmap
@@ -549,14 +567,15 @@ const RoadmapEditor = () => {
   const onSave = useCallback(async () => {
     if (reactFlowInstance) {
       setIsSaving(true);
-      
+
       try {
         const saveRoadmapData = savvve;
-        await saveRoadmapData.execute({
+        const repone = await saveRoadmapData.execute({
           nodes,
           edges,
-          id:roadmapData.id
+          id: slug ? parseInt(slug) : 0, // Extract the ID from the route, default to 0 if undefined
         });
+        console.log('repone', repone);
         setHasUnsavedChanges(false);
         // Refresh the page after successful save
         window.location.reload();
@@ -632,7 +651,6 @@ const RoadmapEditor = () => {
       isRightSidebarOpen,
     ],
   );
-  console.log('nodes', nodes);
   const onDragOver = useCallback((event: React.DragEvent) => {
     event.preventDefault();
     event.dataTransfer.dropEffect = 'move';
@@ -689,6 +707,7 @@ const RoadmapEditor = () => {
       setHasUnsavedChanges(true);
     }
   }, [nodes, edges]);
+
   return (
     <div className={styles.editorContainer}>
       <AnimatePresence>
@@ -711,6 +730,8 @@ const RoadmapEditor = () => {
         }}
         setSelectedNode={setSelectedNode}
         setShowRightSidebar={setIsRightSidebarOpen}
+        visibility={roadmapData.visibility}
+        roadmapId={roadmapData.id}
       />
 
       <div className={styles.flowContainer}>

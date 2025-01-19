@@ -110,7 +110,6 @@ const AddRoadmapModal = ({ isOpen, onClose}: AddRoadmapModalProps) => {
       });
 
       
-      console.log(response);
       // Reset form
       setTitle('');
       setRoute('');
@@ -119,7 +118,7 @@ const AddRoadmapModal = ({ isOpen, onClose}: AddRoadmapModalProps) => {
       setSelectedIconIndex(null);
       
       onClose();
-      navigate(`/editor/slug:${response.roadmap.id}`);
+      navigate(`/editor/${response.roadmap.id}`);
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Failed to create roadmap');
     } finally {
