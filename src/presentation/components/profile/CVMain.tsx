@@ -47,12 +47,17 @@ const defaultSkills: Skill[] = [
   { title: "Database Management: SQL, MongoDB" },
   { title: "Cloud Services: AWS, Azure" },
 ];
-
+const defaultCertifi: Certification[] = [
+  { name: "Udemy" },
+  { name: "python" },
+  { name: "life" },
+];
 export const CVForm: React.FC = () => {
   const [personalInfo, setPersonalInfo] = useState<PersonalInfo | null>(null);
   const [education, setEducation] = useState<Education[]>([]);
   const [experience, setExperience] = useState<Experience[]>([]);
-  const [certifications, setCertifications] = useState<Certification[]>([]);
+  const [certifications, setCertifications] =
+    useState<Certification[]>(defaultCertifi);
   const [summary, setSummary] = useState<string>("");
   const [skills, setSkills] = useState<Skill[]>(defaultSkills);
   const [activeTab, setActiveTab] = useState("personal");
@@ -103,12 +108,8 @@ export const CVForm: React.FC = () => {
           university: "University of California, Berkeley",
           period: "2013 - 2017",
         },
-    certifications: certifications.map((cert) => cert.name),
+    certifications: certifications.map((cert) => cert),
   };
-
-  useEffect(() => {
-    console.log(cvData);
-  }, [skills]);
 
   const downloadPDF = async () => {
     const element = document.getElementById("cv-container");
