@@ -1,24 +1,32 @@
 import React from "react";
 
+interface Skill {
+  title: string;
+}
+
 interface SkillsFormProps {
-  onSubmit: (data: Skill) => void;
-  onDelete: (index: number) => void;
   skills: Skill[];
+  setSkills: (skills: Skill[]) => void;
 }
 
 export const SkillsForm: React.FC<SkillsFormProps> = ({
-  onSubmit,
-  onDelete,
   skills,
+  setSkills,
 }) => {
   const [newSkill, setNewSkill] = React.useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (newSkill.trim()) {
-      onSubmit({ title: newSkill.trim() });
+      const updatedSkills = [...skills, { title: newSkill.trim() }];
+      setSkills(updatedSkills);
       setNewSkill("");
     }
+  };
+
+  const handleDelete = (index: number) => {
+    const updatedSkills = skills.filter((_, i) => i !== index);
+    setSkills(updatedSkills);
   };
 
   return (
@@ -33,7 +41,7 @@ export const SkillsForm: React.FC<SkillsFormProps> = ({
         />
         <button
           type="submit"
-          className="bg-blue-500 text-white  py-2 px-4 rounded-md hover:bg-blue-600 transition-colors"
+          className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors"
         >
           Add Skill
         </button>
@@ -42,11 +50,11 @@ export const SkillsForm: React.FC<SkillsFormProps> = ({
         {skills.map((skill, index) => (
           <div
             key={index}
-            className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full"
+            className="flex items-center gap-2 bg-theme px-3 py-1 rounded-full"
           >
             <span>{skill.title}</span>
             <button
-              onClick={() => onDelete(index)}
+              onClick={() => handleDelete(index)}
               className="text-red-500 hover:text-red-600"
             >
               ×

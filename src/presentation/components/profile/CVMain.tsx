@@ -40,13 +40,21 @@ interface Certification {
   dateObtained?: string;
 }
 
+const defaultSkills: Skill[] = [
+  { title: "Programming Languages: JavaScript, Python, Java" },
+  { title: "Frameworks: React, Angular, Node.js" },
+  { title: "Tools: Git, Docker, Jenkins" },
+  { title: "Database Management: SQL, MongoDB" },
+  { title: "Cloud Services: AWS, Azure" },
+];
+
 export const CVForm: React.FC = () => {
   const [personalInfo, setPersonalInfo] = useState<PersonalInfo | null>(null);
   const [education, setEducation] = useState<Education[]>([]);
   const [experience, setExperience] = useState<Experience[]>([]);
   const [certifications, setCertifications] = useState<Certification[]>([]);
   const [summary, setSummary] = useState<string>("");
-  const [skills, setSkills] = useState<Skill[]>([]);
+  const [skills, setSkills] = useState<Skill[]>(defaultSkills);
   const [activeTab, setActiveTab] = useState("personal");
   const [showCV, setShowCV] = useState(false);
 
@@ -68,7 +76,7 @@ export const CVForm: React.FC = () => {
     summary:
       summary ||
       "Results-driven professional with experience in delivering high-quality solutions...",
-    skills: skills.map((skill) => skill),
+    skills: skills.map((skill) => skill.title),
     experience: experience.length
       ? experience.map(transformExperience)
       : [
@@ -97,6 +105,10 @@ export const CVForm: React.FC = () => {
         },
     certifications: certifications.map((cert) => cert.name),
   };
+
+  useEffect(() => {
+    console.log(cvData);
+  }, [skills]);
 
   const downloadPDF = async () => {
     const element = document.getElementById("cv-container");
@@ -196,10 +208,7 @@ export const CVForm: React.FC = () => {
           </div>
         )}
         {activeTab === "skills" && (
-          <SkillsForm
-            skills={skills}
-            onSubmit={(skill) => setSkills([...skills, skill])}
-          />
+          <SkillsForm skills={skills} setSkills={setSkills} />
         )}
         {activeTab === "certifications" && (
           <div className="space-y-6">
