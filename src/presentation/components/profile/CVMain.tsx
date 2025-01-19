@@ -8,6 +8,7 @@ import { CertificationForm } from "./CVCreation/CertificationForm";
 import { ExperienceForm } from "./CVCreation/ExperienceForm";
 import { EducationForm } from "./CVCreation/EducationForm";
 import CVGenerator from "./CVGenerator";
+import Modal from "./CVCreation/Modal";
 
 interface PersonalInfo {
   fullName: string;
@@ -61,7 +62,7 @@ export const CVForm: React.FC = () => {
   const [summary, setSummary] = useState<string>("");
   const [skills, setSkills] = useState<Skill[]>(defaultSkills);
   const [activeTab, setActiveTab] = useState("personal");
-  const [showCV, setShowCV] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const transformExperience = (exp: Experience) => ({
     title: exp.title,
@@ -249,25 +250,26 @@ export const CVForm: React.FC = () => {
       </div>
       <div className="mt-4">
         <button
-          onClick={() => setShowCV(!showCV)}
-          className="bg-theme text-white py-2 px-4 rounded mr-2"
+          onClick={() => setIsModalOpen(true)}
+          className="bg-theme text-white py-2 px-4 rounded hover:bg-opacity-90 transition-colors"
         >
-          {showCV ? "Hide CV" : "Create CV"}
+          Preview CV
         </button>
-        {showCV && (
+      </div>
+
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <div id="cv-container">
+          <CVGenerator userData={cvData} />
+        </div>
+        <div className="mt-4 flex justify-end">
           <button
             onClick={downloadPDF}
-            className="bg-blue-500 text-white py-2 px-4 rounded"
+            className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded transition-colors"
           >
             Download as PDF
           </button>
-        )}
-      </div>
-      {showCV && (
-        <div id="cv-container" className="mt-6">
-          <CVGenerator userData={cvData} />
         </div>
-      )}
+      </Modal>
     </div>
   );
 };
