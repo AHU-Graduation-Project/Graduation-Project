@@ -7,25 +7,23 @@ import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import { motion } from "framer-motion";
 import Cv from "../components/profile/CvModal";
+import useTokenStore from "../../application/state/tokenStore";
 // import BackgroundRays from "../components/OverView/BackgroundRays";
 
 export default function Profile() {
   const navigate = useNavigate();
-  const [showCv, setShowCv] = useState(true);
-
-  const { user, isAuthenticated } = useAuthStore();
+  const { userRole } = useTokenStore();
+  const [showCv, setShowCv] = useState(false);
 
   const handleShowCv = () => {
     setShowCv(!showCv);
   };
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/auth");
-    }
-  }, [isAuthenticated, navigate]);
-
-  if (!user) return null;
+  // useEffect(() => {
+  //   if (!userRole()) {
+  //     navigate("/auth");
+  //   }
+  // }, [userRole, navigate]);
 
   return (
     <>
@@ -51,10 +49,10 @@ export default function Profile() {
           <EditProfile />
 
           <button
-            className="my-3 bg-theme border rounded-lg text-white py-2 px-3"
+            className="my-3 w-full bg-theme border rounded-lg text-white py-2 px-3"
             onClick={handleShowCv}
           >
-            Show CV
+            Create CV
           </button>
 
           {showCv ? <Cv /> : null}

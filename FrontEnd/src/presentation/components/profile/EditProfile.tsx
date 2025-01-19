@@ -28,8 +28,9 @@ const levels = ["Junior", "Middle", "Senior", "Team Leader", "Project Manager"];
 const EditProfile: React.FC = () => {
   const { user, updateUser } = useAuthStore();
   const [showChangePassword, setShowChangePassword] = useState(false);
-  const [fname, setFirstName] = useState(user?.fname || "");
-  const [lname, setLastName] = useState(user?.lname || "");
+  const [first_name, setfirst_name] = useState(user?.first_name || "");
+  const [last_name, setlast_name] = useState(user?.last_name || "");
+  const [skillList, setSkillList] = useState(user?.selectedSkills || []);
   const [email, setEmail] = useState(user?.email || "");
   const [aboutme, setAboutMe] = useState(user?.aboutme || "");
   const [isEmailConf, setIsEmailConf] = useState(
@@ -45,8 +46,8 @@ const EditProfile: React.FC = () => {
 
   const handleSaveChanges = () => {
     updateUser({
-      fname,
-      lname,
+      first_name,
+      last_name,
       email,
       country,
       position,
@@ -69,7 +70,7 @@ const EditProfile: React.FC = () => {
     }
   };
 
-  if (!user) return null;
+  // if (!user) return null;
 
   return (
     <div className="p-4 bg-gradient-to-r from-blue-500/10 to-purple-500/10 sm:p-6 lg:p-8 w-full max-w-screen-xl shadow-md rounded-lg mx-auto space-y-6">
@@ -87,13 +88,13 @@ const EditProfile: React.FC = () => {
 
         {/* Personal Information */}
         <PersonalInfo
-          fname={fname}
-          lname={lname}
+          first_name={first_name}
+          last_name={last_name}
           email={email}
           isEmailConf={isEmailConf}
           position={position}
-          onFirstNameChange={setFirstName}
-          onLastNameChange={setLastName}
+          onfirst_nameChange={setfirst_name}
+          onlast_nameChange={setlast_name}
           onEmailChange={setEmail}
           onPositionChange={setPosition}
         />
@@ -123,7 +124,7 @@ const EditProfile: React.FC = () => {
         <h3 className="text-lg font-semibold text-theme dark:text-white mb-4">
           Skills
         </h3>
-        <Skills />
+        <Skills skillList={skillList} setSkillList={setSkillList} />
       </div>
 
       {/* Change Password Modal */}

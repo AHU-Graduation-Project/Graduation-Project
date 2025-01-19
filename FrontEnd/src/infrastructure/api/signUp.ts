@@ -1,9 +1,9 @@
 import axios, { AxiosError } from "axios";
-import useTokkenStore from "../../application/state//tokkenStore";
+import useTokenStore from "../../application/state/tokenStore";
 
 interface PostUserDto {
-  fname: string;
-  lname: string;
+  first_name: string;
+  last_name: string;
   email: string;
   password: string;
 }
@@ -13,12 +13,12 @@ interface IResponse {
   token: string;
 }
 
-export const signUp = async (userData: PostUserDto): Promise<void> => {
-  const { setToken } = useTokkenStore.getState();
+export const signUp = async (userData: PostUserDto): Promise<IResponse> => {
+  const { setToken } = useTokenStore.getState();
 
   try {
     const res = await axios.post<IResponse>(
-      `${import.meta.env.VITE_PATH_API}/api/v1/register`,
+      `${import.meta.env.VITE_PATH_API}/auth/register`,
       userData, // Send the user data as an object in the request body
       {
         headers: {
@@ -28,17 +28,17 @@ export const signUp = async (userData: PostUserDto): Promise<void> => {
     );
 
     if (res.data.success) {
+      console.log(res.data)
       setToken(res.data.token); // Save the token in the store.
-      console.log("Registration successful. Token:", res.data.token);
-      localStorage.setItem("accessToken", res.data.token);
+      return res.data;
     } else {
-      console.error("Registration failed:", res.data);
+      throw new Error("Registration failed");
     }
   } catch (error) {
     if (error instanceof AxiosError) {
-      console.error("API Error:", error.response?.data || error.message);
+      throw new Error(error.response?.data?.message || "Registration failed");
     } else {
-      console.error("Unexpected Error:", error);
+      throw error;
     }
   }
 };

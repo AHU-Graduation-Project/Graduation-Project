@@ -1,8 +1,8 @@
 export class UserEntity {
   id: string;
   email: string;
-  fname: string;
-  lname: string;
+  first_name: string;
+  last_name: string;
   password: string;
   profilePicture: string;
   position: string;
@@ -25,8 +25,8 @@ export class UserEntity {
   constructor(
     id: string,
     email: string,
-    fname: string,
-    lname: string,
+    first_name: string,
+    last_name: string,
     password: string,
     profilePicture: string,
     position: string,
@@ -48,8 +48,8 @@ export class UserEntity {
   ) {
     this.id = id;
     this.email = email;
-    this.fname = fname;
-    this.lname = lname;
+    this.first_name = first_name;
+    this.last_name = last_name;
     this.password = password;
     this.profilePicture = profilePicture;
     this.position = position;

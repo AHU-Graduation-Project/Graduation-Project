@@ -1,15 +1,14 @@
 import { Link } from "react-router-dom";
-import { useAuthStore } from "../../../application/state/authStore";
 import { motion } from "framer-motion";
 import { ArrowRight, Code2, Brain, Rocket } from "lucide-react";
 import ThemeIcon from "../UI/ThemeIcon";
+import useTokenStore from "../../../application/state/tokenStore";
 
 export default function HeroSection() {
-  const { isAuthenticated } = useAuthStore();
+  const { userRole } = useTokenStore();
 
   return (
     <div className="relative min-h-screen">
-      {/* Animated Background */}
       {/* Content */}
       <div className="relative container mx-auto px-4 pt-20 lg:pt-32">
         <div className="max-w-5xl mx-auto text-center mb-16">
@@ -47,31 +46,30 @@ export default function HeroSection() {
             Personalized learning roadmaps powered by AI. Track your progress,
             master new skills, and accelerate your tech career.
           </motion.p>
-
-          {!isAuthenticated && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
-              className="flex flex-wrap justify-center gap-4"
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+            className="flex flex-wrap justify-center gap-4"
+          >
+            <Link
+              to="/roadmaps"
+              className="group relative px-8 py-4 bg-theme text-white  rounded-xl font-medium shadow-xl hover:shadow-theme transition-all duration-300 overflow-hidden"
             >
-              <Link
-                to="/auth"
-                className="group relative px-8 py-4 bg-theme text-white  rounded-xl font-medium shadow-xl hover:shadow-theme transition-all duration-300 overflow-hidden"
-              >
-                <span className="relative z-10 flex items-center gap-2">
-                  Get Started
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </span>
-              </Link>
+              <span className="relative z-10 flex items-center gap-2">
+                Get Started
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </span>
+            </Link>
+            {!userRole() && (
               <Link
                 to="/auth"
                 className="px-8 py-4 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-900 dark:text-white rounded-xl font-medium border border-gray-200 dark:border-white/10 transition-colors duration-300"
               >
                 Sign In
               </Link>
-            </motion.div>
-          )}
+            )}
+          </motion.div>
         </div>
 
         {/* Feature Cards */}
