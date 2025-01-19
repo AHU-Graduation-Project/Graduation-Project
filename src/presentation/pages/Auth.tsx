@@ -59,7 +59,7 @@ export default function Auth() {
                   </button>
                 </div>
               ) : (
-                <div className="flex justify-center flex-col p-16">
+                <div className="flex justify-center  flex-col p-16">
                   <h1 className="text-2xl py-3">Already have an account?</h1>
                   <p className="pb-4 text-sm">
                     Personalize Switter based on where you've seen switter
@@ -77,7 +77,7 @@ export default function Auth() {
 
             {/* Login Form */}
             <div
-              className={`w-full md:w-1/2 p-8 mt-16 sm:mt-0 md:py-20 transition-transform duration-700 ease-in-out bg-gray-800 bg-opacity-90 rounded-lg md:bg-gray-800 ${
+              className={`w-full md:w-1/2 p-8 mt-16 sm:mt-0 md:py-20 transition-transform duration-700 ease-in-out bg-gray-800 bg-opacity-90 rounded-lg  md:bg-gray-800 ${
                 isSignUp ? '-translate-x-full' : 'translate-x-0'
               }`}
             >
@@ -89,11 +89,12 @@ export default function Auth() {
 
             {/* Sign-Up Form */}
             <div
-              className={`hidden sm:block w-full md:w-1/2 p-8 md:p-6 transition-transform duration-700 ease-in-out bg-gray-800 bg-opacity-90 rounded-lg md:bg-gray-800 ${
-                isSignUp ? 'translate-x-0' : 'translate-x-full'
+              className={`hidden  sm:block w-full md:w-1/2 p-8 md:p-6 transition-transform duration-700 ease-in-out  bg-gray-800 bg-opacity-90 rounded-lg md:bg-gray-800 ${
+                isSignUp ? 'translate-x-0' : 'translate-x-full '
               }`}
             >
-              <SignupForm setShowServey={setShowServey} />
+              <div className='h-full flex justify-center items-center'> <SignupForm setShowServey={setShowServey} /></div>
+             
             </div>
           </div>
         )}
