@@ -674,6 +674,7 @@ const RoadmapEditor = () => {
         <EditEdgesSideBar
           styles={styles}
           selectedEdge={selectedEdge}
+          setEdges={setEdges}
           handleUpdateEdgeFromSidebar={handleUpdateEdgeFromSidebar}
           handleDeleteEdge={handleDeleteEdge}
           rightSidebarRef={rightSidebarRef}
