@@ -181,6 +181,9 @@ export const CVForm: React.FC = () => {
                     education.map((e, i) => (i === index ? newEdu : e))
                   )
                 }
+                onDelete={(indexToRemove) =>
+                  setEducation(education.filter((_, i) => i !== indexToRemove))
+                }
               />
             ))}
             <EducationForm
@@ -195,9 +198,15 @@ export const CVForm: React.FC = () => {
                 key={index}
                 initialData={exp}
                 index={index}
+                // onDelete={onDeleteHandler}
                 onSubmit={(newExp) =>
                   setExperience(
                     experience.map((e, i) => (i === index ? newExp : e))
+                  )
+                }
+                onDelete={(indexToRemove) =>
+                  setExperience(
+                    experience.filter((_, i) => i !== indexToRemove)
                   )
                 }
               />
@@ -220,6 +229,11 @@ export const CVForm: React.FC = () => {
                 onSubmit={(newCert) =>
                   setCertifications(
                     certifications.map((c, i) => (i === index ? newCert : c))
+                  )
+                }
+                onDelete={(indexToRemove) =>
+                  setCertifications(
+                    certifications.filter((_, i) => i !== indexToRemove)
                   )
                 }
               />
