@@ -30,12 +30,14 @@ import ConfirmRefreshModal from '../Modal/ConfirmRefreshModal';
 import AddResourceModal from './AddResourcesModal';
 import { AnimatePresence } from 'framer-motion';
 import LoadingOverlay from '../UI/LoadingOverlay';
+import { SaveRoadmapData } from '../../../infrastructure/api/SaveRoadmapData';
 
 const nodeTypes = {
   custom: CustomNodeEditor,
 };
 
 export type RoadmapData = {
+  id: string;
   title: string;
   description: string;
   resources: Array<{
@@ -91,15 +93,16 @@ const RoadmapEditor = () => {
   const [nodes, setNodes] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [roadmapData, setRoadmapData] = useState<RoadmapData>({
+    id : '1',
     title: 'My Roadmap',
     description: '## hello',
     resources: [],
   });
+  const savvve = SaveRoadmapData();
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [selectedEdge, setSelectedEdge] = useState<Edge | null>(null);
-  const [isEditNodeDialogOpen, setIsEditNodeDialogOpen] = useState(false);
   const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(false);
   const [reactFlowInstance, setReactFlowInstance] =
     useState<ReactFlowInstance | null>(null);
@@ -123,6 +126,7 @@ const RoadmapEditor = () => {
   });
   const rightSidebarRef = useRef<HTMLDivElement>(null);
   const deleteKeyPressed = useKeyPress('Delete');
+
   const [undoStack, setUndoStack] = useState<
     {
       nodes: Node[];
@@ -137,9 +141,31 @@ const RoadmapEditor = () => {
     }[]
   >([]);
 
+  // const [trash, setTrash] = useState<{ nodes: Node[]; edges: Edge[] }>({
+  //   nodes: [],
+  //   edges: [],
+  // });
+  // const [editedContainer, setEditorContainer] = useState<{
+  //   nodes: Node[];
+  //   edges: Edge[];
+  // }>({
+  //   nodes: [],
+  //   edges: [],
+  // });
+
+
+  // const [newContainer, setNewContainer] = useState<{
+  //   nodes: Node[];
+  //   edges: Edge[];
+  // }>({
+  //   nodes: [],
+  //   edges: [],
+  // });
+
   // Save state to history for all changes
   const saveToHistory = useCallback(
     (newState: { nodes: Node[]; edges: Edge[] }) => {
+
       setUndoStack((prev) => [...prev, newState]);
       setRedoStack([]); // Clear redo stack when new changes are made
     },
@@ -154,7 +180,6 @@ const RoadmapEditor = () => {
       },
     ]);
   }, []); // Run once on mount
-
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.ctrlKey && event.key === 'z') {
@@ -202,7 +227,63 @@ const RoadmapEditor = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [undoStack, redoStack, setEdges, setNodes]);
 
-  // Update all state-changing functions to use saveToHistory
+
+//   useEffect(() => {
+//     const previousState = undoStack[undoStack.length - 2];
+//     const currentState = undoStack[undoStack.length - 1];
+
+//     if (previousState && currentState) {
+//       const previousNodes = previousState.nodes;
+//       const currentNodes = currentState.nodes;
+//       const previousEdges = previousState.edges;
+//       const currentEdges = currentState.edges;
+
+//       const trashNodes = previousNodes.filter(
+//         (prevNode) =>
+//           !currentNodes.some((currNode) => currNode.id === prevNode.id),
+//       );
+//       const newNodes = currentNodes.filter(
+//         (currNode) =>
+//           !previousNodes.some((prevNode) => prevNode.id === currNode.id),
+//       );
+//       const editedNodes = currentNodes.filter((currNode) => {
+//         const prevNode = previousNodes.find(
+//           (prevNode) => prevNode.id === currNode.id,
+//         );
+//         return (
+//           prevNode &&
+//           JSON.stringify(prevNode.data) !== JSON.stringify(currNode.data)
+//         );
+//       });
+
+//       const trashEdges = previousEdges.filter(
+//         (prevEdge) =>
+//           !currentEdges.some((currEdge) => currEdge.id === prevEdge.id),
+//       );
+//       const newEdges = currentEdges.filter(
+//         (currEdge) =>
+//           !previousEdges.some((prevEdge) => prevEdge.id === currEdge.id),
+//       );
+//       const editedEdges = currentEdges.filter((currEdge) => {
+//         const prevEdge = previousEdges.find(
+//           (prevEdge) => prevEdge.id === currEdge.id,
+//         );
+//         return (
+//           prevEdge && JSON.stringify(prevEdge) !== JSON.stringify(currEdge)
+//         );
+//       });
+
+//       setTrash({ nodes: trashNodes, edges: trashEdges });
+//       setNewContainer({ nodes: newNodes, edges: newEdges });
+//       setEditorContainer({ nodes: editedNodes, edges: editedEdges });
+//     }
+    
+//   }, [undoStack]);
+
+
+// console.log('trash', trash);
+// console.log('new', newContainer);
+// console.log('edit', editedContainer);
 
   const onNodesChange = useCallback(
     (changes: NodeChange[]) => {
@@ -371,23 +452,23 @@ const RoadmapEditor = () => {
     window.location.reload();
   };
   // Add event listener for beforeunload to prevent accidental refresh
-  // useEffect(() => {
-  //     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-  //       if (hasUnsavedChanges) {
+  useEffect(() => {
+      const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+        if (hasUnsavedChanges) {
 
-  //         e.preventDefault();
+          e.preventDefault();
 
-  //         // Prevent the default alert from showing
-  //         e.returnValue = '';
-  //         // Show custom modal instead
-  //         // setShowRefreshConfirm(true);
-  //       }
-  //       e.preventDefault();
-  //     };
+          // Prevent the default alert from showing
+          e.returnValue = '';
+          // Show custom modal instead
+          // setShowRefreshConfirm(true);
+        }
+        e.preventDefault();
+      };
 
-  //     window.addEventListener('beforeunload', handleBeforeUnload);
-  //     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  //   }, [hasUnsavedChanges]);
+      window.addEventListener('beforeunload', handleBeforeUnload);
+      return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    }, [hasUnsavedChanges]);
 
   const handlePublish = () => {
     // Here you would typically make an API call to publish the roadmap
@@ -468,17 +549,25 @@ const RoadmapEditor = () => {
   const onSave = useCallback(async () => {
     if (reactFlowInstance) {
       setIsSaving(true);
+      
       try {
-        const flow = reactFlowInstance.toObject();
-        // Simulate API call with setTimeout
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        localStorage.setItem('roadmap-flow', JSON.stringify(flow));
+        const saveRoadmapData = savvve;
+        await saveRoadmapData.execute({
+          nodes,
+          edges,
+          id:roadmapData.id
+        });
         setHasUnsavedChanges(false);
+        // Refresh the page after successful save
+        window.location.reload();
+      } catch (error) {
+        console.error('Failed to save roadmap:', error);
+        // Here you might want to show an error notification to the user
       } finally {
         setIsSaving(false);
       }
     }
-  }, [reactFlowInstance]);
+  }, [reactFlowInstance, nodes, edges]);
 
   const handleDeleteEdge = (edgeId: string) => {
     const newEdges = edges.filter((edge) => edge.id !== edgeId);
@@ -495,7 +584,6 @@ const RoadmapEditor = () => {
     const node = nodes.find((n) => n.id === nodeId);
     if (node) {
       setSelectedNode(node);
-      setIsEditNodeDialogOpen(true);
     }
   };
 
@@ -544,6 +632,7 @@ const RoadmapEditor = () => {
       isRightSidebarOpen,
     ],
   );
+  console.log('nodes', nodes);
   const onDragOver = useCallback((event: React.DragEvent) => {
     event.preventDefault();
     event.dataTransfer.dropEffect = 'move';
@@ -602,7 +691,9 @@ const RoadmapEditor = () => {
   }, [nodes, edges]);
   return (
     <div className={styles.editorContainer}>
-      <AnimatePresence>{isSaving && <LoadingOverlay text = {"saving"}/>}</AnimatePresence>
+      <AnimatePresence>
+        {isSaving && <LoadingOverlay text={'saving'} />}
+      </AnimatePresence>
 
       <EditorSideBar
         nodes={nodes}

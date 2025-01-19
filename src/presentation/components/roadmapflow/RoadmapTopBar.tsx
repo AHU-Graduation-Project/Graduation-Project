@@ -1,12 +1,12 @@
-import { useState, useEffect, useCallback } from "react";
-import { cn } from "../../../infrastructure/utils/cn";
+import { useState, useEffect, useCallback } from 'react';
+import { cn } from '../../../infrastructure/utils/cn';
 // import { PDFDownloadLink, Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
-import { useNavigate } from "react-router-dom";
-import { useAuthStore } from "../../../application/state/authStore";
-import html2canvas from "html2canvas";
-import ThemeIcon from "../UI/ThemeIcon";
-import { Image as ImageIcon, ChevronDown, ChevronUp } from "lucide-react";
-
+import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../../../application/state/authStore';
+import html2canvas from 'html2canvas';
+import ThemeIcon from '../UI/ThemeIcon';
+import { Image as ImageIcon, ChevronDown, ChevronUp } from 'lucide-react';
+import useTokenStore from '../../../application/state/tokenStore';
 export default function RoadmapTopBar({
   roadmap,
   progress,
@@ -20,34 +20,34 @@ export default function RoadmapTopBar({
   const isSelected = user?.selectedRoadmaps.includes(roadmap?.id);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [flowImage, setFlowImage] = useState<string | null>(null);
-
+  const { userRole } = useTokenStore();
   const handleAddToRoadmap = () => {
-    if (!user) {
-      navigate("/auth");
+    if (!userRole()) {
+      navigate('/auth');
       return;
     }
     selectRoadmap(roadmap.id);
   };
 
   const captureFlow = useCallback(async () => {
-    const flowElement = document.querySelector(".react-flow");
+    const flowElement = document.querySelector('.react-flow');
     if (flowElement) {
       try {
         const canvas = await html2canvas(flowElement as HTMLElement, {
           backgroundColor: null,
           scale: 2,
         });
-        const image = canvas.toDataURL("image/png");
+        const image = canvas.toDataURL('image/png');
         setFlowImage(image);
         // Trigger PNG download
-        const link = document.createElement("a");
+        const link = document.createElement('a');
         link.href = image;
         link.download = `${roadmap.title
           .toLowerCase()
-          .replace(/\s+/g, "-")}-roadmap.png`;
+          .replace(/\s+/g, '-')}-roadmap.png`;
         link.click();
       } catch (error) {
-        console.error("Error capturing flow:", error);
+        console.error('Error capturing flow:', error);
       }
     }
   }, [roadmap.title]);
@@ -59,8 +59,8 @@ export default function RoadmapTopBar({
       setLastScrollY(currentScrollY);
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, [lastScrollY]);
 
   if (!roadmap) return null;
@@ -68,8 +68,8 @@ export default function RoadmapTopBar({
   return (
     <div
       className={cn(
-        "fixed top-20 left-0 right-0 z-40 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 transition-transform duration-300",
-        isVisible ? "translate-y-0" : "-translate-y-full"
+        'fixed top-20 left-0 right-0 z-40 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 transition-transform duration-300',
+        isVisible ? 'translate-y-0' : '-translate-y-full',
       )}
     >
       <div className="max-w-7xl mx-auto p-4 md:p-6">
@@ -116,11 +116,13 @@ export default function RoadmapTopBar({
               />
             </div>
           </div>
-          <div className="flex items-center gap-3 text-sm md:text-base">
-          <button className="px-4 py-2 rounded-lg bg-theme text-white hover:opacity-90 transition-colors">
-            edit roadmap
-          </button>
-          </div>
+          {userRole() == 2 && (
+            <div className="flex items-center gap-3 text-sm md:text-base">
+              <button className="px-4 py-2 rounded-lg bg-theme text-white hover:opacity-90 transition-colors">
+                edit roadmap
+              </button>
+            </div>
+          )}
         </div>
 
         <button
