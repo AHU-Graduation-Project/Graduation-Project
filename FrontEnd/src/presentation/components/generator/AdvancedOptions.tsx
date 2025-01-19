@@ -1,7 +1,6 @@
 import { ChevronDown, ChevronUp } from "lucide-react";
 import Slider from "./customrange";
 import AnimationWrapper from "../UI/Animation/Animation";
-import ThemeIcon from "../UI/ThemeIcon";
 interface AdvancedOptionsProps {
   isOpen: boolean;
   onToggle: () => void;

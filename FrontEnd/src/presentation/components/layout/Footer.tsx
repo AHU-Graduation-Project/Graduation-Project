@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-gray-800 dark:bg-custom-gradient-dark text-gray-300 py-8 z-50">
+    <footer className="bg-gray-800 dark:bg-custom-gradient-dark text-gray-300 py-8 relative z-20">
       <div className="container mx-auto px-4 flex flex-col items-center space-y-6">
         {/* Logo Section */}
         <div>

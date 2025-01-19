@@ -214,7 +214,7 @@ const EXAMPLE_STRUCTURE = `{
 }`;
 
 const createSystemPrompt = (
-  options: GenerateOptions
+  options: GenerateOptions,
 ) => `You are a learning path generator. Generate a detailed roadmap in JSON format following these EXACT rules:
 
 1. Node Structure:
@@ -261,15 +261,15 @@ const createSystemPrompt = (
    - Each subtopic must connect to its parent topic
    - Multiple nodes can connect to the same target
 
-5. Sources and References:
-   - Include a "sources" array in the response containing:
+5. References:
+   - Include a "references" array in the response containing:
      * title: name of the resource
      * url: link to the resource
      * type: "documentation" | "course" | "article" | "book"
      * description: brief description of what this resource covers
 
 
-Ensure all information provided is backed by reputable sources and include them in the response.`;
+Ensure all information provided is backed by reputable references and include them in the response.`;
 
 export async function generateRoadmap(
   prompt: string,
@@ -313,15 +313,14 @@ export async function generateRoadmap(
         );
       }
 
-      // Extract sources if present
-      if (parsedData.sources) {
+      if (parsedData.references) {
         try {
-          const sourcesJson = parsedData.sources;
-          if (!Array.isArray(sourcesJson)) {
-            console.warn("Invalid sources array - expected an array");
+          const referencesJson = parsedData.references;
+          if (!Array.isArray(referencesJson)) {
+            console.warn('Invalid references array - expected an array');
           }
         } catch (e) {
-          console.warn("Error parsing sources:", e);
+          console.warn("Error parsing references:", e);
           parsedData.sources = [];
         }
       }
