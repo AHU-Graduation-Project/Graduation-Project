@@ -1,25 +1,25 @@
 import React from "react";
 
 type PersonalInfoProps = {
-  fname: string;
-  lname: string;
+  first_name: string;
+  last_name: string;
   email: string;
   isEmailConf: boolean;
   position: string;
-  onFirstNameChange: (value: string) => void;
-  onLastNameChange: (value: string) => void;
+  onfirst_nameChange: (value: string) => void;
+  onlast_nameChange: (value: string) => void;
   onEmailChange: (value: string) => void;
   onPositionChange: (value: string) => void;
 };
 
 const PersonalInfo: React.FC<PersonalInfoProps> = ({
-  fname,
-  lname,
+  first_name,
+  last_name,
   email,
   isEmailConf,
   position,
-  onFirstNameChange,
-  onLastNameChange,
+  onfirst_nameChange,
+  onlast_nameChange,
   onEmailChange,
   onPositionChange,
 }) => (
@@ -27,31 +27,31 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>
         <label
-          htmlFor="firstName"
+          htmlFor="first_name"
           className="block text-sm font-medium text-theme dark:text-white mb-1"
         >
           First Name
         </label>
         <input
           type="text"
-          id="firstName"
-          value={fname}
-          onChange={(e) => onFirstNameChange(e.target.value)}
+          id="first_name"
+          value={first_name}
+          onChange={(e) => onfirst_nameChange(e.target.value)}
           className="w-full border bg-transparent dark:bg-slate-800 dark:text-white border-gray-300 dark:border-gray-600 rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-theme dark:focus:ring-indigo-500"
         />
       </div>
       <div>
         <label
-          htmlFor="lastName"
+          htmlFor="last_name"
           className="block text-sm font-medium text-theme dark:text-white mb-1"
         >
           Last Name
         </label>
         <input
           type="text"
-          id="lastName"
-          value={lname}
-          onChange={(e) => onLastNameChange(e.target.value)}
+          id="last_name"
+          value={last_name}
+          onChange={(e) => onlast_nameChange(e.target.value)}
           className="w-full border bg-transparent dark:bg-slate-800 dark:text-white border-gray-300 dark:border-gray-600 rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-theme dark:focus:ring-indigo-500"
         />
       </div>

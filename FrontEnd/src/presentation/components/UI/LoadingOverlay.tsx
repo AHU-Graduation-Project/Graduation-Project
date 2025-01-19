@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 
-export default function SavingOverlay() {
+export default function LoadingOverlay({ text }: { text: string }) {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -21,7 +21,7 @@ export default function SavingOverlay() {
               <div className="absolute inset-0 w-16 h-16 border-4 border-t-theme rounded-full animate-[spin_1.5s_linear_infinite]" />
             </div>
             <p className="text-lg font-medium text-slate-900 dark:text-white animate-pulse">
-              Saving changes...
+              {text}
             </p>
           </div>
         </div>

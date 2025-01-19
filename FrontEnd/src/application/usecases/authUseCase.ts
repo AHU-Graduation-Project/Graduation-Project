@@ -32,8 +32,8 @@ export const loginUseCase = (email: string, password: string) => {
 export const signupUseCase = (
   email: string,
   password: string,
-  fname: string,
-  lname: string,
+  first_name: string,
+  last_name: string,
   position: string,
   level: string,
   country: string
@@ -42,8 +42,8 @@ export const signupUseCase = (
     const user = new UserEntity(
       "1",
       email,
-      fname,
-      lname,
+      first_name,
+      last_name,
       password,
       "", // Your image
       position,

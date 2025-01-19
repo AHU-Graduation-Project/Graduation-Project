@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 const Footer: React.FC = () => {
   return (
     <footer className="bg-gray-800 dark:bg-custom-gradient-dark text-gray-300 py-8 relative z-20">
@@ -18,12 +19,12 @@ const Footer: React.FC = () => {
         {/* Copyright and Links */}
         <div className="flex flex-col items-center space-y-2 text-sm ">
           <div className="flex justify-center space-x-4">
-            <a
-              href="/privacy-and-terms"
+            <Link
+              to="/term&privacy"
               className="hover:text-white dark:hover:text-gray-200 transition-colors"
             >
               Privacy & Terms
-            </a>
+            </Link>
           </div>
           <p className="text-center pt-4">
             © {new Date().getFullYear()} Devpath. All rights reserved.

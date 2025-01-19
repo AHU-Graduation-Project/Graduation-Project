@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SelectDropDown from "../UI/SelectDropDown";
-import { useAuthStore } from "../../../application/state/authStore";
 import Skills from "../profile/Skills";
+import { submitSurvey } from "../../../infrastructure/api/Servey";
 
 const countries = [
   "Jordan",
@@ -24,26 +24,45 @@ const levels = ["Junior", "Middle", "Senior", "Team Leader", "Project Manager"];
 
 const Survey = () => {
   const navigate = useNavigate();
-  const { user, updateUser } = useAuthStore();
-  const [position, setPosition] = useState(user?.position || "");
-  const [level, setLevel] = useState(user?.level || "");
-  const [country, setCountry] = useState(user?.country || "");
+  const [position, setPosition] = useState("");
+  const [level, setLevel] = useState("");
+  const [country, setCountry] = useState("");
+  const [skillList, setSkillList] = useState<string[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSurveySubmit = () => {
-    handleSaveChanges();
-    navigate("/");
+  const handleSurveySubmit = async () => {
+    console.log(skillList);
+    try {
+      setIsSubmitting(true);
+      setError("");
+
+      if (!position) {
+        setError("fill all the reqierments please!");
+        return;
+      }
+
+      const surveyData = {
+        position,
+        country,
+        level,
+        selectedSkills: skillList,
+      };
+
+      const response = await submitSurvey(surveyData);
+
+      if (response.success) {
+        navigate("/");
+      }
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "An error occurred");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleSkipSurvey = () => {
     navigate("/profile");
-  };
-
-  const handleSaveChanges = () => {
-    updateUser({
-      country,
-      position,
-      level,
-    });
   };
 
   return (
@@ -112,18 +131,19 @@ const Survey = () => {
               onChange={setLevel}
               className="appearance-none block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm 
                 bg-gray-700 text-white
-                focus:outline-none focus:ring-2  focus:ring-blue-400  focus:border-blue-400
+                focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400
                 sm:text-sm transition-colors duration-200"
             />
           </div>
 
           <div className="py-4">
-            <Skills />
+            <Skills skillList={skillList} setSkillList={setSkillList} />
           </div>
 
           <div className="flex justify-between pt-6">
             <button
               onClick={handleSkipSurvey}
+              disabled={isSubmitting}
               className="inline-flex justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 
                 rounded-md shadow-sm text-sm font-medium 
                 text-gray-300 
@@ -137,16 +157,21 @@ const Survey = () => {
             </button>
             <button
               onClick={handleSurveySubmit}
+              disabled={isSubmitting}
               className="inline-flex justify-center py-2 px-4 border border-transparent 
                 rounded-md shadow-sm text-sm font-medium text-white 
-                 bg-theme dark:hover:bg-blue-600 
+                bg-theme dark:hover:bg-blue-600 
                 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 
                 dark:focus:ring-offset-gray-800 dark:focus:ring-blue-400
                 transition-colors duration-200"
             >
-              Save & Continue
+              {isSubmitting ? "Saving..." : "Save & Continue"}
             </button>
           </div>
+
+          {error && (
+            <div className="mt-4 text-red-500 text-sm text-center">{error}</div>
+          )}
         </div>
       </div>
     </div>
