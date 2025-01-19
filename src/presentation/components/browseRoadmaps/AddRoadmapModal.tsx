@@ -10,10 +10,9 @@ import Spinner from '../UI/Spinner';
 interface AddRoadmapModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAdd?: (roadmap: any) => void; // Optional callback for parent component
 }
 
-const AddRoadmapModal = ({ isOpen, onClose, onAdd }: AddRoadmapModalProps) => {
+const AddRoadmapModal = ({ isOpen, onClose}: AddRoadmapModalProps) => {
   const [title, setTitle] = useState('');
   const [route, setRoute] = useState('');
   const [description, setDescription] = useState('');
@@ -110,11 +109,8 @@ const AddRoadmapModal = ({ isOpen, onClose, onAdd }: AddRoadmapModalProps) => {
         icon: selectedIcon, // Now sending the enum value directly
       });
 
-      // Call onAdd if provided
-      if (onAdd) {
-        onAdd(response.roadmap);
-      }
-
+      
+      console.log(response);
       // Reset form
       setTitle('');
       setRoute('');
@@ -123,7 +119,7 @@ const AddRoadmapModal = ({ isOpen, onClose, onAdd }: AddRoadmapModalProps) => {
       setSelectedIconIndex(null);
       
       onClose();
-      navigate(`/editor/${response.roadmap.slug}`);
+      navigate(`/editor/slug:${response.roadmap.id}`);
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Failed to create roadmap');
     } finally {

@@ -31,7 +31,7 @@ export default function AppRoutes() {
       />
       <Route path="/term&privacy" element={<TermsAndPrivacy />} />
       <Route path="/profile" element={<Profile />} />
-      <Route path="/editor" element={<Editor />} />
+      <Route path="/editor/:slug" element={<Editor />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
