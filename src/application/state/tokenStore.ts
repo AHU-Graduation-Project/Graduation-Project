@@ -25,6 +25,17 @@ enum permitions {
   EDITOR = 2,
 }
 
+const decodeJWT = (token: string) => {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    return JSON.parse(window.atob(base64));
+  } catch (error) {
+    console.error('Error decoding JWT:', error);
+    return null;
+  }
+};
+
 const useTokenStore = create<TokenState>()(
   persist(
     (set, get) => ({
@@ -35,12 +46,15 @@ const useTokenStore = create<TokenState>()(
       recoveryToken: null,
 
       setToken: (newToken: string, expirationMinutes: number = 60): void => {
+        const decodedToken = decodeJWT(newToken);
         const expiresAt = new Date(
           Date.now() + expirationMinutes * 60 * 1000
         ).toISOString();
+        
         set({
           token: newToken,
           expiresAt: expiresAt,
+          isEditor: decodedToken?.isEditor || false,
         });
       },
 
@@ -122,6 +136,7 @@ const useTokenStore = create<TokenState>()(
       partialize: (state) => ({
         token: state.token,
         expiresAt: state.expiresAt,
+        isEditor: state.isEditor,
         confirmToken: state.confirmToken,
         recoveryToken: state.recoveryToken,
       }),

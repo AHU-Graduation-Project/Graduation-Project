@@ -1,32 +1,51 @@
 // components/auth/ConfirmEmail.tsx
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { useConfirmEmailStore } from "../../store/useConfirmEmailStore";
+import { Alert } from "../UI/Alert";
+import { AlertDescription } from "../UI/Alert";
+import useTokenStore from "../../../application/state/tokenStore";
 
 const ConfirmEmail: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { status, error, confirmEmail } = useConfirmEmailStore();
+  const [error, setError] = useState<string | null>(null);
+  const [status, setStatus] = useState<'idle' | 'processing' | 'success' | 'error'>('idle');
+  const { token, setToken } = useTokenStore();
+
+  const confirmEmail = async (confirmationToken: string) => {
+    if (!confirmationToken) {
+      setError('Invalid confirmation token');
+      setStatus('error');
+      return;
+    }
+
+    try {
+      setStatus('processing');
+      // Add your API call here to confirm the email
+      // const response = await api.confirmEmail(confirmationToken);
+      setStatus('success');
+      setTimeout(() => {
+        navigate('/');
+      }, 3000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to confirm email');
+      setStatus('error');
+    }
+  };
 
   useEffect(() => {
-    const token = searchParams.get("token");
+    const urlToken = searchParams.get("token");
 
-    if (token) {
-      localStorage.setItem("confirmToken", token);
-      navigate("/auth/confirm-email", { replace: true });
+    if (urlToken) {
+      setToken(urlToken);
+      confirmEmail(urlToken);
+    } else if (token) {
+      confirmEmail(token);
     } else {
-      const storedToken = localStorage.getItem("confirmToken");
-      if (storedToken) {
-        confirmEmail(storedToken);
-      } else {
-        useConfirmEmailStore.setState({
-          status: "error",
-          error: "No confirmation token found",
-        });
-      }
+      setError('No confirmation token found');
+      setStatus('error');
     }
-  }, [searchParams, navigate, confirmEmail]);
+  }, [searchParams, token, setToken]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4">
@@ -52,3 +71,5 @@ const ConfirmEmail: React.FC = () => {
     </div>
   );
 };
+
+export default ConfirmEmail;
