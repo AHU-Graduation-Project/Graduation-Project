@@ -14,6 +14,17 @@ interface ApiNode {
   is_analysis_needed: boolean;
 }
 
+interface ApiEdge {
+  id: string;
+  source: number;
+  target: number;
+  source_handle: string;
+  target_handle: string;
+  line_style: string;
+  animation: boolean;
+  type: string;
+}
+
 export interface SaveRoadmapDataRequest {
   nodes: Node[];
   edges: Edge[];
@@ -42,6 +53,19 @@ const transformNodes = (nodes: Node[]): ApiNode[] => {
   }));
 };
 
+const transformEdges = (edges: Edge[]): ApiEdge[] => {
+  return edges.map(edge => ({
+    id: edge.id,
+    source: edge.source,
+    target: edge.target,
+    source_handle: edge.sourceHandle || '',
+    target_handle: edge.targetHandle || '',
+    line_style: edge.style?.strokeDasharray || '',
+    animation: edge.animated || false,
+    type: edge.type || ''
+  }));
+};
+
 export function SaveRoadmapData(): SaveRoadmapData {
   const { token } = useTokenStore();
 
@@ -53,12 +77,12 @@ export function SaveRoadmapData(): SaveRoadmapData {
 
       try {
         const transformedData = {
-          ...params,
-          nodes: transformNodes(params.nodes)
+          topics: transformNodes(params.nodes),
+          edges: transformEdges(params.edges)
         };
 
         const response = await axios.patch<SaveRoadmapDataResponse>(
-          `${import.meta.env.VITE_PATH_API}/roadmaps/roadmap/${params.id}`,
+          `${import.meta.env.VITE_PATH_API}/roadmaps/${params.id}`,
           transformedData,
           {
             headers: {

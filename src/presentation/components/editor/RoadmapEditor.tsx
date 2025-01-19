@@ -63,7 +63,7 @@ export type NodeData = {
 
 const initialNodes: Node[] = [
   {
-    id: '1',
+    id: '26',
     type: 'custom',
     position: { x: 250, y: 100 },
     data: {
@@ -93,7 +93,7 @@ const RoadmapEditor = () => {
   const [nodes, setNodes] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [roadmapData, setRoadmapData] = useState<RoadmapData>({
-    id : '1',
+    id: '27',
     title: 'My Roadmap',
     description: '## hello',
     resources: [],
