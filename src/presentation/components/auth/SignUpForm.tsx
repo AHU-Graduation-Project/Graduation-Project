@@ -51,30 +51,36 @@ export function SignupForm({
   };
 
   return (
-    <>
+    <div className="">
       <h2 className="text-3xl sm:text-2xl font-bold mb-4 text-theme">
         Join the Community
       </h2>
       <p className="text-sm mb-6 text-gray-400">
         Create an account and start your journey with us!
       </p>
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <InputField
-          id="signup-name"
-          type="text"
-          value={first_name}
-          onChange={(e) => setfirst_name(e.target.value)}
-          label="First Name"
-          placeholder="First Name"
-        />
-        <InputField
-          id="signup-last_name"
-          type="text"
-          value={last_name}
-          onChange={(e) => setlast_name(e.target.value)}
-          label="Last Name"
-          placeholder="Last Name"
-        />
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="flex gap-4">
+          <div className="flex-1">
+            <InputField
+              id="signup-name"
+              type="text"
+              value={first_name}
+              onChange={(e) => setfirst_name(e.target.value)}
+              label="First Name"
+              placeholder="First Name"
+            />
+          </div>
+          <div className="flex-1">
+            <InputField
+              id="signup-last_name"
+              type="text"
+              value={last_name}
+              onChange={(e) => setlast_name(e.target.value)}
+              label="Last Name"
+              placeholder="Last Name"
+            />
+          </div>
+        </div>
         <InputField
           id="signup-email"
           type="email"
@@ -107,7 +113,7 @@ export function SignupForm({
           Sign Up
         </button>
       </form>
-    </>
+    </div>
   );
 }
 

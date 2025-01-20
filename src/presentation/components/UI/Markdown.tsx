@@ -98,7 +98,6 @@ export default function Editor({ description, setDescription }: EditorProps) {
     onUpdate: ({ editor }) => {
       const markdownContent = editor.storage.markdown.getMarkdown();
       setDescription(markdownContent); // Update parent state with the new content
-      console.log(description);
     },
     editorProps: {
       attributes: {

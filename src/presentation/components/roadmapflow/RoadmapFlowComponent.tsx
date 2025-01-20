@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback  , useEffect} from "react";
 import { useParams } from "react-router-dom";
 import { roadmaps } from "../../../data/roadmaps";
 import { useAuthStore } from "../../../application/state/authStore";
@@ -8,14 +8,14 @@ import ModalsAndPanels from "./ModalsAndPanels";
 import { initialNodes, initialEdges } from "../../../data/testRoadmap";
 import FlowArea from "./FlowArea";
 import FloatingMenu from "./FloatingMenu";
-
+import { GetRoadmapById } from "../../../infrastructure/api/getroadmapbyid";
 const nodeTypes = {
   custom: CustomNode,
 };
 
 export default function RoadmapFlowComponent() {
   const { id } = useParams();
-  const roadmap = roadmaps.find((r) => r.id === id);
+  const roadmap = roadmaps[0]
   const [selectedNode, setSelectedNode] = useState<any>(null);
   const [showInfo, setShowInfo] = useState(false);
   const [showChat, setShowChat] = useState(false);
@@ -27,7 +27,28 @@ export default function RoadmapFlowComponent() {
   const onNodesChange = useCallback(() => {}, []);
   const onEdgesChange = useCallback(() => {}, []);
 
-  const nodes = initialNodes.map((node) => {
+
+    const [roadmapData, setRoadmapData] = useState<any>(null);
+    const [nodess, setNodes] = useState<any[]>([]);
+    const [edges, setEdges] = useState<any[]>([]);
+
+    const getRoadmap = GetRoadmapById();
+    useEffect(() => {
+      const fetchRoadmap = async () => {
+        try {
+          const response = await getRoadmap.execute(id);
+          const { roadmap } = response;
+          setRoadmapData(roadmap);
+          setNodes(roadmap.topics as unknown as Node[]);
+          setEdges(roadmap.edges as unknown as Edge[]);
+        } catch (error) {
+          console.error('Failed to fetch roadmap:', error);
+        }
+      };
+
+      fetchRoadmap();
+    }, [id]);
+  const nodes = nodess.map((node) => {
     if (!node?.data) {
       console.error("Node data is missing:", node);
       return node;
@@ -92,13 +113,13 @@ export default function RoadmapFlowComponent() {
         completedNodes={completedNodes}
         totalNodes={totalNodes}
         nodes={nodes}
-        edges={initialEdges}
+        edges={edges}
       />
 
       {/* Main Flow Area */}
       <FlowArea
         nodes={nodes}
-        edges={initialEdges}
+        edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         nodeTypes={nodeTypes}

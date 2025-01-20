@@ -53,7 +53,7 @@ export default function ConfirmPage() {
        { error ? (
           <div className="space-y-4">
             <h2 className="text-red-500 text-xl">Confirmation Failed</h2>
-            <p className="text-white">You are a bitch</p>
+            <p className="text-white">{error}</p>
           </div>
         ) : success ? (
           <div className="space-y-4">

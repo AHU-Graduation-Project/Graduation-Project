@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Eye, EyeOff, CheckCircle2, XCircle } from "lucide-react";
+import { XCircle } from "lucide-react";
 
 const PasswordValidation = ({ password, onValidationChange }) => {
   const [validations, setValidations] = useState({
@@ -12,11 +12,11 @@ const PasswordValidation = ({ password, onValidationChange }) => {
 
   const validatePassword = (pass) => {
     const checks = {
-      length: pass.length >= 8,
-      uppercase: /[A-Z]/.test(pass),
       lowercase: /[a-z]/.test(pass),
+      uppercase: /[A-Z]/.test(pass),
       number: /[0-9]/.test(pass),
-      special: /[!@#$%^&*(),.?":{}|<>-_]/.test(pass),
+      special: /[-!@#$%^&*()_+\[\]{};':"\\|,.<>\/?]+/.test(pass),
+      length: pass.length >= 8,
     };
 
     setValidations(checks);
@@ -27,56 +27,29 @@ const PasswordValidation = ({ password, onValidationChange }) => {
     validatePassword(password);
   }, [password]);
 
-  const renderCheck = (isValid) => {
-    return isValid ? (
-      <CheckCircle2 className="w-4 h-4 text-green-500" />
-    ) : (
-      <XCircle className="w-4 h-4 text-red-500" />
-    );
+  const getFirstFailedValidation = () => {
+    const messages = {
+      length: "At least 8 characters",
+      uppercase: "At least one uppercase letter",
+      lowercase: "At least one lowercase letter",
+      number: "At least one number",
+      special: "At least one special character",
+    };
+
+    const firstFailed = Object.entries(validations).find(([_, isValid]) => !isValid);
+    return firstFailed ? { rule: firstFailed[0], message: messages[firstFailed[0]] } : null;
   };
+
+  const failedValidation = getFirstFailedValidation();
 
   return (
     <div className="space-y-1 text-xs">
-      <div className="flex items-center gap-2">
-        {renderCheck(validations.length)}
-        <span
-          className={validations.length ? "text-green-500" : "text-red-500"}
-        >
-          At least 8 characters
-        </span>
-      </div>
-      <div className="flex items-center gap-2">
-        {renderCheck(validations.uppercase)}
-        <span
-          className={validations.uppercase ? "text-green-500" : "text-red-500"}
-        >
-          At least one uppercase letter
-        </span>
-      </div>
-      <div className="flex items-center gap-2">
-        {renderCheck(validations.lowercase)}
-        <span
-          className={validations.lowercase ? "text-green-500" : "text-red-500"}
-        >
-          At least one lowercase letter
-        </span>
-      </div>
-      <div className="flex items-center gap-2">
-        {renderCheck(validations.number)}
-        <span
-          className={validations.number ? "text-green-500" : "text-red-500"}
-        >
-          At least one number
-        </span>
-      </div>
-      <div className="flex items-center gap-2">
-        {renderCheck(validations.special)}
-        <span
-          className={validations.special ? "text-green-500" : "text-red-500"}
-        >
-          At least one special character
-        </span>
-      </div>
+      {failedValidation && (
+        <div className="flex items-center gap-2">
+          <XCircle className="w-4 h-4 text-red-500" />
+          <span className="text-red-500">{failedValidation.message}</span>
+        </div>
+      )}
     </div>
   );
 };

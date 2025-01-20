@@ -335,12 +335,12 @@ export default function EditNodesSideBar({
               ))}
             </div>
           </div>
-          <button
+          {/* <button
             className={styles.rightSidebarButtonResources}
             onClick={() => setIsResourcesDialogOpen(true)}
           >
             Add resources
-          </button>
+          </button> */}
           <button
             className={styles.rightSidebarButton}
             onClick={() => handleDeleteNode(selectedNode.id)}
