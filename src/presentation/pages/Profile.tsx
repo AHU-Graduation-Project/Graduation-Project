@@ -2,13 +2,12 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import UserInfo from "../components/profile/UserInfo";
 import EditProfile from "../components/profile/EditProfile";
-import { useAuthStore } from "../../application/state/authStore";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import { motion } from "framer-motion";
-import Cv from "../components/profile/CvModal";
+import Cv from "../components/profile/CVMain";
 import useTokenStore from "../../application/state/tokenStore";
-// import BackgroundRays from "../components/OverView/BackgroundRays";
+import ActiveModule from "../components/profile/CVCreation/ActiveModule";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -54,6 +53,7 @@ export default function Profile() {
           >
             Create CV
           </button>
+          {/* <ActiveModule /> */}
 
           {showCv ? <Cv /> : null}
         </motion.div>
