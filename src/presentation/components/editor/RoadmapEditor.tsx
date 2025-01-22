@@ -31,7 +31,7 @@ import AddResourceModal from './AddResourcesModal';
 import { AnimatePresence } from 'framer-motion';
 import LoadingOverlay from '../UI/LoadingOverlay';
 import { SaveRoadmapData } from '../../../infrastructure/api/SaveRoadmapData';
-
+import Loader from '../UI/loader/Loading';
 const nodeTypes = {
   custom: CustomNodeEditor,
 };
@@ -84,7 +84,7 @@ const edgeTypes: EdgeTypes = {
 
 const RoadmapEditor = () => {
   const { slug } = useParams(); // Extract the ID from the route
-  const [getingRoadmap, setGetingRoadmap] = useState(false);
+  const [getingRoadmap, setGetingRoadmap] = useState(true);
   const isDragging = useRef(false);
   const [selectingPrerequisite, setSelectingPrerequisite] = useState(false);
   const [isResourcesDialogOpen, setIsResourcesDialogOpen] = useState(false);
@@ -708,116 +708,129 @@ const RoadmapEditor = () => {
     }
   }, [nodes, edges]);
 
-  return (
-    <div className={styles.editorContainer}>
-      <AnimatePresence>
-        {isSaving && <LoadingOverlay text={'saving'} />}
-      </AnimatePresence>
+ return getingRoadmap ? (
+   <Loader />
+ ) : (
+   <div className={styles.editorContainer}>
+     <AnimatePresence>
+       {isSaving && <LoadingOverlay text="saving" />}
+     </AnimatePresence>
 
-      <EditorSideBar
-        nodes={nodes}
-        styles={styles}
-        isSidebarOpen={isSidebarOpen}
-        setIsSidebarOpen={setIsSidebarOpen}
-        setIsEditDialogOpen={setIsEditDialogOpen}
-        handleEditNode={handleEditNode}
-        isPublished={isPublished}
-        onPublish={handlePublish}
-        onSave={onSave}
-        setIsResourcesDialogOpen={setIsResourcesDialogOpen}
-        onDragStart={(e, type) => {
-          e.dataTransfer.setData('application/reactflow', type);
-        }}
-        setSelectedNode={setSelectedNode}
-        setShowRightSidebar={setIsRightSidebarOpen}
-        visibility={roadmapData.visibility}
-        roadmapId={roadmapData.id}
-      />
+     {/* Sidebar for editing the roadmap */}
+     <EditorSideBar
+       nodes={nodes}
+       styles={styles}
+       isSidebarOpen={isSidebarOpen}
+       setIsSidebarOpen={setIsSidebarOpen}
+       setIsEditDialogOpen={setIsEditDialogOpen}
+       handleEditNode={handleEditNode}
+       isPublished={isPublished}
+       onPublish={handlePublish}
+       onSave={onSave}
+       setIsResourcesDialogOpen={setIsResourcesDialogOpen}
+       onDragStart={(e, type) => {
+         e.dataTransfer.setData('application/reactflow', type);
+       }}
+       setSelectedNode={setSelectedNode}
+       setShowRightSidebar={setIsRightSidebarOpen}
+       visibility={roadmapData.visibility}
+       roadmapId={roadmapData.id}
+     />
 
-      <div className={styles.flowContainer}>
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onConnect={onConnect}
-          onDragOver={onDragOver}
-          onDrop={onDrop}
-          onNodeClick={handleNodeClick}
-          onEdgeClick={handleEdgeClick}
-          nodeTypes={nodeTypes}
-          edgeTypes={edgeTypes}
-          onInit={setReactFlowInstance}
-          onNodeDragStop={onNodeDragStop}
-          className={selectingPrerequisite ? 'cursor-crosshair' : ''}
-          fitView
-        >
-          <Background />
-          <Controls />
-          <MiniMap />
-          <HelperLinesRenderer
-            horizontal={helperLines.horizontal}
-            vertical={helperLines.vertical}
-            spacingGuides={helperLines.spacingGuides}
-            centerGuides={helperLines.centerGuides}
-          />
-        </ReactFlow>
-        {selectingPrerequisite && (
-          <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-theme text-white px-4 py-2 rounded-lg shadow-lg bg-theme-shadow animate-breath z-50">
-            Click a node to add it as a prerequisite
-          </div>
-        )}
-      </div>
+     {/* ReactFlow container */}
+     <div className={styles.flowContainer}>
+       <ReactFlow
+         nodes={nodes}
+         edges={edges}
+         onNodesChange={onNodesChange}
+         onEdgesChange={onEdgesChange}
+         onConnect={onConnect}
+         onDragOver={onDragOver}
+         onDrop={onDrop}
+         onNodeClick={handleNodeClick}
+         onEdgeClick={handleEdgeClick}
+         nodeTypes={nodeTypes}
+         edgeTypes={edgeTypes}
+         onInit={setReactFlowInstance}
+         onNodeDragStop={onNodeDragStop}
+         className={selectingPrerequisite ? 'cursor-crosshair' : ''}
+         fitView
+       >
+         <Background />
+         <Controls />
+         <MiniMap />
+         <HelperLinesRenderer
+           horizontal={helperLines.horizontal}
+           vertical={helperLines.vertical}
+           spacingGuides={helperLines.spacingGuides}
+           centerGuides={helperLines.centerGuides}
+         />
+       </ReactFlow>
 
-      {selectedNode && (
-        <EditNodesSideBar
-          styles={styles}
-          selectedNode={selectedNode}
-          handleUpdateNodeFromSidebar={handleUpdateNodeFromSidebar}
-          handleDeleteNode={handleDeleteNode}
-          allNodes={nodes}
-          setSelectingPrerequisite={setSelectingPrerequisite}
-          rightSidebarRef={rightSidebarRef}
-          isRightSidebarOpen={isRightSidebarOpen}
-        />
-      )}
+       {/* Prerequisite selection tooltip */}
+       {selectingPrerequisite && (
+         <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-theme text-white px-4 py-2 rounded-lg shadow-lg bg-theme-shadow animate-breath z-50">
+           Click a node to add it as a prerequisite
+         </div>
+       )}
+     </div>
 
-      {selectedEdge && (
-        <EditEdgesSideBar
-          styles={styles}
-          selectedEdge={selectedEdge}
-          setEdges={setEdges}
-          handleUpdateEdgeFromSidebar={handleUpdateEdgeFromSidebar}
-          handleDeleteEdge={handleDeleteEdge}
-          rightSidebarRef={rightSidebarRef}
-          isRightSidebarOpen={isRightSidebarOpen}
-        />
-      )}
+     {/* Right sidebar for editing nodes */}
+     {selectedNode && (
+       <EditNodesSideBar
+         styles={styles}
+         selectedNode={selectedNode}
+         handleUpdateNodeFromSidebar={handleUpdateNodeFromSidebar}
+         handleDeleteNode={handleDeleteNode}
+         allNodes={nodes}
+         setSelectingPrerequisite={setSelectingPrerequisite}
+         rightSidebarRef={rightSidebarRef}
+         isRightSidebarOpen={isRightSidebarOpen}
+       />
+     )}
 
-      <EditRoadmapModal
-        isOpen={isEditDialogOpen}
-        onClose={() => setIsEditDialogOpen(false)}
-        roadmapData={roadmapData}
-        onSave={setRoadmapData}
-      />
+     {/* Right sidebar for editing edges */}
+     {selectedEdge && (
+       <EditEdgesSideBar
+         styles={styles}
+         selectedEdge={selectedEdge}
+         setEdges={setEdges}
+         handleUpdateEdgeFromSidebar={handleUpdateEdgeFromSidebar}
+         handleDeleteEdge={handleDeleteEdge}
+         rightSidebarRef={rightSidebarRef}
+         isRightSidebarOpen={isRightSidebarOpen}
+       />
+     )}
 
-      <ConfirmRefreshModal
-        isOpen={showRefreshConfirm}
-        onClose={() => setShowRefreshConfirm(false)}
-        onRefresh={handleRefreshAnyway}
-        onSaveAndRefresh={handleSaveAndRefresh}
-      />
-      <AddResourceModal
-        isOpen={isResourcesDialogOpen}
-        onClose={() => setIsResourcesDialogOpen(false)}
-        onSave={(resources) => {
-          // Handle saving resources
-          console.log('Saving resources:', resources);
-          setIsResourcesDialogOpen(false);
-        }}
-      />
-    </div>
-  );
+     {/* Edit roadmap modal */}
+     <EditRoadmapModal
+       isOpen={isEditDialogOpen}
+       onClose={() => setIsEditDialogOpen(false)}
+       roadmapData={roadmapData}
+       onSave={setRoadmapData}
+     />
+
+     {/* Confirm refresh modal */}
+     <ConfirmRefreshModal
+       isOpen={showRefreshConfirm}
+       onClose={() => setShowRefreshConfirm(false)}
+       onRefresh={handleRefreshAnyway}
+       onSaveAndRefresh={handleSaveAndRefresh}
+     />
+
+     {/* Add resource modal */}
+     <AddResourceModal
+       isOpen={isResourcesDialogOpen}
+       onClose={() => setIsResourcesDialogOpen(false)}
+       onSave={(resources) => {
+         // Handle saving resources
+         console.log('Saving resources:', resources);
+         setIsResourcesDialogOpen(false);
+       }}
+     />
+   </div>
+ );
+
 };
 
 export default RoadmapEditor;

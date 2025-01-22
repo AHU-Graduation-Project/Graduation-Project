@@ -32,7 +32,6 @@ const EditRoadmapModal = ({
   onClose,
   roadmapData,
 }: EditRoadmapModalProps) => {
-  console.log(roadmapData);
   const [title, setTitle] = useState(roadmapData.title);
   const [route, setRoute] = useState(roadmapData.slug);
   const [description, setDescription] = useState(roadmapData.description);
@@ -70,7 +69,7 @@ const EditRoadmapModal = ({
   }, [isOpen]);
 
   useEffect(() => {
-    if (!route) {
+    if (!isOpen || !route) {
       setRouteError('');
       setIsCheckingRoute(false);
       return;
@@ -83,7 +82,6 @@ const EditRoadmapModal = ({
         const response = await checkSlug(route);
         if (response.success) {
           setIsRouteAvailable(true);
-
           setRouteError('');
         } else {
           setRouteError(response.message);
@@ -98,7 +96,7 @@ const EditRoadmapModal = ({
     }, 1000);
 
     return () => clearTimeout(timeoutId);
-  }, [route]);
+  }, [route, isOpen]);
 
   // Set default icon when component mounts
   useEffect(() => {
@@ -253,10 +251,10 @@ const EditRoadmapModal = ({
             className="px-4 py-2 rounded-md bg-theme text-white hover:bg-theme disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
             onClick={handleEdit}
             disabled={
-              !title ||
-              !route ||
-              !description ||
-              !selectedIcon ||
+              !title &&
+              !route &&
+              !description &&
+              !selectedIcon &&
               !!routeError ||
               isCheckingRoute ||
               isLoading

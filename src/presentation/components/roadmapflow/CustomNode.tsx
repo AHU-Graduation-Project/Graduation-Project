@@ -117,6 +117,9 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
     left: data.type === 'subtopic' || data.type === 'topic',
     right: data.type === 'subtopic' || data.type === 'topic',
   };
+    const truncateLabel = (label: string) => {
+      return label.length > 15 ? `${label.substring(0, 15)}...` : label;
+    };
 
   return (
     <>
@@ -142,7 +145,7 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
                 {isCompleted ? 'Mark Incomplete' : 'Mark Complete'}
               </button>
             )}
-            
+
             <button
               onClick={(e) => handleAction('courses', e)}
               className="w-full px-4 py-2 text-left text-white hover:bg-white/10 transition-colors text-sm rounded-lg"
@@ -158,21 +161,21 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
         animate={
           isAnimating
             ? {
-                scale: [1, 1.1, 1], 
+                scale: [1, 1.1, 1],
                 rotate: [0, 5, -5, 0],
               }
-            : {} 
-        } 
-        transition={{ duration: 0.5 }} 
+            : {}
+        }
+        transition={{ duration: 0.5 }}
         className={cn(
-          'px-6 py-3 shadow-lg rounded-xl border-2 relative hover:scale-105 transition-transform',
+          'px-6 py-3 text-center border-2 shadow-lg rounded-xl relative hover:scale-105 transition-transform',
           'min-w-[200px]',
-          data.type === 'topic' 
-            ? 'rounded-2xl text-lg font-bold tracking-wide shadow-xl border-theme'
+          data.type === 'topic'
+            ? 'rounded-2xl  font-bold tracking-wide shadow-xl border-theme'
             : 'text-sm font-medium tracking-normal shadow-md scale-90 border-dashed',
           !shouldBeActive && 'opacity-50 bg-slate-800/50',
           shouldBeActive &&
-            (isCompleted 
+            (isCompleted
               ? data.type === 'topic'
                 ? 'bg-theme animate-completion'
                 : 'bg-transparent bg-theme-shadow bg-theme-blur'
@@ -218,42 +221,58 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
                 : 'text-slate-400',
             )}
           >
-            {data.label}
+            {truncateLabel(data.label)}
           </h3>
         </div>
 
-        {showHandles.top && (
-          <Handle
-            type="target"
-            position={Position.Top}
-            id="top"
-            className="border-none bg-transparent"
-          />
-        )}
-        {showHandles.bottom && (
-          <Handle
-            type="source"
-            position={Position.Bottom}
-            id="bottom"
-            className="border-none bg-transparent"
-          />
-        )}
-        {showHandles.left && (
-          <Handle
-            type={data.type === 'subtopic' ? 'target' : 'source'}
-            position={Position.Left}
-            id="left"
-            className="border-none bg-transparent"
-          />
-        )}
-        {showHandles.right && (
-          <Handle
-            type={data.type === 'subtopic' ? 'target' : 'source'}
-            position={Position.Right}
-            id="right"
-            className="border-none bg-transparent"
-          />
-        )}
+        <Handle
+          type="target"
+          position={Position.Left}
+          id="left-target"
+          className="border-none bg-transparent"
+        />
+        <Handle
+          type="source"
+          position={Position.Left}
+          id="left-source"
+          className="border-none bg-transparent"
+        />
+        <Handle
+          type="target"
+          position={Position.Right}
+          id="right-target"
+          className="border-none bg-transparent"
+        />
+        <Handle
+          type="source"
+          position={Position.Right}
+          id="right-source"
+          className="border-none bg-transparent"
+        />
+        <Handle
+          type="target"
+          position={Position.Top}
+          id="top-target"
+          className="border-none bg-transparent"
+        />
+        <Handle
+          type="source"
+          position={Position.Top}
+          id="top-source"
+          className="border-none bg-transparent"
+        />
+        <Handle
+          type="target"
+          position={Position.Bottom}
+          id="bottom-target"
+          className="border-none bg-transparent"
+        />
+        <Handle
+          type="source"
+          position={Position.Bottom}
+          id="bottom-source"
+          className="border-none bg-transparent"
+        />
       </motion.div>
     </>
   );

@@ -84,6 +84,9 @@ export default {
             "linear-gradient(to right, var(--theme-from), var(--theme-to))",
           "--theme-from": "#3B82F6",
           "--theme-to": "#8B5CF6",
+          "--loader-bg": "var(--theme-from)",
+          "--loader-glow": "var(--theme-to)",
+          "--loader-ball": "var(--theme-from)"
         },
       });
 

@@ -11,9 +11,6 @@ import { useParams } from 'react-router-dom';
 export default function RoadmapTopBar({
   roadmap,
   progress,
-  completedNodes,
-  totalNodes,
-  onAddToRoadmap,
 }: RoadmapTopBarProps) {
   const [isVisible, setIsVisible] = useState(true);
   const { user, selectRoadmap } = useAuthStore();
@@ -22,6 +19,8 @@ export default function RoadmapTopBar({
   const [lastScrollY, setLastScrollY] = useState(0);
   const [flowImage, setFlowImage] = useState<string | null>(null);
   const { userRole } = useTokenStore();
+  console.log(roadmap);
+
   const handleAddToRoadmap = () => {
     if (!userRole()) {
       navigate('/auth');
@@ -66,7 +65,6 @@ export default function RoadmapTopBar({
   }, [lastScrollY]);
 
   if (!roadmap) return null;
-
   return (
     <div
       className={cn(
@@ -80,9 +78,7 @@ export default function RoadmapTopBar({
             <h1 className="text-2xl md:text-3xl font-bold text-theme text-transparent bg-clip-text mb-2">
               {roadmap.title}
             </h1>
-            <p className="text-sm md:text-base text-slate-600 dark:text-slate-400">
-              {roadmap.description}
-            </p>
+          
           </div>
           <div className="flex items-center gap-3">
             {!isSelected && (
