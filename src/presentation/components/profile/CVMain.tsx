@@ -147,8 +147,8 @@ export const CVForm: React.FC = () => {
               onClick={() => setActiveTab(tab.id)}
               className={`px-4 py-2 rounded-md transition-colors ${
                 activeTab === tab.id
-                  ? "bg-theme text-white"
-                  : "bg-gray-200 text-gray-700 hover:bg-gray-100"
+                  ? " text-theme border-b border-solid border-theme"
+                  : "bg-transparent text-gray-700 dark:text-gray-400 "
               }`}
             >
               {tab.label}
@@ -251,7 +251,7 @@ export const CVForm: React.FC = () => {
       <div className="mt-4">
         <button
           onClick={() => setIsModalOpen(true)}
-          className="bg-theme text-white py-2 px-4 rounded hover:bg-opacity-90 transition-colors"
+          className="bg-gray-300 text-gray-600 py-2 px-4 rounded hover:bg-opacity-90 transition-colors"
         >
           Preview CV
         </button>
