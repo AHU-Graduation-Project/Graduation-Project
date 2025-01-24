@@ -1,4 +1,4 @@
-import { LucideIcon } from "lucide-react";
+import { IconComponents, IconType } from "../../../domain/enums/IconType";
 import { Link } from "react-router-dom";
 import ThemeIcon from "../UI/ThemeIcon";
 import { useThemeStore } from "../../../store/themeStore";
@@ -9,7 +9,7 @@ interface RoadmapCardProps {
   id: string;
   title: string;
   description: string;
-  icon: LucideIcon;
+  icon: IconType;
 }
 
 export default function RoadmapCard({
@@ -19,11 +19,11 @@ export default function RoadmapCard({
   icon,
 }: RoadmapCardProps) {
   const { currentTheme } = useThemeStore();
+  const IconComponent = IconComponents[icon];
 
   return (
     <AnimationWrapper
-    
-    animationType={1}
+      animationType={1}
       className={cn(
         "group relative overflow-hidden rounded-xl bg-gray-50 dark:bg-slate-800 hover:shadow-xl transition-all duration-300"
       )}
@@ -44,7 +44,7 @@ export default function RoadmapCard({
                 "group-hover:scale-110"
               )}
             >
-              <ThemeIcon icon={icon} className="w-6 h-6" />
+              <ThemeIcon icon={IconComponent} className="w-6 h-6" />
             </div>
             <h3 className="text-xl font-bold group-hover:text-theme transition-colors duration-300">
               {title}
