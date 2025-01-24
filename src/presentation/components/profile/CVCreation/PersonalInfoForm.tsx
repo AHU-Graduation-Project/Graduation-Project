@@ -87,7 +87,7 @@ export const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({
       </div>
       <button
         type="submit"
-        className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors"
+        className="w-full bg-theme text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors"
       >
         Save Personal Info
       </button>

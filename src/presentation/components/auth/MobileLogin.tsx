@@ -1,97 +1,81 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { InputField } from "../UI/TextInput";
-import { useNavigate } from "react-router-dom";
-import SignupForm from "./SignUpForm";
 import Login from "../../../infrastructure/api/login";
 import useTokenStore from "../../../application/state/tokenStore";
+import { useNavigate } from "react-router-dom";
 import PasswordReset from "./PasswordReset";
-import classnames from "classnames";
-import styles from "./LoginForm.module.scss";
 
-export default function LoginForm({ setChangePassword, setShowServey }) {
+const MobileLoginForm = ({ setChangePassword }) => {
   const { setToken } = useTokenStore();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [isSign, setIsSign] = useState(false);
-  const [showPasswordReset, setShowPasswordReset] = useState(false);
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showPasswordReset, setShowPasswordReset] = useState(false);
 
-  const handleSignToggle = () => {
-    setIsSign((prev) => !prev);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError(null);
+    setError("");
 
-    if (password.length < 8) {
-      setError("password must be at least 8 characters long");
+    if (!email || !password) {
+      setError("Please fill in all fields.");
       return;
     }
-    if (!password || !email) {
-      setError("Please check for all input fields!");
+
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters long.");
       return;
     }
 
     try {
       setIsLoading(true);
-      const response = await Login({
-        email,
-        password,
-      });
+      const response = await Login({ email, password });
 
       if (response.success) {
         setToken(response.token);
-
         navigate("/");
+      } else {
+        setError(response.message || "Login failed");
       }
     } catch (err) {
-      console.log("err", err);
-      setError(err instanceof Error ? err.message : "Registration failed");
+      setError(err instanceof Error ? err.message : "Login failed");
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="form-container">
+    <div className="relative mobile-login-container p-4 z-20">
       {showPasswordReset ? (
         <PasswordReset
           setChangePassword={setChangePassword}
           onClose={() => setShowPasswordReset(false)}
         />
-      ) : isSign ? (
-        <SignupForm setShowServey={setShowServey} />
       ) : (
         <>
-          <h2 className="text-3xl sm:text-2xl font-bold mb-4 text-theme">
-            Welcome Back
-          </h2>
-          <p className="text-sm mb-6 text-gray-400">
-            Sign in to continue exploring our platform!
-          </p>
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <h2 className="text-2xl font-bold mb-4 text-theme">Welcome Back</h2>
+          <form onSubmit={handleSubmit} className="space-y-4">
             <InputField
-              id="login-email"
+              id="mobile-login-email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               label="Email Address"
-              placeholder="Email Address"
+              placeholder="Enter your email"
             />
             <InputField
-              id="login-password"
+              id="mobile-login-password"
               type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               label="Password"
-              placeholder="Password"
+              placeholder="Enter your password"
               showToggle
               inputClickHandler={() => setShowPassword((current) => !current)}
             />
+
             <div className="flex justify-between items-center">
               <div>
                 <input type="checkbox" className="mr-2" />
@@ -107,32 +91,21 @@ export default function LoginForm({ setChangePassword, setShowServey }) {
                 </button>
               </div>
             </div>
-            {error && <p className="text-sm text-red-500">{error}</p>}
+
+            {error && <p className="text-sm text-red-500 mt-2">{error}</p>}
+
             <button
               type="submit"
               disabled={isLoading}
-              className={classnames({
-                [styles.loginButton]: true,
-                [styles.disabled]: isLoading,
-              })}
+              className="w-full bg-theme text-white py-2 rounded-lg hover:opacity-90 transition-all"
             >
-              {isLoading ? "Login..." : "Login"}
+              {isLoading ? "Logging in..." : "Login"}
             </button>
           </form>
         </>
       )}
-      <div className="sm:hidden mt-4">
-        <span>
-          {isSign ? "Already have an account? " : "Don't have an account? "}
-        </span>
-        <button
-          type="button"
-          onClick={handleSignToggle}
-          className="text-theme transition"
-        >
-          {isSign ? "Login" : "Sign Up"}
-        </button>
-      </div>
     </div>
   );
-}
+};
+
+export default MobileLoginForm;

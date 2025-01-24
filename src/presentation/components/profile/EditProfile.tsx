@@ -1,11 +1,20 @@
-import React, { useState } from "react";
-import { useAuthStore } from "../../../application/state/authStore";
+import React, { useState, useEffect } from "react";
 import ProfilePicture from "./ProfilePicture";
 import PersonalInfo from "./PersonalInfo";
 import DropdownSection from "./DropDownSection";
 import AboutMe from "./AboutMe";
 import Skills from "./Skills";
 import ChangePassword from "./ChangePassword";
+
+// Mock API function (apiMock.js)
+export const fetchUserData = async () => {
+  const response = await fetch("/src/infrastructure/api/profile.json");
+  console.log(response);
+  if (!response.ok) {
+    throw new Error("Failed to fetch user data");
+  }
+  return response.json();
+};
 
 const countries = [
   "Jordan",
@@ -26,35 +35,42 @@ const countries = [
 const levels = ["Junior", "Middle", "Senior", "Team Leader", "Project Manager"];
 
 const EditProfile: React.FC = () => {
-  const { user, updateUser } = useAuthStore();
   const [showChangePassword, setShowChangePassword] = useState(false);
-  const [first_name, setfirst_name] = useState(user?.first_name || "");
-  const [last_name, setlast_name] = useState(user?.last_name || "");
-  const [skillList, setSkillList] = useState(user?.selectedSkills || []);
-  const [email, setEmail] = useState(user?.email || "");
-  const [aboutme, setAboutMe] = useState(user?.aboutme || "");
-  const [isEmailConf, setIsEmailConf] = useState(
-    user?.isEmailConformed || false
-  );
-  const [position, setPosition] = useState(user?.position || "");
-  const [level, setLevel] = useState(user?.level || "");
-  const [country, setCountry] = useState(user?.country || "");
-  const [profilePicture, setProfilePicture] = useState(
-    user?.profilePicture || ""
-  );
+  const [first_name, setfirst_name] = useState("");
+  const [last_name, setlast_name] = useState("");
+  const [skillList, setSkillList] = useState<string[]>([]);
+  const [email, setEmail] = useState("");
+  const [aboutme, setAboutMe] = useState("");
+  const [isEmailConf, setIsEmailConf] = useState(false);
+  const [position, setPosition] = useState("");
+  const [level, setLevel] = useState("");
+  const [country, setCountry] = useState("");
+  const [profilePicture, setProfilePicture] = useState("");
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
+  useEffect(() => {
+    const loadUserData = async () => {
+      try {
+        const data = await fetchUserData();
+        const user = data[0]; // Assuming a single user for now
+        setfirst_name(user.first_name);
+        setlast_name(user.last_name);
+        setEmail(user.email);
+        setAboutMe(user.about_me);
+        setPosition(user.position);
+        setLevel(user.level);
+        setCountry(user.country);
+        setSkillList(user.skills);
+        setProfilePicture(user.profilePicture || "");
+      } catch (error) {
+        console.error("Error loading user data:", error);
+      }
+    };
+
+    loadUserData();
+  }, []);
+
   const handleSaveChanges = () => {
-    updateUser({
-      first_name,
-      last_name,
-      email,
-      country,
-      position,
-      level,
-      aboutme,
-      profilePicture,
-    });
     setSuccessMessage("Changes have been successfully saved!");
     setTimeout(() => setSuccessMessage(null), 3000);
   };
@@ -69,8 +85,6 @@ const EditProfile: React.FC = () => {
       reader.readAsDataURL(file);
     }
   };
-
-  // if (!user) return null;
 
   return (
     <div className="p-4 bg-gradient-to-r from-blue-500/10 to-purple-500/10 sm:p-6 lg:p-8 w-full max-w-screen-xl shadow-md rounded-lg mx-auto space-y-6">

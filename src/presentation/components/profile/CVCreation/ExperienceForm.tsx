@@ -116,7 +116,7 @@ export const ExperienceForm: React.FC<ExperienceFormProps> = ({
       <div className="flex gap-2">
         <button
           type="submit"
-          className="flex-1 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors"
+          className="flex-1 bg-theme text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors"
         >
           {initialData ? "Update" : "Add"} Experience
         </button>

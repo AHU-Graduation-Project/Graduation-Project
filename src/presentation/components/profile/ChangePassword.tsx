@@ -1,19 +1,26 @@
 import { useState, useRef, useEffect } from "react";
-import { useAuthStore } from "../../../application/state/authStore";
 import ReactDOM from "react-dom";
+import { InputField } from "../UI/TextInput";
+import useTokenStore from "../../../application/state/tokenStore";
+import { ChangePassword } from "../../../infrastructure/api/changePassword"; // Adjust the path as needed
 
 interface ChangePasswordProps {
   onClose: () => void;
 }
 
-const ChangePassword = ({ onClose }: ChangePasswordProps) => {
-  const { user, updateUser } = useAuthStore();
+const Change_Password = ({ onClose }: ChangePasswordProps) => {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [showPassword1, setShowPassword1] = useState(false);
+  const [showPassword2, setShowPassword2] = useState(false);
+  const [showPassword3, setShowPassword3] = useState(false);
   const modalRef = useRef<HTMLDivElement | null>(null);
+
+  const { token } = useTokenStore();
 
   const handleClickOutside = (e: MouseEvent) => {
     if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
@@ -28,28 +35,31 @@ const ChangePassword = ({ onClose }: ChangePasswordProps) => {
     };
   }, []);
 
-  const handleSubmit = () => {
-    if (!user || user.password !== currentPassword) {
-      setErrorMessage("The current password is incorrect.");
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 3000);
-      return;
-    }
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
+    // Validate passwords
     if (newPassword !== confirmPassword) {
       setErrorMessage("New password and confirmation do not match.");
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 3000);
       return;
     }
 
-    updateUser({ password: newPassword });
-    setSuccessMessage("Password updated successfully!");
-    setTimeout(() => {
-      setSuccessMessage(null);
-    }, 3000);
+    setIsLoading(true);
+    setErrorMessage(null);
+    setSuccessMessage(null);
+
+    try {
+      await ChangePassword({
+        oldPassword: currentPassword,
+        password: newPassword,
+        accesToken: token,
+      });
+      setSuccessMessage("Password changed successfully!");
+    } catch (error: any) {
+      setErrorMessage(error.message || "Failed to change the password.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return ReactDOM.createPortal(
@@ -62,40 +72,43 @@ const ChangePassword = ({ onClose }: ChangePasswordProps) => {
           Change Password
         </h3>
 
-        <div className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-theme mb-1">
-              Current Password
-            </label>
-            <input
-              type="password"
+            <InputField
+              id="current-password"
+              type={showPassword1 ? "text" : "password"}
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
-              className="w-full border bg-transparent border-gray-300 rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-theme"
+              label="Current Password"
+              placeholder="Password"
+              showToggle
+              inputClickHandler={() => setShowPassword1((current) => !current)}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-theme mb-1">
-              New Password
-            </label>
-            <input
-              type="password"
+            <InputField
+              id="new-password"
+              type={showPassword2 ? "text" : "password"}
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className="w-full border bg-transparent border-gray-300 rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-theme"
+              label="New Password"
+              placeholder="New Password"
+              showToggle
+              inputClickHandler={() => setShowPassword2((current) => !current)}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-theme mb-1">
-              Confirm New Password
-            </label>
-            <input
-              type="password"
+            <InputField
+              id="conf-password"
+              type={showPassword3 ? "text" : "password"}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full border bg-transparent border-gray-300 rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-theme"
+              label="Confirm New Password"
+              placeholder="Confirm Password"
+              showToggle
+              inputClickHandler={() => setShowPassword3((current) => !current)}
             />
           </div>
 
@@ -110,21 +123,23 @@ const ChangePassword = ({ onClose }: ChangePasswordProps) => {
             <button
               onClick={onClose}
               className="py-2 px-6 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
+              type="button"
             >
               Cancel
             </button>
             <button
-              onClick={handleSubmit}
+              type="submit"
               className="py-2 px-6 bg-theme text-white rounded-lg hover:bg-blue-600"
+              disabled={isLoading}
             >
-              Save Password
+              {isLoading ? "Saving..." : "Save Password"}
             </button>
           </div>
-        </div>
+        </form>
       </div>
     </div>,
     document.body
   );
 };
 
-export default ChangePassword;
+export default Change_Password;
