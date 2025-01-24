@@ -32,7 +32,7 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
   const toolbarContainerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [jobs, setJobs] = useState(0);
+  const [jobs, setJobs] = useState(-1);
   const [isLoadingJobs, setIsLoadingJobs] = useState(false);
 
   useEffect(() => {
@@ -42,10 +42,10 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
         const jobsCount = await getJobs({
           keyword: data.label,
           location: 'Amman', // Default location
-          dateSincePosted: '24h', // Default to last 24 hours
+          dateSincePosted: `${30*24}h`, // Default to last 24 hours
           option: 'count', // Default to count only
         });
-        setJobs(jobsCount.data);
+        setJobs(jobsCount.data as number);
       } catch (error) {
         console.error('Error fetching jobs:', error);
         setJobs(0);
@@ -54,7 +54,7 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
       }
     };
     if (data.isAnalysisNeeded){fetchJobs();} // Only fetch jobs if analysis is needed
-  }, [data.label, data.isAnalysisNeeded]);
+  }, []);
 
   // Rest of the component code remains the same...
   const handleClickOutside = (event: MouseEvent | TouchEvent) => {
@@ -182,7 +182,7 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
           !shouldBeActive && 'cursor-not-allowed',
         )}
       >
-        {!isLoadingJobs && jobs > 0 && (
+        {!isLoadingJobs && jobs > -1 && (
           <div className="absolute -top-3 -left-3 w-6 h-6 rounded-full bg-theme flex items-center justify-center text-white text-xs font-medium shadow-lg">
             {jobs}
           </div>
