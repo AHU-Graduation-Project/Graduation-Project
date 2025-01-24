@@ -40,7 +40,7 @@ export default function Profile() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-2xl md:text-5xl font-bold text-center mb-8 bg-clip-text text-theme "
+            className="text-2xl md:text-2xl font-bold text-center mb-8 bg-clip-text text-theme "
           >
             Edit you're profile to maximize you're Learning experience.
           </motion.h1>
