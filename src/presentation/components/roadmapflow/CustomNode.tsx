@@ -172,7 +172,7 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
           'min-w-[200px]',
           data.type === 'topic'
             ? 'rounded-2xl  font-bold tracking-wide shadow-xl border-theme'
-            : 'text-sm font-medium tracking-normal shadow-md scale-90 border-dashed',
+            : 'text-sm font-medium tracking-normal shadow-md scale-90 border-dashed border-theme',
           !shouldBeActive && 'opacity-50 bg-slate-800/50',
           shouldBeActive &&
             (isCompleted

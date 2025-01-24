@@ -83,7 +83,7 @@ const edgeTypes: EdgeTypes = {
 };
 
 const RoadmapEditor = () => {
-  const { slug } = useParams(); 
+  const { slug } = useParams();
   const [getingRoadmap, setGetingRoadmap] = useState(true);
   const isDragging = useRef(false);
   const [selectingPrerequisite, setSelectingPrerequisite] = useState(false);
@@ -176,6 +176,13 @@ const RoadmapEditor = () => {
         setNodes(roadmap.topics as unknown as Node[]);
         setEdges(roadmap.edges as unknown as Edge[]);
         setGetingRoadmap(false);
+        setUndoStack([
+          {
+            nodes: roadmap.topics as unknown as Node[],
+            edges: roadmap.edges as unknown as Edge[],
+          },
+        ]);
+        setRedoStack([]);
       } catch (error) {
         console.error('Failed to fetch roadmap:', error);
         setGetingRoadmap(false);
@@ -195,14 +202,6 @@ const RoadmapEditor = () => {
   );
 
   useEffect(() => {
-    setUndoStack([
-      {
-        nodes,
-        edges,
-      },
-    ]);
-  }, []); // Run once on mount
-  useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.ctrlKey && event.key === 'z') {
         event.preventDefault();
@@ -216,17 +215,6 @@ const RoadmapEditor = () => {
 
           // Update stacks
           setUndoStack((prev) => prev.slice(0, -1));
-          setRedoStack((prev) => [currentState, ...prev]);
-        } else if (undoStack.length === 1) {
-          // Handle the case where there's only one state in the undo stack
-          const currentState = undoStack[0];
-
-          // Clear the canvas
-          setNodes([]);
-          setEdges([]);
-
-          // Move current state to redo stack
-          setUndoStack([]);
           setRedoStack((prev) => [currentState, ...prev]);
         }
       } else if (event.ctrlKey && event.key === 'y') {
@@ -268,7 +256,6 @@ const RoadmapEditor = () => {
       const newNodes = applyNodeChanges(changes, nodes);
       setNodes(newNodes);
 
-      // Only save to history if it's  a position change (e.g., selection)
     },
     [nodes, edges, saveToHistory, setNodes],
   );
@@ -652,129 +639,128 @@ const RoadmapEditor = () => {
     }
   }, [nodes, edges]);
 
- return getingRoadmap ? (
-   <Loader />
- ) : (
-   <div className={styles.editorContainer}>
-     <AnimatePresence>
-       {isSaving && <LoadingOverlay text="saving" />}
-     </AnimatePresence>
+  return getingRoadmap ? (
+    <Loader />
+  ) : (
+    <div className={styles.editorContainer}>
+      <AnimatePresence>
+        {isSaving && <LoadingOverlay text="saving" />}
+      </AnimatePresence>
 
-     {/* Sidebar for editing the roadmap */}
-     <EditorSideBar
-       nodes={nodes}
-       styles={styles}
-       isSidebarOpen={isSidebarOpen}
-       setIsSidebarOpen={setIsSidebarOpen}
-       setIsEditDialogOpen={setIsEditDialogOpen}
-       handleEditNode={handleEditNode}
-       isPublished={isPublished}
-       onPublish={handlePublish}
-       onSave={onSave}
-       setIsResourcesDialogOpen={setIsResourcesDialogOpen}
-       onDragStart={(e, type) => {
-         e.dataTransfer.setData('application/reactflow', type);
-       }}
-       setSelectedNode={setSelectedNode}
-       setShowRightSidebar={setIsRightSidebarOpen}
-       visibility={roadmapData.visibility}
-       roadmapId={roadmapData.id}
-     />
+      {/* Sidebar for editing the roadmap */}
+      <EditorSideBar
+        nodes={nodes}
+        styles={styles}
+        isSidebarOpen={isSidebarOpen}
+        setIsSidebarOpen={setIsSidebarOpen}
+        setIsEditDialogOpen={setIsEditDialogOpen}
+        handleEditNode={handleEditNode}
+        isPublished={isPublished}
+        onPublish={handlePublish}
+        onSave={onSave}
+        setIsResourcesDialogOpen={setIsResourcesDialogOpen}
+        onDragStart={(e, type) => {
+          e.dataTransfer.setData('application/reactflow', type);
+        }}
+        setSelectedNode={setSelectedNode}
+        setShowRightSidebar={setIsRightSidebarOpen}
+        visibility={roadmapData.visibility}
+        roadmapId={roadmapData.id}
+      />
 
-     {/* ReactFlow container */}
-     <div className={styles.flowContainer}>
-       <ReactFlow
-         nodes={nodes}
-         edges={edges}
-         onNodesChange={onNodesChange}
-         onEdgesChange={onEdgesChange}
-         onConnect={onConnect}
-         onDragOver={onDragOver}
-         onDrop={onDrop}
-         onNodeClick={handleNodeClick}
-         onEdgeClick={handleEdgeClick}
-         nodeTypes={nodeTypes}
-         edgeTypes={edgeTypes}
-         onInit={setReactFlowInstance}
-         onNodeDragStop={onNodeDragStop}
-         className={selectingPrerequisite ? 'cursor-crosshair' : ''}
-         fitView
-       >
-         <Background />
-         <Controls />
-         <MiniMap />
-         <HelperLinesRenderer
-           horizontal={helperLines.horizontal}
-           vertical={helperLines.vertical}
-           spacingGuides={helperLines.spacingGuides}
-           centerGuides={helperLines.centerGuides}
-         />
-       </ReactFlow>
+      {/* ReactFlow container */}
+      <div className={styles.flowContainer}>
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onConnect={onConnect}
+          onDragOver={onDragOver}
+          onDrop={onDrop}
+          onNodeClick={handleNodeClick}
+          onEdgeClick={handleEdgeClick}
+          nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
+          onInit={setReactFlowInstance}
+          onNodeDragStop={onNodeDragStop}
+          className={selectingPrerequisite ? 'cursor-crosshair' : ''}
+          fitView
+        >
+          <Background />
+          <Controls />
+          <MiniMap />
+          <HelperLinesRenderer
+            horizontal={helperLines.horizontal}
+            vertical={helperLines.vertical}
+            spacingGuides={helperLines.spacingGuides}
+            centerGuides={helperLines.centerGuides}
+          />
+        </ReactFlow>
 
-       {/* Prerequisite selection tooltip */}
-       {selectingPrerequisite && (
-         <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-theme text-white px-4 py-2 rounded-lg shadow-lg bg-theme-shadow animate-breath z-50">
-           Click a node to add it as a prerequisite
-         </div>
-       )}
-     </div>
+        {/* Prerequisite selection tooltip */}
+        {selectingPrerequisite && (
+          <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-theme text-white px-4 py-2 rounded-lg shadow-lg bg-theme-shadow animate-breath z-50">
+            Click a node to add it as a prerequisite
+          </div>
+        )}
+      </div>
 
-     {/* Right sidebar for editing nodes */}
-     {selectedNode && (
-       <EditNodesSideBar
-         styles={styles}
-         selectedNode={selectedNode}
-         handleUpdateNodeFromSidebar={handleUpdateNodeFromSidebar}
-         handleDeleteNode={handleDeleteNode}
-         allNodes={nodes}
-         setSelectingPrerequisite={setSelectingPrerequisite}
-         rightSidebarRef={rightSidebarRef}
-         isRightSidebarOpen={isRightSidebarOpen}
-       />
-     )}
+      {/* Right sidebar for editing nodes */}
+      {selectedNode && (
+        <EditNodesSideBar
+          styles={styles}
+          selectedNode={selectedNode}
+          handleUpdateNodeFromSidebar={handleUpdateNodeFromSidebar}
+          handleDeleteNode={handleDeleteNode}
+          allNodes={nodes}
+          setSelectingPrerequisite={setSelectingPrerequisite}
+          rightSidebarRef={rightSidebarRef}
+          isRightSidebarOpen={isRightSidebarOpen}
+        />
+      )}
 
-     {/* Right sidebar for editing edges */}
-     {selectedEdge && (
-       <EditEdgesSideBar
-         styles={styles}
-         selectedEdge={selectedEdge}
-         setEdges={setEdges}
-         handleUpdateEdgeFromSidebar={handleUpdateEdgeFromSidebar}
-         handleDeleteEdge={handleDeleteEdge}
-         rightSidebarRef={rightSidebarRef}
-         isRightSidebarOpen={isRightSidebarOpen}
-       />
-     )}
+      {/* Right sidebar for editing edges */}
+      {selectedEdge && (
+        <EditEdgesSideBar
+          styles={styles}
+          selectedEdge={selectedEdge}
+          setEdges={setEdges}
+          handleUpdateEdgeFromSidebar={handleUpdateEdgeFromSidebar}
+          handleDeleteEdge={handleDeleteEdge}
+          rightSidebarRef={rightSidebarRef}
+          isRightSidebarOpen={isRightSidebarOpen}
+        />
+      )}
 
-     {/* Edit roadmap modal */}
-     <EditRoadmapModal
-       isOpen={isEditDialogOpen}
-       onClose={() => setIsEditDialogOpen(false)}
-       roadmapData={roadmapData}
-       onSave={setRoadmapData}
-     />
+      {/* Edit roadmap modal */}
+      <EditRoadmapModal
+        isOpen={isEditDialogOpen}
+        onClose={() => setIsEditDialogOpen(false)}
+        roadmapData={roadmapData}
+        onSave={setRoadmapData}
+      />
 
-     {/* Confirm refresh modal */}
-     <ConfirmRefreshModal
-       isOpen={showRefreshConfirm}
-       onClose={() => setShowRefreshConfirm(false)}
-       onRefresh={handleRefreshAnyway}
-       onSaveAndRefresh={handleSaveAndRefresh}
-     />
+      {/* Confirm refresh modal */}
+      <ConfirmRefreshModal
+        isOpen={showRefreshConfirm}
+        onClose={() => setShowRefreshConfirm(false)}
+        onRefresh={handleRefreshAnyway}
+        onSaveAndRefresh={handleSaveAndRefresh}
+      />
 
-     {/* Add resource modal */}
-     <AddResourceModal
-       isOpen={isResourcesDialogOpen}
-       onClose={() => setIsResourcesDialogOpen(false)}
-       onSave={(resources) => {
-         // Handle saving resources
-         console.log('Saving resources:', resources);
-         setIsResourcesDialogOpen(false);
-       }}
-     />
-   </div>
- );
-
+      {/* Add resource modal */}
+      <AddResourceModal
+        isOpen={isResourcesDialogOpen}
+        onClose={() => setIsResourcesDialogOpen(false)}
+        onSave={(resources) => {
+          // Handle saving resources
+          console.log('Saving resources:', resources);
+          setIsResourcesDialogOpen(false);
+        }}
+      />
+    </div>
+  );
 };
 
 export default RoadmapEditor;

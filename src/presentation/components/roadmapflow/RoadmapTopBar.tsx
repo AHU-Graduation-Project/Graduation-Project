@@ -19,7 +19,6 @@ export default function RoadmapTopBar({
   const [lastScrollY, setLastScrollY] = useState(0);
   const [flowImage, setFlowImage] = useState<string | null>(null);
   const { userRole } = useTokenStore();
-  console.log(roadmap);
 
   const handleAddToRoadmap = () => {
     if (!userRole()) {

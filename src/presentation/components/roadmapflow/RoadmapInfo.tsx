@@ -59,7 +59,7 @@ export default function RoadmapInfo({
   return (
     <div
       className={cn(
-        "fixed inset-y-0 h-full w-full md:w-96 bg-white dark:bg-slate-800 shadow-xl transform transition-transform duration-700 ease-in-out z-50",
+        "fixed inset-y-0 h-full w-full overflow-auto md:w-96 bg-white dark:bg-slate-800 shadow-xl transform transition-transform duration-700 ease-in-out z-50",
         isOpen
           ? "translate-x-0"
           : isRtl
