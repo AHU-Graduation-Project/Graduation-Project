@@ -1,6 +1,7 @@
 import axios from 'axios';
+import useTokenStore from '../../application/state/tokenStore';
 
-export interface GetRoadmapByIdResponse {
+interface GetRoadmapListResponse {
   success: boolean;
   roadmap: {
     id: number;
@@ -17,13 +18,20 @@ export interface GetRoadmapByIdResponse {
   };
 }
 
-export function getRoadmaplist() {
+export function GetRoadmaplist() {
+  const { getUserId, userRole } = useTokenStore();
+  const userId = getUserId();
+
   return {
-    execute: async (): Promise<GetRoadmapByIdResponse> => {
+    execute: async (): Promise<GetRoadmapListResponse> => {
       try {
-        const response = await axios.get<GetRoadmapByIdResponse>(
+        const response = await axios.get<GetRoadmapListResponse>(
           `${import.meta.env.VITE_PATH_API}/roadmaps`,
           {
+            params: {
+              user: {id:userId},
+              isEditor: userRole() === 2,
+            },
             headers: {
               'Content-Type': 'application/json',
             },

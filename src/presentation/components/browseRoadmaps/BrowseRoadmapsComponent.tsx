@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import RoadmapCard from "./RoadmapCard";
-import { roadmaps } from "../../../data/roadmaps";
 import { useAuthStore } from "../../../application/state/authStore";
 import Pagination from "./Pagination";
 import SearchBar from "../UI/SearchBar";
@@ -8,6 +7,7 @@ import SelectedRoadmapCard from "./SelectedRoadmapCard";
 import AnimationWrapper from "../UI/Animation/Animation";
 import AddRoadmapModal from "./AddRoadmapModal";
 import useTokenStore from "../../../application/state/tokenStore";
+import { GetRoadmaplist } from "../../../infrastructure/api/GetRoadmaplist";
 
 export default function BrowseRoadmapsComponent() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -16,12 +16,35 @@ export default function BrowseRoadmapsComponent() {
   const [postsPerPage, setPostsPerPage] = useState(9);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { userRole } = useTokenStore();
+  const [roadmapData, setRoadmapData] = useState({
+    roadmaps: [],
+    userRoadmaps: [],
+    createdRoadmaps: []
+  });
+  const [isLoading, setIsLoading] = useState(true);
+  const getRoadmaplist = GetRoadmaplist();
 
+  useEffect(() => {
+    const fetchRoadmaps = async () => {
+      setIsLoading(true);
+      try {
+        const response = await getRoadmaplist.execute();
+        console.log(response);
+        setRoadmapData(response.data || { roadmaps: [], userRoadmaps: [], createdRoadmaps: [] });
+      } catch (error) {
+        console.error("Failed to fetch roadmaps:", error);
+        setRoadmapData({ roadmaps: [], userRoadmaps: [], createdRoadmaps: [] });
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
+    fetchRoadmaps();
+  }, []);
 
-  const filteredRoadmaps = roadmaps.filter((roadmap) =>
+  const filteredRoadmaps = (roadmapData.roadmaps || []).filter((roadmap) =>
     [roadmap.title, roadmap.description].some((field) =>
-      field.toLowerCase().includes(searchQuery.toLowerCase())
+      field?.toLowerCase().includes(searchQuery.toLowerCase())
     )
   );
 
@@ -29,9 +52,20 @@ export default function BrowseRoadmapsComponent() {
   const firstPostIndex = lastPostIndex - postsPerPage;
   const currentPost = filteredRoadmaps.slice(firstPostIndex, lastPostIndex);
 
+  const RoadmapSkeleton = () => (
+    <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 animate-pulse">
+      <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-3/4 mb-4"></div>
+      <div className="h-3 bg-gray-200 dark:bg-slate-700 rounded w-full mb-2"></div>
+      <div className="h-3 bg-gray-200 dark:bg-slate-700 rounded w-5/6"></div>
+      <div className="mt-4 h-8 bg-gray-200 dark:bg-slate-700 rounded w-1/3"></div>
+    </div>
+  );
+
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery]);
+
+  
   return (
     <div className="container mx-auto px-4 py-12">
       <AnimationWrapper animationType={5}>
@@ -68,43 +102,39 @@ export default function BrowseRoadmapsComponent() {
         </AnimationWrapper>
       </div>
 
-      {Array.isArray(user?.selectedRoadmaps) &&
-        user.selectedRoadmaps.length > 0 && (
+      {!isLoading && Array.isArray(roadmapData.userRoadmaps) && 
+        roadmapData.userRoadmaps.length > 0 && (
           <div className="mb-12">
             <AnimationWrapper animationType={5}>
-              {" "}
               <h2 className="text-2xl font-bold mb-6 text-theme">
                 Your Roadmaps
               </h2>
-            </AnimationWrapper>{" "}
+            </AnimationWrapper>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {user?.selectedRoadmaps.map((roadmapId) => {
-                const roadmap = roadmaps.find((r) => r.id === roadmapId);
-                if (!roadmap) return null;
-
-                const progress = Math.round(
-                  ((user?.progress[roadmapId]?.length || 0) / 9) * 100
-                );
-
-                return (
-                  <SelectedRoadmapCard
-                    key={roadmap.id}
-                    roadmap={roadmap}
-                    progress={progress}
-                    onRemove={selectRoadmap}
-                  />
-                );
-              })}
+              {roadmapData.userRoadmaps.map((roadmap) => (
+                <SelectedRoadmapCard
+                  key={roadmap.id}
+                  roadmap={roadmap}
+                  progress={Math.round(
+                    ((user?.progress[roadmap.id]?.length || 0) / 9) * 100
+                  )}
+                  onRemove={selectRoadmap}
+                />
+              ))}
             </div>
           </div>
-        )}
+      )}
 
       <AnimationWrapper animationType={5}>
         <h2 className="text-2xl font-bold mb-6 text-theme">Other Roadmaps</h2>
       </AnimationWrapper>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {currentPost.length > 0 ? (
+        {isLoading ? (
+          Array(9).fill(0).map((_, index) => (
+            <RoadmapSkeleton key={index} />
+          ))
+        ) : currentPost.length > 0 ? (
           currentPost.map((roadmap) => (
             <RoadmapCard key={roadmap.id} {...roadmap} />
           ))
