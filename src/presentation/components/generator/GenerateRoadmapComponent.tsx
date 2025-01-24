@@ -310,7 +310,7 @@ export default function GenerateRoadmapComponent() {
       />
 
       {/* references Section */}
-      {references.length > 0 && <GeneratorReferences references={references} />}
+      {references.length > 0 && !wasStopped && <GeneratorReferences references={references} />}
     </div>
   );
 }

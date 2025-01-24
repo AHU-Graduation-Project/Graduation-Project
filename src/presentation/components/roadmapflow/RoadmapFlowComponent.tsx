@@ -136,13 +136,15 @@ export default function RoadmapFlowComponent() {
       {loading ? (
         <Loader />
       ) : error ? (
-        <div className="flex flex-col items-center justify-center h-screen bg-gray-50">
-          <div className="text-center p-8 rounded-lg shadow-lg bg-white">
-            <h2 className="text-2xl font-bold text-red-600 mb-4">Error</h2>
-            <p className="text-gray-700 mb-6">{error}</p>
+        <div className="flex flex-col items-center justify-center h-screen bg-gray-50 dark:bg-slate-900">
+          <div className="text-center p-8 rounded-lg shadow-lg bg-white dark:bg-gray-700">
+            <h2 className="text-2xl font-bold text-red-600 dark:text-red-400 mb-4">
+              Error
+            </h2>
+            <p className="text-gray-700 dark:text-gray-300 mb-6">{error}</p>
             <button
               onClick={() => navigate('/')}
-              className="px-6 py-2 bg-theme text-white rounded-md hover:bg-blue-700 transition-colors"
+              className="px-6 py-2 bg-theme text-white rounded-md hover:bg-blue-700 dark:hover:bg-blue-500 transition-colors"
             >
               Go to Home
             </button>
