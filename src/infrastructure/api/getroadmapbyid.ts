@@ -79,20 +79,20 @@ const transformEdgesToReactFlow = (edges: RoadmapEdge[]): Edge[] => {
 };
 
 export function GetRoadmapById(): GetRoadmapById {
-  const { token } = useTokenStore();
+  // const { token } = useTokenStore();
 
   return {
     execute: async (id: string): Promise<GetRoadmapByIdResponse> => {
-      if (!token) {
-        throw new Error('Authentication token is missing');
-      }
+      // if (!token) {
+      //   throw new Error('Authentication token is missing');
+      // }
 
       try {
         const response = await axios.get<GetRoadmapByIdResponse>(
           `${import.meta.env.VITE_PATH_API}/roadmaps/${id}`,
           {
             headers: {
-              'Authorization': `Bearer ${token}`
+              'Authorization': `Bearer token`
             },
           }
         );

@@ -13,7 +13,7 @@ export default function LoadingOverlay({ text }: { text: string }) {
         <div className="absolute inset-0 bg-theme rounded-full blur-xl opacity-20 animate-pulse" />
 
         {/* Main content */}
-        <div className="relative bg-white dark:bg-slate-800 rounded-xl p-8 shadow-xl">
+        <div className="relative bg-white dark:bg-slate-800 rounded-xl p-8 shadow-xl min-w-48">
           {/* Spinner */}
           <div className="flex flex-col items-center gap-4">
             <div className="relative">

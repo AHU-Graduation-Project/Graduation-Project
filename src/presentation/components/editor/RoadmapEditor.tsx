@@ -83,7 +83,7 @@ const edgeTypes: EdgeTypes = {
 };
 
 const RoadmapEditor = () => {
-  const { slug } = useParams(); // Extract the ID from the route
+  const { slug } = useParams(); 
   const [getingRoadmap, setGetingRoadmap] = useState(true);
   const isDragging = useRef(false);
   const [selectingPrerequisite, setSelectingPrerequisite] = useState(false);
@@ -248,62 +248,6 @@ const RoadmapEditor = () => {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [undoStack, redoStack, setEdges, setNodes]);
-
-  //   useEffect(() => {
-  //     const previousState = undoStack[undoStack.length - 2];
-  //     const currentState = undoStack[undoStack.length - 1];
-
-  //     if (previousState && currentState) {
-  //       const previousNodes = previousState.nodes;
-  //       const currentNodes = currentState.nodes;
-  //       const previousEdges = previousState.edges;
-  //       const currentEdges = currentState.edges;
-
-  //       const trashNodes = previousNodes.filter(
-  //         (prevNode) =>
-  //           !currentNodes.some((currNode) => currNode.id === prevNode.id),
-  //       );
-  //       const newNodes = currentNodes.filter(
-  //         (currNode) =>
-  //           !previousNodes.some((prevNode) => prevNode.id === currNode.id),
-  //       );
-  //       const editedNodes = currentNodes.filter((currNode) => {
-  //         const prevNode = previousNodes.find(
-  //           (prevNode) => prevNode.id === currNode.id,
-  //         );
-  //         return (
-  //           prevNode &&
-  //           JSON.stringify(prevNode.data) !== JSON.stringify(currNode.data)
-  //         );
-  //       });
-
-  //       const trashEdges = previousEdges.filter(
-  //         (prevEdge) =>
-  //           !currentEdges.some((currEdge) => currEdge.id === prevEdge.id),
-  //       );
-  //       const newEdges = currentEdges.filter(
-  //         (currEdge) =>
-  //           !previousEdges.some((prevEdge) => prevEdge.id === currEdge.id),
-  //       );
-  //       const editedEdges = currentEdges.filter((currEdge) => {
-  //         const prevEdge = previousEdges.find(
-  //           (prevEdge) => prevEdge.id === currEdge.id,
-  //         );
-  //         return (
-  //           prevEdge && JSON.stringify(prevEdge) !== JSON.stringify(currEdge)
-  //         );
-  //       });
-
-  //       setTrash({ nodes: trashNodes, edges: trashEdges });
-  //       setNewContainer({ nodes: newNodes, edges: newEdges });
-  //       setEditorContainer({ nodes: editedNodes, edges: editedEdges });
-  //     }
-
-  //   }, [undoStack]);
-
-  // console.log('trash', trash);
-  // console.log('new', newContainer);
-  // console.log('edit', editedContainer);
 
   const onNodesChange = useCallback(
     (changes: NodeChange[]) => {

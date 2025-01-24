@@ -5,6 +5,7 @@ import { Button } from '../UI/Button';
 
 interface EditNodesSideBarProps {
   styles: {
+    
     rightSidebarContent: string;
     rightSidebarTitle: string;
     rightSidebarField: string;
