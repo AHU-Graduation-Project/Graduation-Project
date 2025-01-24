@@ -47,7 +47,7 @@ const MobileLoginForm = ({ setChangePassword }) => {
   };
 
   return (
-    <div className="relative mobile-login-container p-4 z-20">
+    <div className=" mobile-login-container    ">
       {showPasswordReset ? (
         <PasswordReset
           setChangePassword={setChangePassword}
@@ -74,18 +74,19 @@ const MobileLoginForm = ({ setChangePassword }) => {
               placeholder="Enter your password"
               showToggle
               inputClickHandler={() => setShowPassword((current) => !current)}
+              classname="dark:bg-transparent"
             />
 
             <div className="flex justify-between items-center">
               <div>
-                <input type="checkbox" className="mr-2" />
+                <input type="checkbox" className="mr-2  bg-transparent" />
                 <span>Remember me</span>
               </div>
               <div className="mt-2 mb-2">
                 <button
                   type="button"
                   onClick={() => setShowPasswordReset(true)}
-                  className="text-sm text-theme hover:underline"
+                  className="text-sm text-theme hover:underlin"
                 >
                   Forgot Password?
                 </button>

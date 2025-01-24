@@ -10,6 +10,7 @@ export function InputField({
   placeholder,
   showToggle,
   inputClickHandler,
+  classname = "",
 }: {
   id: string;
   type: string;
@@ -19,6 +20,7 @@ export function InputField({
   placeholder: string;
   showToggle?: boolean;
   inputClickHandler?: () => void;
+  classname?: string;
 }) {
   const [isFocused, setIsFocused] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -55,7 +57,7 @@ export function InputField({
           setIsFocused(false);
           validateInput();
         }}
-        className={`w-full px-4 py-3 bg-gray-900 text-gray-300 rounded-lg border ${
+        className={`w-full ${classname} px-4 py-3 bg-transparent text-black  dark:text-gray-300  rounded-lg border  ${
           isInputInvalid
             ? "border-red-500 focus:ring-red-500"
             : "border-gray-600 focus:ring-cyan-400"
