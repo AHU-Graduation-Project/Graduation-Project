@@ -60,6 +60,7 @@ const EditProfile: React.FC = () => {
         setPosition(user.position);
         setLevel(user.level);
         setCountry(user.country);
+
         setSkillList(user.skills);
         setProfilePicture(user.profilePicture || "");
       } catch (error) {
