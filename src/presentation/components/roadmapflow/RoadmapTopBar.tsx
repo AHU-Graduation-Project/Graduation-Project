@@ -1,33 +1,52 @@
 import { useState, useEffect, useCallback } from 'react';
 import { cn } from '../../../infrastructure/utils/cn';
-// import { PDFDownloadLink, Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useAuthStore } from '../../../application/state/authStore';
 import html2canvas from 'html2canvas';
 import ThemeIcon from '../UI/ThemeIcon';
-import { Image as ImageIcon, ChevronDown, ChevronUp } from 'lucide-react';
+import { Image as ImageIcon, ChevronDown, ChevronUp, Loader } from 'lucide-react';
 import useTokenStore from '../../../application/state/tokenStore';
-import { useParams } from 'react-router-dom';
+import { FollowRoadmap } from '../../../infrastructure/api/FollowRoadmap';
+
+interface RoadmapTopBarProps {
+  setRoadmap: React.Dispatch<React.SetStateAction<any>>;
+  roadmap: any;
+  progress: number;
+}
+
 export default function RoadmapTopBar({
+  setRoadmap,
   roadmap,
   progress,
 }: RoadmapTopBarProps) {
   const [isVisible, setIsVisible] = useState(true);
-  const { user, selectRoadmap } = useAuthStore();
+  const { selectRoadmap } = useAuthStore();
   const navigate = useNavigate();
-  const isSelected = user?.selectedRoadmaps.includes(roadmap?.id);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [flowImage, setFlowImage] = useState<string | null>(null);
   const { userRole } = useTokenStore();
+  const followRoadmap = FollowRoadmap();
+  const [loading, setLoading] = useState(false);
 
-  const handleAddToRoadmap = () => {
+  const handleAddToRoadmap = async () => {
+    setLoading(true);
     if (!userRole()) {
       navigate('/auth');
+      setLoading(false);
       return;
     }
-    selectRoadmap(roadmap.id);
+    try {
+      await followRoadmap.execute(roadmap.slug);
+      setRoadmap((prev) => ({ ...prev, isFollowed: true }));
+      selectRoadmap(roadmap.id);
+    } catch (error) {
+      console.error('Failed to follow roadmap:', error);
+    } finally {
+      setLoading(false);
+    }
   };
-  const { id } = useParams();
+
+  const { slug } = useParams();
 
   const captureFlow = useCallback(async () => {
     const flowElement = document.querySelector('.react-flow');
@@ -37,14 +56,13 @@ export default function RoadmapTopBar({
           backgroundColor: null,
           scale: 2,
         });
+
         const image = canvas.toDataURL('image/png');
         setFlowImage(image);
-        // Trigger PNG download
+
         const link = document.createElement('a');
         link.href = image;
-        link.download = `${roadmap.title
-          .toLowerCase()
-          .replace(/\s+/g, '-')}-roadmap.png`;
+        link.download = `${roadmap.title.toLowerCase().replace(/\s+/g, '-')}-roadmap.png`;
         link.click();
       } catch (error) {
         console.error('Error capturing flow:', error);
@@ -64,6 +82,7 @@ export default function RoadmapTopBar({
   }, [lastScrollY]);
 
   if (!roadmap) return null;
+
   return (
     <div
       className={cn(
@@ -77,15 +96,19 @@ export default function RoadmapTopBar({
             <h1 className="text-2xl md:text-3xl font-bold text-theme text-transparent bg-clip-text mb-2">
               {roadmap.title}
             </h1>
-          
           </div>
           <div className="flex items-center gap-3">
-            {!isSelected && (
+            {!roadmap.isFollowed && (
               <button
                 onClick={handleAddToRoadmap}
-                className="px-4 py-2 rounded-lg bg-theme text-white hover:opacity-90 transition-colors text-sm md:text-base"
+                className="px-4 py-2 rounded-lg bg-theme text-white hover:opacity-90 transition-colors text-sm md:text-base flex items-center justify-center"
+                disabled={loading}
               >
-                Add to My Roadmaps
+                {loading ? (
+                  <Loader className="animate-spin mr-2" />
+                ) : (
+                  'Add to My Roadmaps'
+                )}
               </button>
             )}
             <button
@@ -115,9 +138,10 @@ export default function RoadmapTopBar({
           </div>
           {userRole() == 2 && (
             <div className="flex items-center gap-3 text-sm md:text-base">
-              <button 
-              onClick={() => navigate(`/editor/${id}`)}
-              className="px-4 py-2 rounded-lg bg-theme text-white hover:opacity-90 transition-colors">
+              <button
+                onClick={() => navigate(`/editor/${slug}`)}
+                className="px-4 py-2 rounded-lg bg-theme text-white hover:opacity-90 transition-colors"
+              >
                 edit roadmap
               </button>
             </div>

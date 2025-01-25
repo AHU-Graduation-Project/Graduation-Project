@@ -28,7 +28,8 @@ interface ApiEdge {
 export interface SaveRoadmapDataRequest {
   nodes: Node[];
   edges: Edge[];
-  id: string;
+  slug: string;
+  id: number;
 }
 
 export interface SaveRoadmapDataResponse {
@@ -40,7 +41,7 @@ export interface SaveRoadmapData {
 }
 
 const transformNodes = (nodes: Node[]): ApiNode[] => {
-  return nodes.map(node => ({
+  return nodes.map((node) => ({
     id: node.id,
     prerequisites: (node.data.prerequisites || []).join(','), // Convert array to comma-separated string
     label: node.data.label || '',
@@ -49,12 +50,12 @@ const transformNodes = (nodes: Node[]): ApiNode[] => {
     position_x: node.position.x,
     position_y: node.position.y,
     skill_name: node.data.skillast_name || '',
-    is_analysis_needed: node.data.isAnalysisNeeded || false
+    is_analysis_needed: node.data.isAnalysisNeeded || false,
   }));
 };
 
 const transformEdges = (edges: Edge[]): ApiEdge[] => {
-  return edges.map(edge => ({
+  return edges.map((edge) => ({
     id: edge.id,
     source: edge.source,
     target: edge.target,
@@ -62,7 +63,7 @@ const transformEdges = (edges: Edge[]): ApiEdge[] => {
     target_handle: edge.targetHandle || '',
     line_style: edge.style?.strokeDasharray || '',
     animation: edge.animated || false,
-    type: edge.type || ''
+    type: edge.type || '',
   }));
 };
 
@@ -70,26 +71,27 @@ export function SaveRoadmapData(): SaveRoadmapData {
   const { token } = useTokenStore();
 
   return {
-    execute: async (params: SaveRoadmapDataRequest): Promise<SaveRoadmapDataResponse> => {
+    execute: async (
+      params: SaveRoadmapDataRequest,
+    ): Promise<SaveRoadmapDataResponse> => {
       if (!token) {
         throw new Error('Authentication token is missing');
       }
- console.log(params.id)
       try {
         const transformedData = {
           topics: transformNodes(params.nodes),
-          edges: transformEdges(params.edges)
+          edges: transformEdges(params.edges),
         };
 
-        const response = await axios.patch<SaveRoadmapDataResponse>(
-          `${import.meta.env.VITE_PATH_API}/roadmaps/${params.id}`,
-          transformedData,
+        const response = await axios.put<SaveRoadmapDataResponse>(
+          `${import.meta.env.VITE_PATH_API}/roadmaps/data/${params.slug}`, // Removed extra closing brace
+          {...transformedData , id: params.id},
           {
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
+              Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
         return response.data;
       } catch (error) {
@@ -97,8 +99,10 @@ export function SaveRoadmapData(): SaveRoadmapData {
           const message = error.response?.data?.message || error.message;
           throw new Error(`Failed to save roadmap data: ${message}`);
         }
-        throw new Error('An unexpected error occurred while saving roadmap data');
+        throw new Error(
+          'An unexpected error occurred while saving roadmap data',
+        );
       }
-    }
+    },
   };
 }

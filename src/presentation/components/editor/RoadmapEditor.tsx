@@ -504,7 +504,8 @@ const RoadmapEditor = () => {
         const repone = await saveRoadmapData.execute({
           nodes,
           edges,
-          id: slug ? parseInt(slug) : 0, // Extract the ID from the route, default to 0 if undefined
+          slug: slug , 
+          id :roadmapData.id// Extract the ID from the route, default to 0 if undefined
         });
         console.log('repone', repone);
         setHasUnsavedChanges(false);

@@ -17,7 +17,7 @@ const nodeTypes = {
 };
 
 export default function RoadmapFlowComponent() {
-  const { id } = useParams();
+  const { slug } = useParams();
   const navigate = useNavigate();
   const roadmap = roadmaps[0];
   const [selectedNode, setSelectedNode] = useState<any>(null);
@@ -42,8 +42,8 @@ export default function RoadmapFlowComponent() {
       try {
         setLoading(true);
         setError(null);
-        const response = await getRoadmap.execute(id);
-        
+        const response = await getRoadmap.execute(slug);
+
         if (!response || !response.roadmap) {
           throw new Error('Roadmap not found');
         }
@@ -54,7 +54,7 @@ export default function RoadmapFlowComponent() {
 
         // Format edges properly
         const formattedEdges = (roadmap.edges || []).map((edge: any) => ({
-          id: edge.id ,
+          id: edge.id,
           source: edge.source,
           target: edge.target,
           sourceHandle: edge.sourceHandle,
@@ -65,22 +65,23 @@ export default function RoadmapFlowComponent() {
         setEdges(formattedEdges);
       } catch (error) {
         console.error('Failed to fetch roadmap:', error);
-        setError(error instanceof Error ? error.message : 'Failed to load roadmap');
+        setError(
+          error instanceof Error ? error.message : 'Failed to load roadmap',
+        );
       } finally {
         setLoading(false);
       }
     };
 
     fetchRoadmap();
-  }, [id]);
+  }, [slug]);
   const nodes = nodess.map((node) => {
     if (!node?.data) {
       console.error('Node data is missing:', node);
       return node;
     }
-
     const nodeData = { ...node.data };
-    const completedNodes = user?.progress?.[id || ''] || [];
+    const completedNodes = user?.progress?.[roadmapData.id || ''] || [];
 
     // Check if this is a main topic and if all its subtopics are completed
     if (nodeData.type === 'topic') {
@@ -127,7 +128,7 @@ export default function RoadmapFlowComponent() {
     };
   });
 
-  const completedNodes = user?.progress[id || '']?.length || 0;
+  const completedNodes = user?.progress[roadmapData?.id || '']?.length || 0;
   const totalNodes = nodes.length;
   const progress = Math.round((completedNodes / totalNodes) * 100);
 
@@ -154,6 +155,7 @@ export default function RoadmapFlowComponent() {
         <div className="relative">
           {/* Top Bar */}
           <RoadmapTopBar
+          setRoadmap = {setRoadmapData}
             roadmap={roadmapData}
             progress={progress}
             completedNodes={completedNodes}
@@ -196,7 +198,7 @@ export default function RoadmapFlowComponent() {
             showRating={showRating}
             setShowRating={setShowRating}
             roadmap={roadmapData}
-            userProgress={user?.progress[id || '']}
+            userProgress={user?.progress[roadmapData?.id|| '']}
           />
         </div>
       )}
