@@ -80,7 +80,6 @@ export default function RoadmapFlowComponent() {
       console.error('Node data is missing:', node);
       return node;
     }
-    console.log("node", roadmapData)
     const nodeData = { ...node.data };
     const completedNodes = user?.progress?.[roadmapData.id || ''] || [];
 
@@ -156,6 +155,7 @@ export default function RoadmapFlowComponent() {
         <div className="relative">
           {/* Top Bar */}
           <RoadmapTopBar
+          setRoadmap = {setRoadmapData}
             roadmap={roadmapData}
             progress={progress}
             completedNodes={completedNodes}
