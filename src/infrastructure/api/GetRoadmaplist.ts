@@ -23,14 +23,16 @@ export function GetRoadmaplist() {
   const userId = getUserId();
 
   return {
-    execute: async (): Promise<GetRoadmapListResponse> => {
+    execute: async (page: number = 1, limit: number = 1000): Promise<GetRoadmapListResponse> => {
       try {
         const response = await axios.get<GetRoadmapListResponse>(
           `${import.meta.env.VITE_PATH_API}/roadmaps`,
           {
             params: {
-              user: {id:userId},
+              user: { id: userId },
               isEditor: userRole() === 2,
+              page,
+              limit,
             },
             headers: {
               'Content-Type': 'application/json',

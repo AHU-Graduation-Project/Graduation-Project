@@ -8,12 +8,14 @@ import AnimationWrapper from "../UI/Animation/Animation";
 interface RoadmapCardProps {
   id: string;
   title: string;
+  slug:string,
   description: string;
   icon: IconType;
 }
 
 export default function RoadmapCard({
   id,
+  slug,
   title,
   description,
   icon,
@@ -28,7 +30,7 @@ export default function RoadmapCard({
         "group relative overflow-hidden rounded-xl bg-gray-50 dark:bg-slate-800 hover:shadow-xl transition-all duration-300"
       )}
     >
-      <Link to={`/roadmap/${id}`} className="block w-full h-full">
+      <Link to={`/roadmap/${slug}`} className="block w-full h-full">
         <div
           className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r transition-all duration-300 opacity-0 group-hover:opacity-100"
           style={{

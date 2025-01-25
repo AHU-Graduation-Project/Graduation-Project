@@ -3,9 +3,9 @@ import RoadmapCard from "./RoadmapCard";
 import SelectedRoadmapCard from "./SelectedRoadmapCard";
 import { useAuthStore } from "../../../application/state/authStore";
 
-const RoadmapSection = ({ title, roadmaps, type, visible }) => {
+const RoadmapSection = ({ title, roadmaps, type }) => {
   const { user, selectRoadmap } = useAuthStore();
-  if (!visible || !roadmaps.length) return null;
+  if ( !roadmaps.length) return null;
 
   return (
     <div className="mb-12">

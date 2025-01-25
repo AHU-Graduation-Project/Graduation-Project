@@ -6,46 +6,69 @@ import AddRoadmapModal from "./AddRoadmapModal";
 import useTokenStore from "../../../application/state/tokenStore";
 import { GetRoadmaplist } from "../../../infrastructure/api/GetRoadmaplist";
 import RoadmapSkeleton from "./RoadmapSkeleton";
-import SectionToggle from "./SectionToggle";
 import RoadmapSection from "./RoadmapSection";
 
+interface Roadmap {
+  id: number;
+  title: string;
+  description: string;
+}
+
+interface RoadmapData {
+  roadmaps: Roadmap[];
+  userRoadmaps: Roadmap[];
+  createdRoadmaps: Roadmap[];
+}
+
+interface GetRoadmapListResponse {
+  data: {
+    official: {
+      roadmaps: Roadmap[];
+      count: string;
+    };
+    userRoadmaps: Roadmap[];
+    createdRoadmaps: Roadmap[];
+  };
+}
+
 export default function BrowseRoadmapsComponent() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage, setPostsPerPage] = useState(9);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [postsPerPage, setPostsPerPage] = useState<number>(9); // Changed default value to 10
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const { userRole } = useTokenStore();
-  const [roadmapData, setRoadmapData] = useState({
+  const [roadmapData, setRoadmapData] = useState<RoadmapData>({
     roadmaps: [],
     userRoadmaps: [],
     createdRoadmaps: []
   });
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [totalPosts, setTotalPosts] = useState<number>(0); // Add state for total posts
   const getRoadmaplist = GetRoadmaplist();
-  const [visibleSections, setVisibleSections] = useState({
-    created: true,
-    enrolled: true,
-    other: true
-  });
-  const [areSwitchesVisible, setAreSwitchesVisible] = useState(true);
 
   useEffect(() => {
     const fetchRoadmaps = async () => {
       setIsLoading(true);
       try {
-        const response = await getRoadmaplist.execute();
+        const response: GetRoadmapListResponse = await getRoadmaplist.execute(currentPage, postsPerPage);
         console.log(response);
-        setRoadmapData(response.data || { roadmaps: [], userRoadmaps: [], createdRoadmaps: [] });
+        setRoadmapData({
+          roadmaps: response.data.official.roadmaps || [],
+          userRoadmaps: response.data.userRoadmaps || [],
+          createdRoadmaps: response.data.createdRoadmaps || [],
+        });
+        setTotalPosts(parseInt(response.data.official.count, 10)); // Set total posts
       } catch (error) {
         console.error("Failed to fetch roadmaps:", error);
         setRoadmapData({ roadmaps: [], userRoadmaps: [], createdRoadmaps: [] });
+        setTotalPosts(0); // Reset total posts on error
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchRoadmaps();
-  }, []);
+  }, [currentPage, postsPerPage]);
 
   const filteredRoadmaps = (roadmapData.roadmaps || []).filter((roadmap) =>
     [roadmap.title, roadmap.description].some((field) =>
@@ -62,16 +85,18 @@ export default function BrowseRoadmapsComponent() {
   }, [searchQuery]);
 
   const filterRoadmaps = () => {
-    const createdIds = new Set(roadmapData.createdRoadmaps.map(r => r.id));
-    const userIds = new Set(roadmapData.userRoadmaps.map(r => r.id));
+    if (!roadmapData) return { created: [], enrolled: [], other: [] };
+
+    const createdIds = new Set((roadmapData.createdRoadmaps || []).map(r => r.id));
+    const userIds = new Set((roadmapData.userRoadmaps || []).map(r => r.id));
     
-    const filteredUserRoadmaps = roadmapData.userRoadmaps.filter(r => !createdIds.has(r.id));
-    const filteredOtherRoadmaps = roadmapData.roadmaps.filter(r => 
+    const filteredUserRoadmaps = (roadmapData.userRoadmaps || []).filter(r => !createdIds.has(r.id));
+    const filteredOtherRoadmaps = (roadmapData.roadmaps || []).filter(r => 
       !createdIds.has(r.id) && !userIds.has(r.id)
     );
 
     return {
-      created: roadmapData.createdRoadmaps,
+      created: roadmapData.createdRoadmaps || [],
       enrolled: filteredUserRoadmaps,
       other: filteredOtherRoadmaps
     };
@@ -111,53 +136,17 @@ export default function BrowseRoadmapsComponent() {
                 </button>
               )}
             </div>
-            <div className="flex justify-center">
-              <button
-                onClick={() => setAreSwitchesVisible(!areSwitchesVisible)}
-                className="text-theme flex items-center"
-              >
-                {areSwitchesVisible ? "Hide Filters" : "Show Filters"}
-                <svg
-                  className={`w-4 h-4 ml-1 transition-transform ${areSwitchesVisible ? 'rotate-180' : ''}`}
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              </button>
-            </div>
-            <div className={`flex flex-wrap gap-4 justify-center sm:justify-start bg-white dark:bg-slate-800 p-4 rounded-lg shadow-sm transition-all duration-300 ${areSwitchesVisible ? 'max-h-full opacity-100' : 'max-h-0 opacity-0 overflow-hidden'}`}>
-              <SectionToggle
-                label="Created Roadmaps"
-                isEnabled={visibleSections.created}
-                onChange={(checked) => setVisibleSections(prev => ({ ...prev, created: checked }))} 
-              />
-              <SectionToggle
-                label="Enrolled Roadmaps"
-                isEnabled={visibleSections.enrolled}
-                onChange={(checked) => setVisibleSections(prev => ({ ...prev, enrolled: checked }))} 
-              />
-              <SectionToggle
-                label="Other Roadmaps"
-                isEnabled={visibleSections.other}
-                onChange={(checked) => setVisibleSections(prev => ({ ...prev, other: checked }))} 
-              />
-            </div>
           </div>
         </AnimationWrapper>
       </div>
 
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {Array(9).fill(0).map((_, index) => (
-            <RoadmapSkeleton key={index} />
-          ))}
+          {Array(postsPerPage)
+            .fill(0)
+            .map((_, index) => (
+              <RoadmapSkeleton key={index} />
+            ))}
         </div>
       ) : (
         <>
@@ -165,22 +154,26 @@ export default function BrowseRoadmapsComponent() {
             title="Created Roadmaps"
             roadmaps={filteredSections.created}
             type="created"
-            visible={visibleSections.created}
           />
           <RoadmapSection
             title="Enrolled Roadmaps"
             roadmaps={filteredSections.enrolled}
             type="enrolled"
-            visible={visibleSections.enrolled}
           />
           <RoadmapSection
             title="Other Roadmaps"
             roadmaps={filteredSections.other}
             type="other"
-            visible={visibleSections.other}
           />
         </>
       )}
+
+      <Pagination
+        totalPosts={totalPosts} // Use totalPosts state
+        postsPerPage={postsPerPage}
+        setCurrentPage={setCurrentPage}
+        currentPage={currentPage}
+      />
 
       <AddRoadmapModal
         isOpen={isModalOpen}
