@@ -6,6 +6,7 @@ type ConfirmationModalProps = {
   onClose: () => void;
   title: string;
   message: string;
+  isLoading?: boolean;
 };
 
 function ConfirmationModal({
@@ -14,6 +15,7 @@ function ConfirmationModal({
   onConfirm,
   title,
   message,
+  isLoading = false,
 }: ConfirmationModalProps) {
   const modalRef = useRef<HTMLDivElement | null>(null);
 
@@ -38,7 +40,7 @@ function ConfirmationModal({
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div
         ref={modalRef}
-        className="bg-white dark:bg-slate-800 rounded-lg shadow-lg p-6 max-w-sm w-full"
+        className="bg-white dark:bg-slate-800 rounded-lg shadow-lg p-6 max-w-sm w-full mx-auto my-auto"
       >
         <h3 className="text-lg font-bold mb-4">{title}</h3>
         <p className="text-sm mb-6">{message}</p>
@@ -46,14 +48,16 @@ function ConfirmationModal({
           <button
             onClick={onClose}
             className="bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 text-black dark:text-white py-2 px-4 rounded"
+            disabled={isLoading}
           >
             Cancel
           </button>
           <button
             onClick={onConfirm}
             className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded"
+            disabled={isLoading}
           >
-            Confirm
+            {isLoading ? 'Loading...' : 'Confirm'}
           </button>
         </div>
       </div>
