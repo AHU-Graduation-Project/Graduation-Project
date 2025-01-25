@@ -73,6 +73,28 @@ export default function EditEdgesSideBar({
           </select>
         </div>
 
+        {/* Line Style Selector */}
+        <div className={styles.rightSidebarField}>
+          <label className={styles.rightSidebarLabel}>Line Style</label>
+          <select
+            aria-label="Line style selector"
+            className={
+              styles.rightSidebarInput + ' bg-[#f5f5f5] dark:bg-[#262626]'
+            }
+            value={selectedEdge.style?.strokeDasharray ? 'dashed' : 'solid'}
+            onChange={(e) =>
+              handleUpdateEdgeFromSidebar(selectedEdge.id, {
+                style: {
+                  strokeDasharray:
+                    e.target.value === 'dashed' ? '5,5' : undefined,
+                },
+              })
+            }
+          >
+            <option value="solid">Solid</option>
+            <option value="dashed">Dashed</option>
+          </select>
+        </div>
         {/* Animation Checkbox */}
         <div className={styles.rightSidebarField}>
           <label className={styles.rightSidebarLabel}>Animation</label>
@@ -118,30 +140,6 @@ export default function EditEdgesSideBar({
             )}
           </div>
         </div>
-
-        {/* Line Style Selector */}
-        <div className={styles.rightSidebarField}>
-          <label className={styles.rightSidebarLabel}>Line Style</label>
-          <select
-            aria-label="Line style selector"
-            className={
-              styles.rightSidebarInput + ' bg-[#f5f5f5] dark:bg-[#262626]'
-            }
-            value={selectedEdge.style?.strokeDasharray ? 'dashed' : 'solid'}
-            onChange={(e) =>
-              handleUpdateEdgeFromSidebar(selectedEdge.id, {
-                style: {
-                  strokeDasharray:
-                    e.target.value === 'dashed' ? '5,5' : undefined,
-                },
-              })
-            }
-          >
-            <option value="solid">Solid</option>
-            <option value="dashed">Dashed</option>
-          </select>
-        </div>
-
         {/* Delete Edge Button */}
         <button
           className={styles.rightSidebarButton}

@@ -31,11 +31,25 @@ export default function BackgroundRays({
     if (fullPage) {
       const updateHeight = () =>
         setPageHeight(`${document.documentElement.scrollHeight}px`);
+      
+      // Create ResizeObserver to watch for DOM changes
+      const resizeObserver = new ResizeObserver(() => {
+        updateHeight();
+      });
+      
+      // Observe both body and documentElement
+      resizeObserver.observe(document.body);
+      resizeObserver.observe(document.documentElement);
+      
+      // Initial update
       updateHeight();
-      window.addEventListener("resize", updateHeight);
-      return () => window.removeEventListener("resize", updateHeight);
+      
+      // Cleanup
+      return () => {
+        resizeObserver.disconnect();
+      };
     } else {
-      setPageHeight("100vh"); // Reset height if not fullPage
+      setPageHeight("100vh");
     }
   }, [fullPage]);
 
@@ -161,7 +175,7 @@ export default function BackgroundRays({
 
   return (
     <div
-      className="absolute inset-0 overflow-hidden z-0"
+      className="fixed inset-0 overflow-hidden z-0"
       style={{ height: pageHeight }}
     >
       <div className="absolute w-full h-full">

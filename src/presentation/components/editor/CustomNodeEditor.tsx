@@ -14,7 +14,11 @@ type CustomNodeData = {
 
 type CustomNodeProps = NodeProps<CustomNodeData>;
 
-const CustomNodeEditor = ({ data}: CustomNodeProps) => {
+const CustomNodeEditor = ({ data }: CustomNodeProps) => {
+  const truncateLabel = (label: string) => {
+    return label.length > 15 ? `${label.substring(0, 15)}...` : label;
+  };
+
   return (
     <div
       className={`${styles.customNode} ${styles[data.type]} ${
@@ -79,7 +83,9 @@ const CustomNodeEditor = ({ data}: CustomNodeProps) => {
 
       <div className={'nodeContent'}>
         <div className={'nodeHeader'}>
-          <span className={'nodeLabel'}>{data.label}</span>
+          <span className={'nodeLabel'} title={data.label}>
+            {truncateLabel(data.label)}
+          </span>
         </div>
       </div>
     </div>

@@ -31,7 +31,7 @@ import AddResourceModal from './AddResourcesModal';
 import { AnimatePresence } from 'framer-motion';
 import LoadingOverlay from '../UI/LoadingOverlay';
 import { SaveRoadmapData } from '../../../infrastructure/api/SaveRoadmapData';
-
+import Loader from '../UI/loader/Loading';
 const nodeTypes = {
   custom: CustomNodeEditor,
 };
@@ -83,8 +83,8 @@ const edgeTypes: EdgeTypes = {
 };
 
 const RoadmapEditor = () => {
-  const { slug } = useParams(); // Extract the ID from the route
-  const [getingRoadmap, setGetingRoadmap] = useState(false);
+  const { slug } = useParams();
+  const [getingRoadmap, setGetingRoadmap] = useState(true);
   const isDragging = useRef(false);
   const [selectingPrerequisite, setSelectingPrerequisite] = useState(false);
   const [isResourcesDialogOpen, setIsResourcesDialogOpen] = useState(false);
@@ -176,6 +176,13 @@ const RoadmapEditor = () => {
         setNodes(roadmap.topics as unknown as Node[]);
         setEdges(roadmap.edges as unknown as Edge[]);
         setGetingRoadmap(false);
+        setUndoStack([
+          {
+            nodes: roadmap.topics as unknown as Node[],
+            edges: roadmap.edges as unknown as Edge[],
+          },
+        ]);
+        setRedoStack([]);
       } catch (error) {
         console.error('Failed to fetch roadmap:', error);
         setGetingRoadmap(false);
@@ -195,14 +202,6 @@ const RoadmapEditor = () => {
   );
 
   useEffect(() => {
-    setUndoStack([
-      {
-        nodes,
-        edges,
-      },
-    ]);
-  }, []); // Run once on mount
-  useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.ctrlKey && event.key === 'z') {
         event.preventDefault();
@@ -216,17 +215,6 @@ const RoadmapEditor = () => {
 
           // Update stacks
           setUndoStack((prev) => prev.slice(0, -1));
-          setRedoStack((prev) => [currentState, ...prev]);
-        } else if (undoStack.length === 1) {
-          // Handle the case where there's only one state in the undo stack
-          const currentState = undoStack[0];
-
-          // Clear the canvas
-          setNodes([]);
-          setEdges([]);
-
-          // Move current state to redo stack
-          setUndoStack([]);
           setRedoStack((prev) => [currentState, ...prev]);
         }
       } else if (event.ctrlKey && event.key === 'y') {
@@ -249,62 +237,6 @@ const RoadmapEditor = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [undoStack, redoStack, setEdges, setNodes]);
 
-  //   useEffect(() => {
-  //     const previousState = undoStack[undoStack.length - 2];
-  //     const currentState = undoStack[undoStack.length - 1];
-
-  //     if (previousState && currentState) {
-  //       const previousNodes = previousState.nodes;
-  //       const currentNodes = currentState.nodes;
-  //       const previousEdges = previousState.edges;
-  //       const currentEdges = currentState.edges;
-
-  //       const trashNodes = previousNodes.filter(
-  //         (prevNode) =>
-  //           !currentNodes.some((currNode) => currNode.id === prevNode.id),
-  //       );
-  //       const newNodes = currentNodes.filter(
-  //         (currNode) =>
-  //           !previousNodes.some((prevNode) => prevNode.id === currNode.id),
-  //       );
-  //       const editedNodes = currentNodes.filter((currNode) => {
-  //         const prevNode = previousNodes.find(
-  //           (prevNode) => prevNode.id === currNode.id,
-  //         );
-  //         return (
-  //           prevNode &&
-  //           JSON.stringify(prevNode.data) !== JSON.stringify(currNode.data)
-  //         );
-  //       });
-
-  //       const trashEdges = previousEdges.filter(
-  //         (prevEdge) =>
-  //           !currentEdges.some((currEdge) => currEdge.id === prevEdge.id),
-  //       );
-  //       const newEdges = currentEdges.filter(
-  //         (currEdge) =>
-  //           !previousEdges.some((prevEdge) => prevEdge.id === currEdge.id),
-  //       );
-  //       const editedEdges = currentEdges.filter((currEdge) => {
-  //         const prevEdge = previousEdges.find(
-  //           (prevEdge) => prevEdge.id === currEdge.id,
-  //         );
-  //         return (
-  //           prevEdge && JSON.stringify(prevEdge) !== JSON.stringify(currEdge)
-  //         );
-  //       });
-
-  //       setTrash({ nodes: trashNodes, edges: trashEdges });
-  //       setNewContainer({ nodes: newNodes, edges: newEdges });
-  //       setEditorContainer({ nodes: editedNodes, edges: editedEdges });
-  //     }
-
-  //   }, [undoStack]);
-
-  // console.log('trash', trash);
-  // console.log('new', newContainer);
-  // console.log('edit', editedContainer);
-
   const onNodesChange = useCallback(
     (changes: NodeChange[]) => {
       const positionChange = changes.find(
@@ -324,7 +256,6 @@ const RoadmapEditor = () => {
       const newNodes = applyNodeChanges(changes, nodes);
       setNodes(newNodes);
 
-      // Only save to history if it's  a position change (e.g., selection)
     },
     [nodes, edges, saveToHistory, setNodes],
   );
@@ -708,12 +639,15 @@ const RoadmapEditor = () => {
     }
   }, [nodes, edges]);
 
-  return (
+  return getingRoadmap ? (
+    <Loader />
+  ) : (
     <div className={styles.editorContainer}>
       <AnimatePresence>
-        {isSaving && <LoadingOverlay text={'saving'} />}
+        {isSaving && <LoadingOverlay text="saving" />}
       </AnimatePresence>
 
+      {/* Sidebar for editing the roadmap */}
       <EditorSideBar
         nodes={nodes}
         styles={styles}
@@ -734,6 +668,7 @@ const RoadmapEditor = () => {
         roadmapId={roadmapData.id}
       />
 
+      {/* ReactFlow container */}
       <div className={styles.flowContainer}>
         <ReactFlow
           nodes={nodes}
@@ -762,6 +697,8 @@ const RoadmapEditor = () => {
             centerGuides={helperLines.centerGuides}
           />
         </ReactFlow>
+
+        {/* Prerequisite selection tooltip */}
         {selectingPrerequisite && (
           <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-theme text-white px-4 py-2 rounded-lg shadow-lg bg-theme-shadow animate-breath z-50">
             Click a node to add it as a prerequisite
@@ -769,6 +706,7 @@ const RoadmapEditor = () => {
         )}
       </div>
 
+      {/* Right sidebar for editing nodes */}
       {selectedNode && (
         <EditNodesSideBar
           styles={styles}
@@ -782,6 +720,7 @@ const RoadmapEditor = () => {
         />
       )}
 
+      {/* Right sidebar for editing edges */}
       {selectedEdge && (
         <EditEdgesSideBar
           styles={styles}
@@ -794,6 +733,7 @@ const RoadmapEditor = () => {
         />
       )}
 
+      {/* Edit roadmap modal */}
       <EditRoadmapModal
         isOpen={isEditDialogOpen}
         onClose={() => setIsEditDialogOpen(false)}
@@ -801,12 +741,15 @@ const RoadmapEditor = () => {
         onSave={setRoadmapData}
       />
 
+      {/* Confirm refresh modal */}
       <ConfirmRefreshModal
         isOpen={showRefreshConfirm}
         onClose={() => setShowRefreshConfirm(false)}
         onRefresh={handleRefreshAnyway}
         onSaveAndRefresh={handleSaveAndRefresh}
       />
+
+      {/* Add resource modal */}
       <AddResourceModal
         isOpen={isResourcesDialogOpen}
         onClose={() => setIsResourcesDialogOpen(false)}

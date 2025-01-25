@@ -23,7 +23,6 @@ export default function FlowArea({
   nodeTypes,
 }: FlowAreaProps) {
 
-  console.log(nodes, edges);
   return (
     <div className="h-[calc(100vh-5rem)]">
       <ReactFlow

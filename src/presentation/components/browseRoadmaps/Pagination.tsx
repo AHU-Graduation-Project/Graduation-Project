@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 interface PProps {
   totalPosts: number;
@@ -31,7 +31,7 @@ const P: React.FC<PProps> = ({
           totalPages - 3,
           totalPages - 2,
           totalPages - 1,
-          totalPages
+          totalPages,
         );
       } else {
         pages.push(
@@ -41,7 +41,7 @@ const P: React.FC<PProps> = ({
           currentPage,
           currentPage + 1,
           -1,
-          totalPages
+          totalPages,
         );
       }
     }
@@ -67,6 +67,7 @@ const P: React.FC<PProps> = ({
       <button
         onClick={handlePrevious}
         disabled={currentPage === 1}
+        title="Previous page"
         className="px-2 py-2 font-medium rounded-md transition-colors 
                    text-gray-700 bg-gray-200 hover:bg-gray-300 disabled:opacity-50 
                    dark:text-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700"
@@ -81,21 +82,21 @@ const P: React.FC<PProps> = ({
             onClick={() => page !== -1 && setCurrentPage(page)}
             className={`px-3 py-2 text-xs font-medium rounded-md transition-colors ${
               page === currentPage
-                ? "bg-theme text-white dark:bg-blue-600"
+                ? 'bg-theme text-white dark:bg-blue-600'
                 : page === -1
-                ? "cursor-default text-gray-400"
-                : "text-gray-700 bg-gray-200 hover:bg-gray-300 dark:text-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700"
+                ? 'cursor-default text-gray-400'
+                : 'text-gray-700 bg-gray-200 hover:bg-gray-300 dark:text-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700'
             }`}
             disabled={page === -1}
           >
-            {page === -1 ? "..." : page}
+            {page === -1 ? '...' : page}
           </button>
         ))}
       </div>
-
       <button
         onClick={handleNext}
         disabled={currentPage === totalPages}
+        title="Next page"
         className="px-2 py-2 text-sm font-medium rounded-md transition-colors 
                    text-gray-700 bg-gray-200 hover:bg-gray-300 disabled:opacity-50 
                    dark:text-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700"

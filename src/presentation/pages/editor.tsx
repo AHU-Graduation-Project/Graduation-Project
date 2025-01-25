@@ -16,10 +16,5 @@ export default function Editor() {
         return () => window.removeEventListener('resize', checkScreenSize);
     }, []);
 
-    return (
-        <>
-            {isSmallScreen && <ScreenSizeWarning />}
-            <RoadmapEditor />
-        </>
-    );
+    return <>{isSmallScreen ? <ScreenSizeWarning /> : <RoadmapEditor />}</>;
 }

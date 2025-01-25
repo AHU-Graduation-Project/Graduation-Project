@@ -8,6 +8,7 @@ interface TokenState {
   isEditor: boolean | null;
   confirmToken: string | null;
   recoveryToken: string | null;
+  userId: string | null;
   setToken: (newToken: string, expirationMinutes?: number) => void;
   removeToken: () => void;
   updateToken: (updatedToken: string, expirationMinutes?: number) => void;
@@ -18,7 +19,20 @@ interface TokenState {
   clearConfirmToken: () => void;
   setRecoveryToken: (token: string) => void;
   clearRecoveryToken: () => void;
+  getUserId: () => string | null;
 }
+
+interface JWTPayload {
+  user: {
+    id: number;
+    email: string;
+  };
+  tokenType: number;
+  isEditor: boolean;
+  iat: number;
+  exp: number;
+}
+
 enum permitions {
   GUEST = 0,
   USER = 1,
@@ -44,17 +58,19 @@ const useTokenStore = create<TokenState>()(
       isEditor: null,
       confirmToken: null,
       recoveryToken: null,
+      userId: null,
 
       setToken: (newToken: string, expirationMinutes: number = 60): void => {
-        const decodedToken = decodeJWT(newToken);
+        const decodedToken = decodeJWT(newToken) as JWTPayload;
         const expiresAt = new Date(
-          Date.now() + expirationMinutes * 60 * 1000
+          (decodedToken?.exp || 0) * 1000
         ).toISOString();
         
         set({
           token: newToken,
           expiresAt: expiresAt,
           isEditor: decodedToken?.isEditor || false,
+          userId: decodedToken?.user?.id?.toString() || null,
         });
       },
 
@@ -62,6 +78,7 @@ const useTokenStore = create<TokenState>()(
         set({
           token: null,
           expiresAt: null,
+          userId: null,
         }),
 
       updateToken: (updatedToken: string, expirationMinutes?: number): void =>
@@ -130,6 +147,19 @@ const useTokenStore = create<TokenState>()(
       clearConfirmToken: (): void => set({ confirmToken: null }),
       setRecoveryToken: (token: string): void => set({ recoveryToken: token }),
       clearRecoveryToken: (): void => set({ recoveryToken: null }),
+
+      getUserId: (): string | null => {
+        const state = get();
+        if (!state.token || !state.expiresAt) return null;
+
+        const now = new Date();
+        const expirationDate = new Date(state.expiresAt);
+
+        if (now > expirationDate) {
+          return null;
+        }
+        return state.userId;
+      },
     }),
     {
       name: "token-storage",
@@ -139,6 +169,7 @@ const useTokenStore = create<TokenState>()(
         isEditor: state.isEditor,
         confirmToken: state.confirmToken,
         recoveryToken: state.recoveryToken,
+        userId: state.userId,
       }),
     }
   )
