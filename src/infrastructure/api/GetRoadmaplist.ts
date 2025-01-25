@@ -19,23 +19,26 @@ interface GetRoadmapListResponse {
 }
 
 export function GetRoadmaplist() {
-  const { getUserId, userRole } = useTokenStore();
-  const userId = getUserId();
+  const { getUser, userRole, token } = useTokenStore();
+  const user = getUser();
 
   return {
     execute: async (page: number = 1, limit: number = 1000): Promise<GetRoadmapListResponse> => {
+
+      console.log('user', user);
       try {
         const response = await axios.get<GetRoadmapListResponse>(
           `${import.meta.env.VITE_PATH_API}/roadmaps`,
           {
             params: {
-              user: { id: userId },
+              user: user,
               isEditor: userRole() === 2,
               page,
               limit,
             },
             headers: {
               'Content-Type': 'application/json',
+              ...(token && { 'Authorization': `Bearer ${token}` }), // Ensure token is passed in headers
             },
           },
         );

@@ -51,7 +51,6 @@ export default function BrowseRoadmapsComponent() {
       setIsLoading(true);
       try {
         const response: GetRoadmapListResponse = await getRoadmaplist.execute(currentPage, postsPerPage);
-        console.log(response);
         setRoadmapData({
           roadmaps: response.data.official.roadmaps || [],
           userRoadmaps: response.data.userRoadmaps || [],

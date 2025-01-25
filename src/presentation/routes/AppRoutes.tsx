@@ -17,7 +17,7 @@ export default function AppRoutes() {
       <Route path="/" element={<Overview />} />
       <Route path="/roadmaps" element={<BrowseRoadmaps />} />
       <Route path="/generate" element={<GenerateRoadmap />} />
-      <Route path="/roadmap/:id" element={<RoadmapFlow />} />
+      <Route path="/roadmap/:slug" element={<RoadmapFlow />} />
       <Route path="/confirm-email" element={<ConfirmPage />} />
       <Route path="/recovery-password" element={<RecoveryPassword />} />
       <Route path="/auth" element={<Auth />} />
