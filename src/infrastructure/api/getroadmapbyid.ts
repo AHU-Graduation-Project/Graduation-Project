@@ -50,18 +50,19 @@ export interface GetRoadmapByIdResponse {
 }
 
 const transformTopicsToNodes = (topics: RoadmapTopic[]): Node[] => {
-  return topics.map(topic => ({
+  return topics.map((topic) => ({
     id: topic.id,
     position: { x: topic.position_x, y: topic.position_y },
     data: {
       label: topic.label,
-      prerequisites: topic.prerequisites.split(',').filter(p => p), // Convert string back to array
+      prerequisites: topic.prerequisites.split(',').filter((p) => p), // Convert string back to array
       type: topic.type,
+      isAchived: topic.is_achieved,
       description: topic.description,
       skillast_name: topic.skill_name,
-      isAnalysisNeeded: topic.is_analysis_needed
+      isAnalysisNeeded: topic.is_analysis_needed,
     },
-    type: 'custom'
+    type: 'custom',
   }));
 };
 

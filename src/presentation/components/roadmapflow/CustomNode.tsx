@@ -7,7 +7,8 @@ import { motion } from 'framer-motion';
 import 'reactflow/dist/style.css';
 import { useAuthStore } from '../../../application/state/authStore';
 import { getJobs } from '../../../infrastructure/api/getJobs';
-
+import { AchiveTopic } from '../../../infrastructure/api/AchiveTopic';
+import useTokenStore from '../../../application/state/tokenStore';
 interface NodeData {
   label: string;
   type: 'topic' | 'subtopic';
@@ -23,9 +24,11 @@ interface NodeData {
 }
 
 export function CustomNode({ data, id }: NodeProps<NodeData>) {
-  const { user, updateProgress } = useAuthStore();
+  console.log(data)
+  const { getUser } = useTokenStore();
+  const { updateProgress } = useAuthStore();
   const { id: roadmapId } = useParams();
-  const isCompleted = user?.progress[roadmapId || '']?.includes(id);
+  const isCompleted = data.isAchived;
   const isFirstNode = data.prerequisites?.length === 0;
   const shouldBeActive = isCompleted || isFirstNode || data.isAchieved;
   const [showToolbar, setShowToolbar] = useState(false);
@@ -34,7 +37,8 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
   const [isAnimating, setIsAnimating] = useState(false);
   const [jobs, setJobs] = useState(0);
   const [isLoadingJobs, setIsLoadingJobs] = useState(false);
-
+  const achiveTopic = AchiveTopic();
+  const user = getUser();
   useEffect(() => {
     const fetchJobs = async () => {
       setIsLoadingJobs(true);
@@ -53,7 +57,9 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
         setIsLoadingJobs(false);
       }
     };
-    if (data.isAnalysisNeeded){fetchJobs();} // Only fetch jobs if analysis is needed
+    if (data.isAnalysisNeeded) {
+      fetchJobs();
+    } // Only fetch jobs if analysis is needed
   }, [data.label, data.isAnalysisNeeded]);
 
   // Rest of the component code remains the same...
@@ -78,7 +84,7 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
     };
   }, []);
 
-  const handleAction = (action: string, e: React.MouseEvent) => {
+  const handleAction = async (action: string, e: React.MouseEvent) => {
     e.stopPropagation();
     setShowToolbar(false);
 
@@ -89,15 +95,15 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
       case 'complete':
         if (user && shouldBeActive) {
           setIsAnimating(true);
-          updateProgress(roadmapId || '', id, !isCompleted);
-          setTimeout(() => setIsAnimating(false), 1000);
+          try {
+            await achiveTopic.execute(data.id);
+            updateProgress(roadmapId || '', id, !isCompleted);
+          } catch (error) {
+            console.error('Error achieving topic:', error);
+          } finally {
+            setIsAnimating(false);
+          }
         }
-        break;
-      case 'jobs':
-        window.open(
-          `https://www.linkedin.com/jobs/search/?keywords=${data.label}`,
-          '_blank',
-        );
         break;
       case 'courses':
         data.onShowCourses(data);
@@ -117,9 +123,9 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
     left: data.type === 'subtopic' || data.type === 'topic',
     right: data.type === 'subtopic' || data.type === 'topic',
   };
-    const truncateLabel = (label: string) => {
-      return label.length > 15 ? `${label.substring(0, 15)}...` : label;
-    };
+  const truncateLabel = (label: string) => {
+    return label.length > 15 ? `${label.substring(0, 15)}...` : label;
+  };
 
   return (
     <>
