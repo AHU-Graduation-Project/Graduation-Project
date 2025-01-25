@@ -79,20 +79,22 @@ const transformEdgesToReactFlow = (edges: RoadmapEdge[]): Edge[] => {
 };
 
 export function GetRoadmapById(): GetRoadmapById {
-  const { token ,getUserId } = useTokenStore();
-
+  const { token ,getUser } = useTokenStore();
+  const user = getUser();
   return {
     execute: async (id: string): Promise<GetRoadmapByIdResponse> => {
       if (!token) {
         throw new Error('Authentication token is missing');
       }
-      console.log('token', id);
       try {
         const response = await axios.get<GetRoadmapByIdResponse>(
           `${import.meta.env.VITE_PATH_API}/roadmaps/${id}`,
           {
+            params: {
+              user: user,
+            },
             headers: {
-              'Authorization': `Bearer token`
+              'Authorization': `Bearer ${token}`
             },
           }
         );
@@ -108,6 +110,39 @@ export function GetRoadmapById(): GetRoadmapById {
           }
         };
         
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          const message = error.response?.data?.message || error.message;
+          throw new Error(`Failed to fetch roadmap: ${message}`);
+        }
+        throw new Error('An unexpected error occurred while fetching roadmap');
+      }
+    },
+    getBySlug: async (slug: string): Promise<GetRoadmapByIdResponse> => {
+      if (!token) {
+        throw new Error('Authentication token is missing');
+      }
+      try {
+        const response = await axios.get<GetRoadmapByIdResponse>(
+          `${import.meta.env.VITE_PATH_API}/roadmaps/slug/${slug}`,
+          {
+            headers: {
+              'Authorization': `Bearer token`
+            },
+          }
+        );
+
+        // Transform the response data
+        const roadmapData = response.data.roadmap;
+        return {
+          success: response.data.success,
+          roadmap: {
+            ...roadmapData,
+            topics: transformTopicsToNodes(roadmapData.topics),
+            edges: transformEdgesToReactFlow(roadmapData.edges)
+          }
+        };
+
       } catch (error) {
         if (error instanceof AxiosError) {
           const message = error.response?.data?.message || error.message;

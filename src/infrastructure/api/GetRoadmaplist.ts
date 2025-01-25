@@ -25,7 +25,6 @@ export function GetRoadmaplist() {
   return {
     execute: async (page: number = 1, limit: number = 1000): Promise<GetRoadmapListResponse> => {
 
-      console.log('user', user);
       try {
         const response = await axios.get<GetRoadmapListResponse>(
           `${import.meta.env.VITE_PATH_API}/roadmaps`,

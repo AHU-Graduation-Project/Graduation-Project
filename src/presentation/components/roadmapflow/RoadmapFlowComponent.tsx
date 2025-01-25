@@ -18,7 +18,6 @@ const nodeTypes = {
 
 export default function RoadmapFlowComponent() {
   const { slug } = useParams();
-  console.log("slug" , slug)
   const navigate = useNavigate();
   const roadmap = roadmaps[0];
   const [selectedNode, setSelectedNode] = useState<any>(null);
@@ -81,9 +80,9 @@ export default function RoadmapFlowComponent() {
       console.error('Node data is missing:', node);
       return node;
     }
-
+    console.log("node", roadmapData)
     const nodeData = { ...node.data };
-    const completedNodes = user?.progress?.[id || ''] || [];
+    const completedNodes = user?.progress?.[roadmapData.id || ''] || [];
 
     // Check if this is a main topic and if all its subtopics are completed
     if (nodeData.type === 'topic') {
@@ -130,7 +129,7 @@ export default function RoadmapFlowComponent() {
     };
   });
 
-  const completedNodes = user?.progress[slug || '']?.length || 0;
+  const completedNodes = user?.progress[roadmapData?.id || '']?.length || 0;
   const totalNodes = nodes.length;
   const progress = Math.round((completedNodes / totalNodes) * 100);
 
@@ -199,7 +198,7 @@ export default function RoadmapFlowComponent() {
             showRating={showRating}
             setShowRating={setShowRating}
             roadmap={roadmapData}
-            userProgress={user?.progress[slug|| '']}
+            userProgress={user?.progress[roadmapData?.id|| '']}
           />
         </div>
       )}
