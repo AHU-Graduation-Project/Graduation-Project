@@ -1,0 +1,18 @@
+.loginButton {
+  @apply w-full 
+        py-3
+        bg-theme
+        text-white
+        rounded-lg
+        shadow-md
+        transition-transform
+        transform;
+
+  &.disabled {
+    opacity: 60%;
+  }
+
+  &:not(.disabled) {
+    @apply hover:scale-105;
+  }
+}

@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { CheckCircle2, XCircle } from "lucide-react";
 import BackgroundRays from "../OverView/BackgroundRays";
 import { InputField } from "../UI/TextInput";
-import passwordRecovery from "../../../infrastructure/api/passwordRecovery";
 import PasswordValidation from "./PasswordValidation";
 
 const PasswordReset = () => {

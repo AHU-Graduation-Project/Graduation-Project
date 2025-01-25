@@ -5,6 +5,8 @@ import SignupForm from "./SignUpForm";
 import Login from "../../../infrastructure/api/login";
 import useTokenStore from "../../../application/state/tokenStore";
 import PasswordReset from "./PasswordReset";
+import classnames from "classnames";
+import styles from "./LoginForm.module.scss";
 
 export default function LoginForm({ setChangePassword, setShowServey }) {
   const { setToken } = useTokenStore();
@@ -15,6 +17,7 @@ export default function LoginForm({ setChangePassword, setShowServey }) {
   const [error, setError] = useState<string | null>(null);
   const [isSign, setIsSign] = useState(false);
   const [showPasswordReset, setShowPasswordReset] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSignToggle = () => {
     setIsSign((prev) => !prev);
@@ -34,6 +37,7 @@ export default function LoginForm({ setChangePassword, setShowServey }) {
     }
 
     try {
+      setIsLoading(true);
       const response = await Login({
         email,
         password,
@@ -47,6 +51,8 @@ export default function LoginForm({ setChangePassword, setShowServey }) {
     } catch (err) {
       console.log("err", err);
       setError(err instanceof Error ? err.message : "Registration failed");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -86,23 +92,31 @@ export default function LoginForm({ setChangePassword, setShowServey }) {
               showToggle
               inputClickHandler={() => setShowPassword((current) => !current)}
             />
-            <input className="" type="checkbox" />{" "}
-            <span>Keep Me Signed in</span>
-            <div className="flex  mt-2 mb-2">
-              <button
-                type="button"
-                onClick={() => setShowPasswordReset(true)}
-                className="text-sm text-theme hover:underline"
-              >
-                Forgot Password?
-              </button>
+            <div className="flex justify-between items-center">
+              <div>
+                <input type="checkbox" className="mr-2" />
+                <span>Remember me</span>
+              </div>
+              <div className="mt-2 mb-2">
+                <button
+                  type="button"
+                  onClick={() => setShowPasswordReset(true)}
+                  className="text-sm text-theme hover:underline"
+                >
+                  Forgot Password?
+                </button>
+              </div>
             </div>
             {error && <p className="text-sm text-red-500">{error}</p>}
             <button
               type="submit"
-              className="w-full py-3 bg-theme text-white rounded-lg shadow-md transition-transform transform hover:scale-105"
+              disabled={isLoading}
+              className={classnames({
+                [styles.loginButton]: true,
+                [styles.disabled]: isLoading,
+              })}
             >
-              Login
+              {isLoading ? "Login..." : "Login"}
             </button>
           </form>
         </>
