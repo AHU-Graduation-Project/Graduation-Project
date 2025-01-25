@@ -27,7 +27,7 @@ export default function RoadmapTopBar({
     }
     selectRoadmap(roadmap.id);
   };
-  const { id } = useParams();
+  const { slug } = useParams();
 
   const captureFlow = useCallback(async () => {
     const flowElement = document.querySelector('.react-flow');
@@ -116,7 +116,7 @@ export default function RoadmapTopBar({
           {userRole() == 2 && (
             <div className="flex items-center gap-3 text-sm md:text-base">
               <button 
-              onClick={() => navigate(`/editor/${id}`)}
+              onClick={() => navigate(`/editor/${slug}`)}
               className="px-4 py-2 rounded-lg bg-theme text-white hover:opacity-90 transition-colors">
                 edit roadmap
               </button>
