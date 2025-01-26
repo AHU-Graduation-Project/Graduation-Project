@@ -1,25 +1,25 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef } from 'react';
 import ReactFlow, {
   Background as FlowBackground,
   Controls as FlowControls,
   applyNodeChanges,
-} from "reactflow";
-import "reactflow/dist/style.css";
-import { generateRoadmap } from "../../../infrastructure/utils/palm";
-import { CustomNodeGenerator } from "./CustomNodeGenerator";
-import RoadmapToolbar from "./RoadmapToolbar";
-import EditNodeModal from "../Modal/EditNodeModal";
-import { useAuthStore } from "../../../application/state/authStore";
-import SaveRoadmapModal from "../Modal/SaveRoadmapModal";
-import { useNavigate } from "react-router-dom";
-import GeneratorHeader from "./GeneratorHeader";
-import PromptInput from "./PromptInput";
-import AdvancedOptions from "./AdvancedOptions";
-import GeneratorNodeDetail from "../Modal/GeneratorNodeDetailModal";
-import { motion, AnimatePresence } from "framer-motion";
+} from 'reactflow';
+import 'reactflow/dist/style.css';
+import { generateRoadmap } from '../../../infrastructure/utils/palm';
+import { CustomNodeGenerator } from './CustomNodeGenerator';
+import RoadmapToolbar from './RoadmapToolbar';
+import EditNodeModal from '../Modal/EditNodeModal';
+import { useAuthStore } from '../../../application/state/authStore';
+import SaveRoadmapModal from '../Modal/SaveRoadmapModal';
+import { useNavigate } from 'react-router-dom';
+import GeneratorHeader from './GeneratorHeader';
+import PromptInput from './PromptInput';
+import AdvancedOptions from './AdvancedOptions';
+import GeneratorNodeDetail from '../Modal/GeneratorNodeDetailModal';
+import { motion, AnimatePresence } from 'framer-motion';
 import GeneratorReferences from './GeneratorReferences';
-import GenerateButton from "./GeneratorButton";
-import GeneratingIndicator from "./GeneratingIndicator";
+import GenerateButton from './GeneratorButton';
+import GeneratingIndicator from './GeneratingIndicator';
 
 const nodeTypes = {
   custom: CustomNodeGenerator,
@@ -52,11 +52,11 @@ export default function GenerateRoadmapComponent() {
   const [showNodeDetails, setShowNodeDetails] = useState(false);
   const [references, setReferences] = useState<any[]>([]);
 
-  const [prompt, setPrompt] = useState("");
+  const [prompt, setPrompt] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [nodes, setNodes] = useState<any[]>([]);
   const [edges, setEdges] = useState<any[]>([]);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [wasStopped, setWasStopped] = useState(false);
 
@@ -73,7 +73,7 @@ export default function GenerateRoadmapComponent() {
 
   const onNodesChange = useCallback(
     (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
-    []
+    [],
   );
   const onEdgesChange = useCallback(() => {}, []);
 
@@ -89,15 +89,15 @@ export default function GenerateRoadmapComponent() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!prompt.trim()) {
-      setError("Please enter what you want to learn");
+      setError('Please enter what you want to learn');
       return;
     }
 
     setIsGenerating(true);
-    setError("");
+    setError('');
     setNodes([]);
     setEdges([]);
-    setReferences([]); 
+    setReferences([]);
     setWasStopped(false);
 
     // Initialize AbortController
@@ -110,11 +110,11 @@ export default function GenerateRoadmapComponent() {
           minTopics: advancedOptions.minTopics,
           minSubtopics: advancedOptions.minSubtopics,
         },
-        abortControllerRef.current.signal
+        abortControllerRef.current.signal,
       );
 
       if (!result || !result.nodes || !result.edges) {
-        throw new Error("Invalid response structure from AI");
+        throw new Error('Invalid response structure from AI');
       }
 
       const processedNodes = result.nodes.map((node) => ({
@@ -134,17 +134,17 @@ export default function GenerateRoadmapComponent() {
       setReferences(result.references || []);
     } catch (err: unknown) {
       if (err instanceof Error) {
-        if (err.name === "AbortError") {
-          setError("Generation was stopped");
+        if (err.name === 'AbortError') {
+          setError('Generation was stopped');
         } else {
-          console.error("Error:", err);
+          console.error('Error:', err);
           setError(
-            err.message || "Failed to generate roadmap. Please try again."
+            err.message || 'Failed to generate roadmap. Please try again.',
           );
         }
       } else {
-        console.error("Unknown error:", err);
-        setError("An unexpected error occurred. Please try again.");
+        console.error('Unknown error:', err);
+        setError('An unexpected error occurred. Please try again.');
       }
     } finally {
       setIsGenerating(false);
@@ -156,30 +156,30 @@ export default function GenerateRoadmapComponent() {
 
   const handleSaveRoadmap = (title: string, description: string) => {
     if (!user) {
-      navigate("/auth");
+      navigate('/auth');
       return;
     }
 
     saveGeneratedRoadmap(title, description, nodes, edges);
-    navigate("/profile");
+    navigate('/profile');
   };
 
   const handleOptionChange = (
     key: keyof AdvancedOptionsProps,
-    value: number
+    value: number,
   ) => {
     setAdvancedOptions((prev) => ({
       ...prev,
       [key]: Math.max(
-        key === "minTopics" ? 5 : 1,
-        Math.min(key === "minTopics" ? 30 : 5, value)
+        key === 'minTopics' ? 5 : 1,
+        Math.min(key === 'minTopics' ? 30 : 5, value),
       ),
     }));
   };
 
   const handleNodeClick = (
     event: React.MouseEvent<Element, MouseEvent>,
-    node: FlowNode
+    node: FlowNode,
   ) => {
     setNodes((nds: FlowNode[]) =>
       nds.map((n) => ({
@@ -188,7 +188,7 @@ export default function GenerateRoadmapComponent() {
           ...n.data,
           isSelected: n.id === node.id,
         },
-      }))
+      })),
     );
     setSelectedNode(node);
   };
@@ -203,7 +203,7 @@ export default function GenerateRoadmapComponent() {
           ...n.data,
           isSelected: false,
         },
-      }))
+      })),
     );
   };
 
@@ -215,7 +215,7 @@ export default function GenerateRoadmapComponent() {
 
   const handleSaveEditNode = (nodeData: any) => {
     setNodes((nds: any[]) =>
-      nds.map((node: any) => (node.id === nodeData.id ? nodeData : node))
+      nds.map((node: any) => (node.id === nodeData.id ? nodeData : node)),
     );
     setSelectedNode(null);
   };
@@ -304,13 +304,17 @@ export default function GenerateRoadmapComponent() {
       />
 
       <SaveRoadmapModal
+        nodes={nodes}
+        edges={edges}
         isOpen={showSaveModal}
         onClose={() => setShowSaveModal(false)}
         onSave={handleSaveRoadmap}
       />
 
       {/* references Section */}
-      {references.length > 0 && !wasStopped && <GeneratorReferences references={references} />}
+      {references.length > 0 && !wasStopped && (
+        <GeneratorReferences references={references} />
+      )}
     </div>
   );
 }

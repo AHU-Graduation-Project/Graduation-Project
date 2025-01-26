@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react";
-import Pagination from "./Pagination";
-import SearchBar from "../UI/SearchBar";
-import AnimationWrapper from "../UI/Animation/Animation";
-import AddRoadmapModal from "./AddRoadmapModal";
-import useTokenStore from "../../../application/state/tokenStore";
-import { GetRoadmaplist } from "../../../infrastructure/api/GetRoadmaplist";
-import RoadmapSkeleton from "./RoadmapSkeleton";
-import RoadmapSection from "./RoadmapSection";
+import { useState, useEffect } from 'react';
+import Pagination from './Pagination';
+import SearchBar from '../UI/SearchBar';
+import AnimationWrapper from '../UI/Animation/Animation';
+import AddRoadmapModal from './AddRoadmapModal';
+import useTokenStore from '../../../application/state/tokenStore';
+import { GetRoadmaplist } from '../../../infrastructure/api/GetRoadmaplist';
+import RoadmapSkeleton from './RoadmapSkeleton';
+import RoadmapSection from './RoadmapSection';
 
 interface Roadmap {
   id: number;
@@ -32,7 +32,7 @@ interface GetRoadmapListResponse {
 }
 
 export default function BrowseRoadmapsComponent() {
-  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [postsPerPage, setPostsPerPage] = useState<number>(9); // Changed default value to 10
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -40,7 +40,7 @@ export default function BrowseRoadmapsComponent() {
   const [roadmapData, setRoadmapData] = useState<RoadmapData>({
     roadmaps: [],
     userRoadmaps: [],
-    createdRoadmaps: []
+    createdRoadmaps: [],
   });
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [totalPosts, setTotalPosts] = useState<number>(0); // Add state for total posts
@@ -50,7 +50,10 @@ export default function BrowseRoadmapsComponent() {
     const fetchRoadmaps = async () => {
       setIsLoading(true);
       try {
-        const response: GetRoadmapListResponse = await getRoadmaplist.execute(currentPage, postsPerPage);
+        const response: GetRoadmapListResponse = await getRoadmaplist.execute(
+          currentPage,
+          postsPerPage,
+        );
         setRoadmapData({
           roadmaps: response.data.official.roadmaps || [],
           userRoadmaps: response.data.userRoadmaps || [],
@@ -58,7 +61,7 @@ export default function BrowseRoadmapsComponent() {
         });
         setTotalPosts(parseInt(response.data.official.count, 10)); // Set total posts
       } catch (error) {
-        console.error("Failed to fetch roadmaps:", error);
+        console.error('Failed to fetch roadmaps:', error);
         setRoadmapData({ roadmaps: [], userRoadmaps: [], createdRoadmaps: [] });
         setTotalPosts(0); // Reset total posts on error
       } finally {
@@ -71,8 +74,8 @@ export default function BrowseRoadmapsComponent() {
 
   const filteredRoadmaps = (roadmapData.roadmaps || []).filter((roadmap) =>
     [roadmap.title, roadmap.description].some((field) =>
-      field?.toLowerCase().includes(searchQuery.toLowerCase())
-    )
+      field?.toLowerCase().includes(searchQuery.toLowerCase()),
+    ),
   );
 
   const lastPostIndex = currentPage * postsPerPage;
@@ -86,18 +89,22 @@ export default function BrowseRoadmapsComponent() {
   const filterRoadmaps = () => {
     if (!roadmapData) return { created: [], enrolled: [], other: [] };
 
-    const createdIds = new Set((roadmapData.createdRoadmaps || []).map(r => r.id));
-    const userIds = new Set((roadmapData.userRoadmaps || []).map(r => r.id));
-    
-    const filteredUserRoadmaps = (roadmapData.userRoadmaps || []).filter(r => !createdIds.has(r.id));
-    const filteredOtherRoadmaps = (roadmapData.roadmaps || []).filter(r => 
-      !createdIds.has(r.id) && !userIds.has(r.id)
+    const createdIds = new Set(
+      (roadmapData.createdRoadmaps || []).map((r) => r.id),
+    );
+    const userIds = new Set((roadmapData.userRoadmaps || []).map((r) => r.id));
+
+    const filteredUserRoadmaps = (roadmapData.userRoadmaps || []).filter(
+      (r) => !createdIds.has(r.id),
+    );
+    const filteredOtherRoadmaps = (roadmapData.roadmaps || []).filter(
+      (r) => !createdIds.has(r.id) && !userIds.has(r.id),
     );
 
     return {
       created: roadmapData.createdRoadmaps || [],
       enrolled: filteredUserRoadmaps,
-      other: filteredOtherRoadmaps
+      other: filteredOtherRoadmaps,
     };
   };
 
@@ -160,7 +167,7 @@ export default function BrowseRoadmapsComponent() {
             type="enrolled"
           />
           <RoadmapSection
-            title="Other Roadmaps"
+            title="offical Roadmaps"
             roadmaps={filteredSections.other}
             type="other"
           />

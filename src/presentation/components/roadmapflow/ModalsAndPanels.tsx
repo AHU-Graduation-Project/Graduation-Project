@@ -20,6 +20,7 @@ interface ModalsAndPanelsProps {
   setShowRating: React.Dispatch<React.SetStateAction<boolean>>;
   roadmap: any;
   userProgress: any;
+  onFollowChange: (isFollowed: boolean) => void;
 }
 
 export default function ModalsAndPanels({
@@ -37,6 +38,7 @@ export default function ModalsAndPanels({
   setShowRating,
   roadmap,
   userProgress,
+  onFollowChange,
 }: ModalsAndPanelsProps) {
   return (
     <>
@@ -52,6 +54,7 @@ export default function ModalsAndPanels({
         isOpen={showInfo}
         onClose={() => setShowInfo(false)}
         roadmap={roadmap}
+        onFollowChange={onFollowChange}
       />
       <ChatPanel
         isOpen={showChat}
