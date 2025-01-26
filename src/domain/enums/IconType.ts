@@ -14,13 +14,13 @@ import {
   FileText,
   Github,
   LucideIcon,
+  Bot
 } from 'lucide-react';
 
 export enum IconType {
   MAP = 'map',
   EDIT = 'edit',
   CODE = 'code',
-
   PLUS = 'plus',
   BRAIN = 'brain',
   LIBRARY = 'library',
@@ -38,7 +38,7 @@ export const IconComponents: Record<IconType, LucideIcon> = {
   [IconType.MAP]: Map,
   [IconType.EDIT]: Edit,
   [IconType.CODE]: Code,
-
+  ['bot']: Bot,
   [IconType.PLUS]: Plus,
   [IconType.BRAIN]: Brain,
   [IconType.LIBRARY]: Library,

@@ -117,7 +117,7 @@ export default function RoadmapFlowComponent() {
         );
 
         setNodes(initialNodes);
-
+        console.log(edges)
         // Format edges properly
         const formattedEdges = (roadmap.edges || []).map((edge: any) => ({
           id: edge.id,
@@ -216,6 +216,14 @@ export default function RoadmapFlowComponent() {
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
             nodeTypes={nodeTypes}
+            defaultEdgeOptions={{
+              type: 'smoothstep',
+              animated: true,
+              style: {
+                strokeWidth: 2,
+                stroke: '#555',
+              }
+            }}
           />
           <FloatingMenu
             showFloatingMenu={showFloatingMenu}
