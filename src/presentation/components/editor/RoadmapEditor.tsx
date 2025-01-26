@@ -634,7 +634,7 @@ const RoadmapEditor = () => {
     },
     [selectingPrerequisite, selectedNode, nodes, setNodes],
   );
-
+console.log(roadmapData)
   useEffect(() => {
     if (nodes.length > 0 || edges.length > 0) {
       setHasUnsavedChanges(true);
@@ -760,6 +760,8 @@ const RoadmapEditor = () => {
           console.log('Saving resources:', resources);
           setIsResourcesDialogOpen(false);
         }}
+        initialResources={roadmapData.resources}
+        roadmapId={roadmapData.id}
       />
     </div>
   );

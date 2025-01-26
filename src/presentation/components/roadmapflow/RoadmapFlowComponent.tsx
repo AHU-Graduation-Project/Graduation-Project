@@ -170,7 +170,11 @@ export default function RoadmapFlowComponent() {
       },
     };
   });
-
+  const handleFollowRoadmap = (isFollowed: boolean) => {
+    if (roadmapData) {
+      setRoadmapData((prev) => ({ ...prev, isFollowed }));
+    }
+  };
   const completedNodes = roadmapData?.completedNodes?.length || 0;
   const totalNodes = nodes.length;
   const progress = Math.round((completedNodes / totalNodes) * 100);
@@ -202,6 +206,7 @@ export default function RoadmapFlowComponent() {
             roadmap={roadmapData}
             completedNodes={completedNodeIds.length}
             totalNodes={nodes.length}
+            onFollowChange={handleFollowRoadmap}
           />
 
           {/* Main Flow Area */}
@@ -239,6 +244,7 @@ export default function RoadmapFlowComponent() {
             setShowRating={setShowRating}
             roadmap={roadmapData}
             userProgress={roadmapData?.completedNodes}
+            onFollowChange={handleFollowRoadmap}
           />
         </div>
       )}

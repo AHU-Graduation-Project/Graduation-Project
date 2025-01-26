@@ -13,6 +13,7 @@ interface RoadmapTopBarProps {
   roadmap: any;
   completedNodes: number;
   totalNodes: number;
+  onFollowChange: (isFollowed: boolean) => void;
 }
 
 export default function RoadmapTopBar({
@@ -20,6 +21,7 @@ export default function RoadmapTopBar({
   roadmap,
   completedNodes,
   totalNodes,
+  onFollowChange,
 }: RoadmapTopBarProps) {
   const [isVisible, setIsVisible] = useState(true);
   const { selectRoadmap } = useAuthStore();
@@ -38,7 +40,7 @@ export default function RoadmapTopBar({
     }
     try {
       await followRoadmap.execute(roadmap.slug);
-      setRoadmap((prev) => ({ ...prev, isFollowed: true }));
+      onFollowChange(true);
       selectRoadmap(roadmap.id);
     } catch (error) {
       console.error('Failed to follow roadmap:', error);
