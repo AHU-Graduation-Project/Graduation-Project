@@ -9,6 +9,7 @@ import { useAuthStore } from '../../../application/state/authStore';
 import { getJobs } from '../../../infrastructure/api/getJobs';
 import { AchiveTopic } from '../../../infrastructure/api/AchiveTopic';
 import useTokenStore from '../../../application/state/tokenStore';
+
 interface NodeData {
   label: string;
   type: 'topic' | 'subtopic';
@@ -20,17 +21,18 @@ interface NodeData {
   prerequisites?: string[];
   onShowDetails: (data: any) => void;
   onShowCourses: (data: any) => void;
+  updateNodeProgress: (nodeId: string, isComplete: boolean) => void;
   isAnalysisNeeded: boolean;
+  shouldBeActive: boolean;
 }
 
 export function CustomNode({ data, id }: NodeProps<NodeData>) {
-  console.log(data)
   const { getUser } = useTokenStore();
   const { updateProgress } = useAuthStore();
   const { id: roadmapId } = useParams();
-  const isCompleted = data.isAchived;
+  const isCompleted = data.isAchieved;
   const isFirstNode = data.prerequisites?.length === 0;
-  const shouldBeActive = isCompleted || isFirstNode || data.isAchieved;
+  const shouldBeActive = data.shouldBeActive;
   const [showToolbar, setShowToolbar] = useState(false);
   const toolbarContainerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -39,6 +41,7 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
   const [isLoadingJobs, setIsLoadingJobs] = useState(false);
   const achiveTopic = AchiveTopic();
   const user = getUser();
+
   useEffect(() => {
     const fetchJobs = async () => {
       setIsLoadingJobs(true);
@@ -59,10 +62,9 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
     };
     if (data.isAnalysisNeeded) {
       fetchJobs();
-    } // Only fetch jobs if analysis is needed
+    }
   }, [data.label, data.isAnalysisNeeded]);
 
-  // Rest of the component code remains the same...
   const handleClickOutside = (event: MouseEvent | TouchEvent) => {
     const toolbarClicked = toolbarContainerRef.current?.contains(
       event.target as Node,
@@ -95,9 +97,13 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
       case 'complete':
         if (user && shouldBeActive) {
           setIsAnimating(true);
+          data.updateNodeProgress(id, !isCompleted);
+
           try {
-            await achiveTopic.execute(data.id);
+            await achiveTopic.execute(id);
             updateProgress(roadmapId || '', id, !isCompleted);
+
+            // Use the updateNodeProgress method passed in node data
           } catch (error) {
             console.error('Error achieving topic:', error);
           } finally {
@@ -117,12 +123,6 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
     }
   };
 
-  const showHandles = {
-    top: data.type === 'topic',
-    bottom: data.type === 'topic',
-    left: data.type === 'subtopic' || data.type === 'topic',
-    right: data.type === 'subtopic' || data.type === 'topic',
-  };
   const truncateLabel = (label: string) => {
     return label.length > 15 ? `${label.substring(0, 15)}...` : label;
   };
