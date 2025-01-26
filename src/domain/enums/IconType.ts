@@ -1,9 +1,10 @@
 import { Edit, Code, Map, Plus, Brain, Library, Cpu, BookOpen, Video, Globe, Youtube, GraduationCap, FileText, Github, LucideIcon } from 'lucide-react';
 
 export enum IconType {
+  MAP = 'map',
   EDIT = 'edit',
   CODE = 'code',
-  MAP = 'map',
+
   PLUS = 'plus',
   BRAIN = 'brain',
   LIBRARY = 'library',
@@ -14,13 +15,14 @@ export enum IconType {
   YOUTUBE = 'youtube',
   COURSE = 'course',
   ARTICLE = 'article',
-  GITHUB = 'github'
+  GITHUB = 'github',
 }
 
 export const IconComponents: Record<IconType, LucideIcon> = {
+  [IconType.MAP]: Map,
   [IconType.EDIT]: Edit,
   [IconType.CODE]: Code,
-  [IconType.MAP]: Map,
+
   [IconType.PLUS]: Plus,
   [IconType.BRAIN]: Brain,
   [IconType.LIBRARY]: Library,

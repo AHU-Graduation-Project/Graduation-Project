@@ -192,7 +192,7 @@ const AddRoadmapModal = ({ isOpen, onClose}: AddRoadmapModalProps) => {
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Icon
           </label>
-          <div className="flex space-x-2">
+          <div className="flex space-x-2 flex-wrap gap-2">
             {icons.map(([iconType, IconComponent], index) => (
               <button
                 key={iconType}
