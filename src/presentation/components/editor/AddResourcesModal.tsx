@@ -1,14 +1,8 @@
 import { useState } from 'react';
-import { X, Plus, Trash2, BookOpen, Video, Globe } from 'lucide-react';
+import { X, Plus, Trash2 } from 'lucide-react';
 import { cn } from '../../../infrastructure/utils/cn';
-
-const iconOptions = {
-  Book: BookOpen,
-  Video: Video,
-  Link: Globe,
-} as const;
-
-type IconType = keyof typeof iconOptions;
+import ThemeIcon from '../UI/ThemeIcon';
+import { IconType, IconComponents } from '../../../domain/enums/IconType';
 
 interface Resource {
   title: string;
@@ -24,6 +18,16 @@ interface AddResourceModalProps {
   
 }
 
+// Add URL validation function
+const isValidUrl = (url: string) => {
+  try {
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
 export default function AddResourceModal({
   isOpen,
   onClose,
@@ -33,16 +37,40 @@ export default function AddResourceModal({
   const [resources, setResources] = useState<Resource[]>(initialResources);
   const [newResource, setNewResource] = useState<Resource>({
     title: '',
-    icon: 'Book',
+    icon: IconType.BOOK,
     url: '',
   });
+  const [urlError, setUrlError] = useState<string>('');
+  const [selectedIconIndex, setSelectedIconIndex] = useState<number>(0);
 
   if (!isOpen) return null;
 
+  const handleIconSelect = (iconType: IconType, index: number) => {
+    setNewResource({ ...newResource, icon: iconType });
+    setSelectedIconIndex(index);
+  };
+
+  const validateUrl = (url: string) => {
+    if (!url) {
+      setUrlError('URL is required');
+      return false;
+    }
+    if (!isValidUrl(url)) {
+      setUrlError('Please enter a valid URL');
+      return false;
+    }
+    return true;
+  };
+
   const handleAddResource = () => {
+    if (!validateUrl(newResource.url)) {
+      return;
+    }
+    
     if (newResource.title && newResource.url) {
       setResources([...resources, newResource]);
-      setNewResource({ title: '', icon: 'Book', url: '' });
+      setNewResource({ title: '', icon: IconType.BOOK, url: '' });
+      setUrlError('');
     }
   };
 
@@ -70,7 +98,7 @@ export default function AddResourceModal({
 
         <div className="p-6">
           {/* Add New Resource Form */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div className="grid grid-cols-1 gap-4 mb-6">
             <div>
               <label className="block text-sm font-medium mb-1">Title</label>
               <input
@@ -85,47 +113,76 @@ export default function AddResourceModal({
             </div>
             <div>
               <label className="block text-sm font-medium mb-1">Icon</label>
-              <select
-                value={newResource.icon}
-                onChange={(e) =>
-                  setNewResource({
-                    ...newResource,
-                    icon: e.target.value as IconType,
-                  })
-                }
-                className="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700"
-              >
-                {Object.keys(iconOptions).map((icon) => (
-                  <option key={icon} value={icon}>
-                    {icon}
-                  </option>
-                ))}
-              </select>
+              <div className="flex space-x-2">
+                {Object.entries(IconComponents)
+                  .filter(([key]) => [
+                    IconType.BOOK,
+                    IconType.VIDEO,
+                    IconType.LINK,
+                    IconType.YOUTUBE,
+                    IconType.COURSE,
+                    IconType.ARTICLE,
+                    IconType.GITHUB
+                  ].includes(key as IconType))
+                  .map(([iconType, IconComponent], index) => (
+                    <button
+                      key={iconType}
+                      onClick={() => handleIconSelect(iconType as IconType, index)}
+                      className={`p-2 border rounded-md shadow-sm transition-all duration-200 
+                        ${
+                          selectedIconIndex === index
+                            ? 'border-theme scale-110'
+                            : 'border-gray-300 dark:border-gray-600 hover:border-theme hover:scale-105'
+                        }`}
+                    >
+                      {selectedIconIndex === index ? (
+                        <ThemeIcon icon={IconComponent} />
+                      ) : (
+                        <IconComponent
+                          className={`w-6 h-6 ${'text-gray-700 dark:text-gray-400'}`}
+                        />
+                      )}
+                    </button>
+                  ))}
+              </div>
             </div>
             <div>
               <label className="block text-sm font-medium mb-1">URL</label>
-              <div className="flex gap-2">
-                <input
-                  type="url"
-                  value={newResource.url}
-                  onChange={(e) =>
-                    setNewResource({ ...newResource, url: e.target.value })
-                  }
-                  className="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700"
-                  placeholder="https://example.com"
-                />
-                <button
-                  onClick={handleAddResource}
-                  disabled={!newResource.title || !newResource.url}
-                  className={cn(
-                    'px-4 rounded-lg transition-colors flex items-center gap-2',
-                    newResource.title && newResource.url
-                      ? 'bg-theme text-white hover:opacity-90'
-                      : 'bg-slate-200 dark:bg-slate-700 text-slate-400 cursor-not-allowed',
-                  )}
-                >
-                  <Plus className="w-4 h-4" />
-                </button>
+              <div className="flex flex-col gap-2">
+                <div className="flex gap-2">
+                  <input
+                    type="url"
+                    value={newResource.url}
+                    onChange={(e) => {
+                      setNewResource({ ...newResource, url: e.target.value });
+                      validateUrl(e.target.value);
+                    }}
+                    onBlur={(e) => validateUrl(e.target.value)}
+                    className={cn(
+                      "w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-900 border",
+                      (urlError || !newResource.url)
+                        ? "border-red-500 focus:ring-red-500 focus:border-red-500" 
+                        : "border-slate-200 dark:border-slate-700"
+                    )}
+                    placeholder="https://example.com"
+                  />
+                  <button
+                    aria-label="Add resource"
+                    onClick={handleAddResource}
+                    disabled={!newResource.title || !newResource.url}
+                    className={cn(
+                      'px-4 rounded-lg transition-colors flex items-center gap-2',
+                      newResource.title && newResource.url
+                        ? 'bg-theme text-white hover:opacity-90'
+                        : 'bg-slate-200 dark:bg-slate-700 text-slate-400 cursor-not-allowed',
+                    )}
+                  >
+                    <Plus className="w-4 h-4" />
+                  </button>
+                </div>
+                {urlError && (
+                  <span className="text-sm text-red-500">{urlError}</span>
+                )}
               </div>
             </div>
           </div>
@@ -133,7 +190,7 @@ export default function AddResourceModal({
           {/* Resource List */}
           <div className="space-y-3 max-h-[300px] overflow-y-auto">
             {resources.map((resource, index) => {
-              const Icon = iconOptions[resource.icon];
+              const Icon = IconComponents[resource.icon];
               return (
                 <div
                   key={index}
@@ -141,7 +198,7 @@ export default function AddResourceModal({
                 >
                   <div className="flex items-center gap-3">
                     <div className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800">
-                      <Icon className="w-5 h-5 text-theme" />
+                      <ThemeIcon icon={Icon} />
                     </div>
                     <div>
                       <h4 className="font-medium">{resource.title}</h4>
