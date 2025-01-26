@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import {useState, useEffect} from 'react';
+import {useSearchParams} from 'react-router-dom';
 import Pagination from './Pagination';
 import SearchBar from '../UI/SearchBar';
 import AnimationWrapper from '../UI/Animation/Animation';
 import AddRoadmapModal from './AddRoadmapModal';
 import useTokenStore from '../../../application/state/tokenStore';
-import { GetRoadmaplist } from '../../../infrastructure/api/GetRoadmaplist';
+import {GetRoadmaplist} from '../../../infrastructure/api/GetRoadmaplist';
 import RoadmapSkeleton from './RoadmapSkeleton';
 import RoadmapSection from './RoadmapSection';
 
@@ -37,35 +37,31 @@ export default function BrowseRoadmapsComponent() {
   const [searchQuery, setSearchQuery] = useState<string>(searchParams.get('search') || '');
   const [hasSearched, setHasSearched] = useState<boolean>(!!searchParams.get('search'));
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [postsPerPage, setPostsPerPage] = useState<number>(9); // Changed default value to 10
+  const [postsPerPage, setPostsPerPage] = useState<number>(9);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const { userRole } = useTokenStore();
+  const {userRole} = useTokenStore();
   const [roadmapData, setRoadmapData] = useState<RoadmapData>({
     roadmaps: [],
     userRoadmaps: [],
     createdRoadmaps: [],
   });
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [totalPosts, setTotalPosts] = useState<number>(0); // Add state for total posts
+  const [totalPosts, setTotalPosts] = useState<number>(0);
   const getRoadmaplist = GetRoadmaplist();
 
-  const fetchRoadmaps = async () => {
+  const fetchRoadmaps = async() => {
     setIsLoading(true);
     try {
-      const response: GetRoadmapListResponse = await getRoadmaplist.execute(
-        currentPage,
-        postsPerPage,
-        searchQuery // Pass search query to API
-      );
+      const response: GetRoadmapListResponse = await getRoadmaplist.execute(currentPage, postsPerPage, searchQuery);
       setRoadmapData({
         roadmaps: response.data.official.roadmaps || [],
         userRoadmaps: response.data.userRoadmaps || [],
         createdRoadmaps: response.data.createdRoadmaps || [],
       });
       setTotalPosts(parseInt(response.data.official.count, 10));
-    } catch (error) {
+    } catch(error) {
       console.error('Failed to fetch roadmaps:', error);
-      setRoadmapData({ roadmaps: [], userRoadmaps: [], createdRoadmaps: [] });
+      setRoadmapData({roadmaps: [], userRoadmaps: [], createdRoadmaps: []});
       setTotalPosts(0);
     } finally {
       setIsLoading(false);
@@ -73,7 +69,7 @@ export default function BrowseRoadmapsComponent() {
   };
 
   useEffect(() => {
-    if (searchParams.get('search')) {
+    if(searchParams.get('search')) {
       setSearchQuery(searchParams.get('search') || '');
       setHasSearched(true);
       fetchRoadmaps();
@@ -82,29 +78,21 @@ export default function BrowseRoadmapsComponent() {
 
   useEffect(() => {
     fetchRoadmaps();
-  }, [currentPage, postsPerPage]); // Remove searchQuery from dependency array
+  }, [currentPage, postsPerPage]);
 
   const handleSearch = () => {
     setCurrentPage(1);
     setHasSearched(true);
-    setSearchParams(searchQuery ? { search: searchQuery } : {});
+    setSearchParams(searchQuery ? {search: searchQuery} : {});
     fetchRoadmaps();
   };
 
   const filterRoadmaps = () => {
-    if (!roadmapData) return { created: [], enrolled: [], other: [] };
-
-    const createdIds = new Set(
-      (roadmapData.createdRoadmaps || []).map((r) => r.id),
-    );
-    const userIds = new Set((roadmapData.userRoadmaps || []).map((r) => r.id));
-
-    const filteredUserRoadmaps = (roadmapData.userRoadmaps || []).filter(
-      (r) => !createdIds.has(r.id),
-    );
-    const filteredOtherRoadmaps = (roadmapData.roadmaps || []).filter(
-      (r) => !createdIds.has(r.id) && !userIds.has(r.id),
-    );
+    if(!roadmapData) return {created: [], enrolled: [], other: []};
+    const createdIds = new Set((roadmapData.createdRoadmaps || []).map(r => r.id));
+    const userIds = new Set((roadmapData.userRoadmaps || []).map(r => r.id));
+    const filteredUserRoadmaps = (roadmapData.userRoadmaps || []).filter(r => !createdIds.has(r.id));
+    const filteredOtherRoadmaps = (roadmapData.roadmaps || []).filter(r => !createdIds.has(r.id) && !userIds.has(r.id));
 
     return {
       created: roadmapData.createdRoadmaps || [],
@@ -164,7 +152,7 @@ export default function BrowseRoadmapsComponent() {
          !filteredSections.enrolled.length && 
          !filteredSections.other.length ? (
         <AnimationWrapper animationType={5}>
-          <div className="flex flex-col items-center justify-center p-8 bg-gray-50 dark:bg-slate-800 rounded-lg min-h-[400px]">
+          <div className="flex flex-col items-center justify-center p-8  rounded-lg min-h-[400px]">
             <p className="text-xl text-gray-600 dark:text-gray-400 text-center">
               No roadmaps found matching "{searchQuery}"
             </p>
@@ -200,17 +188,8 @@ export default function BrowseRoadmapsComponent() {
         </>
       )}
 
-      <Pagination
-        totalPosts={totalPosts} // Use totalPosts state
-        postsPerPage={postsPerPage}
-        setCurrentPage={setCurrentPage}
-        currentPage={currentPage}
-      />
-
-      <AddRoadmapModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-      />
+      <Pagination totalPosts={totalPosts} postsPerPage={postsPerPage} setCurrentPage={setCurrentPage} currentPage={currentPage}/>
+      <AddRoadmapModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}/>
     </div>
   );
 }
