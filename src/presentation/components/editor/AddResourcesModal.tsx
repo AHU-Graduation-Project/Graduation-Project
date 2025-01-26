@@ -94,7 +94,7 @@ export default function AddResourceModal({
       await updateResourcesApi.execute(resources, roadmapId);
       onSave(resources);
       onClose();
-    } catch (error) {
+    } catch (error) { 
       console.error('Failed to save resources:', error);
       // You might want to add error handling UI here
     } finally {
