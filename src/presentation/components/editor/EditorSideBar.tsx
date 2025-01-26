@@ -50,7 +50,7 @@ const EditorSideBar = ({
   setSelectedNode,
   setShowRightSidebar,
   setIsResourcesDialogOpen,
-  roadmapId,
+  roadmapSlug,
   visibility,
 }: SidebarProps) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -61,7 +61,7 @@ const EditorSideBar = ({
   const handleVisibilityToggle = async () => {
     setIsLoading(true);
     try {
-      const response = await toggleVisibility.execute(roadmapId);
+      const response = await toggleVisibility.execute(roadmapSlug);
       setIsLoading(false);
       setVisibility(response.roadmap.visibility);
     } catch (error) {
@@ -170,7 +170,9 @@ const EditorSideBar = ({
                   {isLoading ? (
                     <div className="flex items-center gap-2">
                       <div className="w-4 h-4 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>
-                      {visibility !== 'public' ? 'Publishing...' : 'Hiding...'}
+                      {visibilityVar !== 'public'
+                        ? 'Publishing...'
+                        : 'Hiding...'}
                     </div>
                   ) : (
                     <>

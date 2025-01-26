@@ -11,13 +11,17 @@ import { FollowRoadmap } from '../../../infrastructure/api/FollowRoadmap';
 interface RoadmapTopBarProps {
   setRoadmap: React.Dispatch<React.SetStateAction<any>>;
   roadmap: any;
-  progress: number;
+  completedNodes: number;
+  totalNodes: number;
+  onFollowChange: (isFollowed: boolean) => void;
 }
 
 export default function RoadmapTopBar({
   setRoadmap,
   roadmap,
-  progress,
+  completedNodes,
+  totalNodes,
+  onFollowChange,
 }: RoadmapTopBarProps) {
   const [isVisible, setIsVisible] = useState(true);
   const { selectRoadmap } = useAuthStore();
@@ -27,7 +31,6 @@ export default function RoadmapTopBar({
   const { userRole } = useTokenStore();
   const followRoadmap = FollowRoadmap();
   const [loading, setLoading] = useState(false);
-
   const handleAddToRoadmap = async () => {
     setLoading(true);
     if (!userRole()) {
@@ -37,7 +40,7 @@ export default function RoadmapTopBar({
     }
     try {
       await followRoadmap.execute(roadmap.slug);
-      setRoadmap((prev) => ({ ...prev, isFollowed: true }));
+      onFollowChange(true);
       selectRoadmap(roadmap.id);
     } catch (error) {
       console.error('Failed to follow roadmap:', error);
@@ -82,6 +85,9 @@ export default function RoadmapTopBar({
   }, [lastScrollY]);
 
   if (!roadmap) return null;
+
+  // Calculate progress here instead
+  const progress = Math.round((completedNodes / totalNodes) * 100) || 0;
 
   return (
     <div
@@ -136,7 +142,7 @@ export default function RoadmapTopBar({
               />
             </div>
           </div>
-          {userRole() == 2 && (
+          {roadmap.isEditable && (
             <div className="flex items-center gap-3 text-sm md:text-base">
               <button
                 onClick={() => navigate(`/editor/${slug}`)}

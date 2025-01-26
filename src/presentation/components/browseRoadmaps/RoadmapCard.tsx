@@ -5,6 +5,17 @@ import { useThemeStore } from "../../../store/themeStore";
 import { cn } from "../../../infrastructure/utils/cn";
 import AnimationWrapper from "../UI/Animation/Animation";
 
+const stripMarkdown = (text: string) => {
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold
+    .replace(/\*(.*?)\*/g, '$1')     // Remove italic
+    .replace(/\[(.*?)\]\(.*?\)/g, '$1') // Remove links
+    .replace(/#{1,6}\s/g, '')       // Remove headers
+    .replace(/`{1,3}.*?`{1,3}/g, '') // Remove code blocks
+    .replace(/\n/g, ' ')            // Replace newlines with spaces
+    .trim();
+};
+
 interface RoadmapCardProps {
   id: string;
   title: string;
@@ -27,7 +38,8 @@ export default function RoadmapCard({
     <AnimationWrapper
       animationType={1}
       className={cn(
-        "group relative overflow-hidden rounded-xl bg-gray-50 dark:bg-slate-800 hover:shadow-xl transition-all duration-300"
+        "group relative overflow-hidden rounded-xl bg-gray-50 dark:bg-slate-800 hover:shadow-xl transition-all duration-300",
+        "h-[200px] w-full" // Changed height from 200px to 160px
       )}
     >
       <Link to={`/roadmap/${slug}`} className="block w-full h-full">
@@ -53,8 +65,8 @@ export default function RoadmapCard({
             </h3>
           </div>
 
-          <p className="text-slate-600 dark:text-slate-400 mb-6 line-clamp-2">
-            {description}
+          <p className="text-slate-600 dark:text-slate-400 mb-6 line-clamp-2 truncate overflow-hidden text-ellipsis">
+            {stripMarkdown(description)}
           </p>
 
           <div className="flex items-center text-sm font-medium">

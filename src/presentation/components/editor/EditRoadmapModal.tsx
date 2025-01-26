@@ -122,7 +122,7 @@ const EditRoadmapModal = ({
     setError(null);
 
     try {
-      const response = await editRoadmap.execute(roadmapData.id, {
+      const response = await editRoadmap.execute(roadmapData.slug, {
         title,
         description,
         slug: route,

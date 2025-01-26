@@ -54,13 +54,14 @@ const transformTopicsToNodes = (topics: RoadmapTopic[]): Node[] => {
     id: topic.id,
     position: { x: topic.position_x, y: topic.position_y },
     data: {
+      id: topic.id,
       label: topic.label,
       prerequisites: topic.prerequisites.split(',').filter((p) => p), // Convert string back to array
       type: topic.type,
-      isAchived: topic.is_achieved,
+      isAchieved: topic.is_achieved,
       description: topic.description,
       skillast_name: topic.skill_name,
-      isAnalysisNeeded: topic.is_analysis_needed,
+      isAnalysisNeeded: false,
     },
     type: 'custom',
   }));
@@ -84,9 +85,7 @@ export function GetRoadmapById(): GetRoadmapById {
   const user = getUser();
   return {
     execute: async (id: string): Promise<GetRoadmapByIdResponse> => {
-      if (!token) {
-        throw new Error('Authentication token is missing');
-      }
+   
       try {
         const response = await axios.get<GetRoadmapByIdResponse>(
           `${import.meta.env.VITE_PATH_API}/roadmaps/${id}`,
@@ -95,9 +94,9 @@ export function GetRoadmapById(): GetRoadmapById {
               user: user,
             },
             headers: {
-              'Authorization': `Bearer ${token}`
+              ...(token && { Authorization: `Bearer ${token}` }),
             },
-          }
+          },
         );
         
         // Transform the response data

@@ -4,38 +4,35 @@ import { MoreHorizontal } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import "reactflow/dist/style.css";
 
-
 interface NodeData {
   label: string;
   type: "topic" | "subtopic";
   description: string;
-  marketDemand: string;
-  averageSalary: string;
-  requiredSkills: string[];
   isAchieved: boolean;
   prerequisites?: string[];
   onShowDetails: (data: any) => void;
-  jobs?: number;
-  isSelected?: boolean;
+  isAnalysisNeeded: boolean;
+  shouldBeActive?: boolean;
+  isSkill?: boolean;
 }
 
-export function CustomNodeGenerator({ data}: NodeProps<NodeData>) {
+export function CustomNodeGenerator({ data }: NodeProps<NodeData>) {
   const [showToolbar, setShowToolbar] = useState(false);
   const toolbarContainerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
+  const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+    const toolbarClicked = toolbarContainerRef.current?.contains(
+      event.target as Node
+    );
+    const buttonClicked = buttonRef.current?.contains(event.target as Node);
+
+    if (!toolbarClicked && !buttonClicked) {
+      setTimeout(() => setShowToolbar(false), 0);
+    }
+  };
+
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
-      const toolbarClicked = toolbarContainerRef.current?.contains(
-        event.target as Node
-      );
-      const buttonClicked = buttonRef.current?.contains(event.target as Node);
-
-      if (!toolbarClicked && !buttonClicked) {
-        setTimeout(() => setShowToolbar(false), 0);
-      }
-    };
-
     document.addEventListener("mousedown", handleClickOutside);
     document.addEventListener("touchstart", handleClickOutside);
 
@@ -46,7 +43,6 @@ export function CustomNodeGenerator({ data}: NodeProps<NodeData>) {
   }, []);
 
   const handleAction = (action: string, e: React.MouseEvent) => {
-    e.preventDefault();
     e.stopPropagation();
     setShowToolbar(false);
 
@@ -55,16 +51,12 @@ export function CustomNodeGenerator({ data}: NodeProps<NodeData>) {
     }
   };
 
-  const showHandles = {
-    top: data.type === "topic",
-    bottom: data.type === "topic",
-    left: data.type === "subtopic" || data.type === "topic",
-    right: data.type === "subtopic" || data.type === "topic",
+  const truncateLabel = (label: string) => {
+    return label.length > 15 ? `${label.substring(0, 15)}...` : label;
   };
 
   return (
     <>
-
       <div ref={toolbarContainerRef}>
         <NodeToolbar
           isVisible={showToolbar}
@@ -85,14 +77,12 @@ export function CustomNodeGenerator({ data}: NodeProps<NodeData>) {
 
       <div
         className={cn(
-          "px-6 py-3 shadow-lg rounded-xl border-2 relative hover:scale-105 transition-transform bg-theme",
+          "px-6 py-3 text-center border-2 shadow-lg rounded-xl relative hover:scale-105 transition-transform",
           "min-w-[200px]",
           data.type === "topic"
-            ? "rounded-2xl text-lg font-bold tracking-wide shadow-xl"
-            : "rounded-md text-sm font-medium tracking-normal shadow-md",
-          data.isSelected &&
-            "ring-2 ring-theme ring-offset-2 dark:ring-offset-slate-900",
-          data.type === "topic" ? "" : ""
+            ? "rounded-2xl font-bold tracking-wide shadow-xl border-theme"
+            : "text-sm font-medium tracking-normal shadow-md scale-90 border-dashed border-theme",
+          data.type === "topic" ? "bg-theme" : "bg-theme-shadow",
         )}
       >
         <button
@@ -112,48 +102,62 @@ export function CustomNodeGenerator({ data}: NodeProps<NodeData>) {
               "font-medium transition-colors",
               data.type === "topic" ? "text-lg" : "text-lg",
               data.type === "topic"
-                ? " dark:text-white"
+                ? "text-white"
                 : "text-theme/90 dark:text-white/90"
             )}
           >
-            {data.label.length > 10
-              ? `${data.label.slice(0, 10)}...`
-              : data.label}
+            {truncateLabel(data.label)}
           </h3>
         </div>
 
-        {showHandles.top && (
-          <Handle
-            type="target"
-            position={Position.Top}
-            id="top"
-            className="border-none bg-transparent"
-          />
-        )}
-        {showHandles.bottom && (
-          <Handle
-            type="source"
-            position={Position.Bottom}
-            id="bottom"
-            className="border-none bg-transparent"
-          />
-        )}
-        {showHandles.left && (
-          <Handle
-            type={data.type === "subtopic" ? "target" : "source"}
-            position={Position.Left}
-            id="left"
-            className="border-none bg-transparent"
-          />
-        )}
-        {showHandles.right && (
-          <Handle
-            type={data.type === "subtopic" ? "target" : "source"}
-            position={Position.Right}
-            id="right"
-            className="border-none bg-transparent"
-          />
-        )}
+        <Handle
+          type="target"
+          position={Position.Left}
+          id="left-target"
+          className="border-none bg-transparent"
+        />
+        <Handle
+          type="source"
+          position={Position.Left}
+          id="left-source"
+          className="border-none bg-transparent"
+        />
+        <Handle
+          type="target"
+          position={Position.Right}
+          id="right-target"
+          className="border-none bg-transparent"
+        />
+        <Handle
+          type="source"
+          position={Position.Right}
+          id="right-source"
+          className="border-none bg-transparent"
+        />
+        <Handle
+          type="target"
+          position={Position.Top}
+          id="top-target"
+          className="border-none bg-transparent"
+        />
+        <Handle
+          type="source"
+          position={Position.Top}
+          id="top-source"
+          className="border-none bg-transparent"
+        />
+        <Handle
+          type="target"
+          position={Position.Bottom}
+          id="bottom-target"
+          className="border-none bg-transparent"
+        />
+        <Handle
+          type="source"
+          position={Position.Bottom}
+          id="bottom-source"
+          className="border-none bg-transparent"
+        />
       </div>
     </>
   );

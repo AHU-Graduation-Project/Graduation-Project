@@ -17,8 +17,10 @@ const EXAMPLE_STRUCTURE = `{
       label: "HTML",
       type: "topic",
       description: "Learn the fundamentals of HTML markup language.",
-      isSkill: true, // This is just if this is skill are Positionable in the cv
-      isAnalysisNeeded: true, // This just if this topic are find a job with topic name
+      skill_name: "HTML Developer",
+      keywords: ["markup", "web development", "frontend"], // Searchable keywords
+      prerequisites: [], // Empty since it's a starting point
+      isAnalysisNeeded: false,
       isAchieved: true,
     },
   },
@@ -30,10 +32,11 @@ const EXAMPLE_STRUCTURE = `{
       label: "CSS",
       type: "topic",
       description: "Master styling and layout with CSS.",
-      isSkill: true,
+      skill_name: "CSS Developer",
+      keywords: ["styling", "layout", "responsive design"],
+      prerequisites: ["1"], // Using ID instead of "HTML"
       isAnalysisNeeded: true,
       isAchieved: false,
-      prerequisites: ["1"],
     },
   },
   {
@@ -44,10 +47,11 @@ const EXAMPLE_STRUCTURE = `{
       label: "JavaScript",
       type: "topic",
       description: "Learn core JavaScript programming concepts.",
-      isSkill: true,
+      skill_name: "JavaScript Developer",
+      keywords: ["programming", "scripting", "web development"],
+      prerequisites: ["2"], // Using ID instead of "CSS"
       isAnalysisNeeded: true,
       isAchieved: false,
-      prerequisites: ["2"],
     },
   },
   {
@@ -58,10 +62,11 @@ const EXAMPLE_STRUCTURE = `{
       label: "JS Syntax",
       type: "subtopic",
       description: "Master JavaScript syntax and core concepts.",
-      isSkill: false,
+      skill_name: "JavaScript Syntax Specialist",
+      keywords: ["syntax", "basics", "programming"],
+      prerequisites: ["3"], // Using ID instead of "JavaScript"
       isAnalysisNeeded: false,
       isAchieved: false,
-      prerequisites: ["3"],
     },
   },
   {
@@ -72,10 +77,11 @@ const EXAMPLE_STRUCTURE = `{
       label: "DOM",
       type: "subtopic",
       description: "Learn DOM manipulation and events.",
-      isSkill: false,
+      skill_name: "DOM Specialist",
+      keywords: ["DOM", "events", "interaction"],
+      prerequisites: ["3"], // Using ID instead of "JavaScript"
       isAnalysisNeeded: false,
       isAchieved: false,
-      prerequisites: ["3"],
     },
   },
   {
@@ -86,10 +92,11 @@ const EXAMPLE_STRUCTURE = `{
       label: "React",
       type: "topic",
       description: "Build modern web applications with React.",
-      isSkill: true,
+      skill_name: "React Developer",
+      keywords: ["React", "frontend", "library"],
+      prerequisites: ["3"], // Using ID instead of "JavaScript"
       isAnalysisNeeded: true,
       isAchieved: false,
-      prerequisites: ["3"],
     },
   },
   {
@@ -100,10 +107,12 @@ const EXAMPLE_STRUCTURE = `{
       label: "Angular",
       type: "topic",
       description: "Develop enterprise applications with Angular.",
+      skill_name: "Angular Developer",
+      keywords: ["Angular", "framework", "frontend"],
+      prerequisites: ["3"], // Using ID instead of "JavaScript"
       isAchieved: false,
-      isSkill: true,
       isAnalysisNeeded: true,
-      prerequisites: ["3"],
+      isAchieved: false,
     },
   },
   {
@@ -114,10 +123,11 @@ const EXAMPLE_STRUCTURE = `{
       label: "VCS",
       type: "topic",
       description: "Learn version control with Git.",
-      isSkill: ture,
+      skill_name: "Version Control Specialist",
+      keywords: ["VCS", "Git", "collaboration"],
+      prerequisites: ["6", "7"], // Using IDs instead of "React", "Angular"
       isAnalysisNeeded: true,
       isAchieved: true,
-      prerequisites: ["6", "7"],
     },
   },
   {
@@ -128,10 +138,11 @@ const EXAMPLE_STRUCTURE = `{
       label: "SSR Vs CSR",
       type: "topic",
       description: "Understand server-side and client-side rendering.",
-      isAchieved: false,
-      isSkill: false,
+      skill_name: "Rendering Specialist",
+      keywords: ["SSR", "CSR", "performance"],
+      prerequisites: ["8"], // Using ID instead of "VCS"
       isAnalysisNeeded: false,
-      prerequisites: ["8"],
+      isAchieved: false,
     },
   },
 ],
@@ -140,24 +151,25 @@ const EXAMPLE_STRUCTURE = `{
     id: "e1-2",
     source: "1",
     target: "2",
-    sourceHandle: "bottom",
-    targetHandle: "top",
+    sourceHandle: "bottom-source",
+    targetHandle: "top-target",
     animated: true,
   },
   {
     id: "e2-3",
     source: "2",
     target: "3",
-    sourceHandle: "bottom",
-    targetHandle: "top",
-    animated: true,
+    sourceHandle: "right-source",
+    targetHandle: "left-target",
+    type: "smoothstep",
+    style: { strokeDasharray: "5,5" },
   },
   {
     id: "e3-4",
     source: "3",
     target: "4",
-    sourceHandle: "left",
-    targetHandle: "right",
+    sourceHandle: "left-source",
+    targetHandle: "right-target",
     type: "smoothstep",
     style: { strokeDasharray: "5,5" },
   },
@@ -165,8 +177,8 @@ const EXAMPLE_STRUCTURE = `{
     id: "e3-5",
     source: "3",
     target: "5",
-    sourceHandle: "right",
-    targetHandle: "left",
+    sourceHandle: "right-source",
+    targetHandle: "left-target",
     type: "smoothstep",
     style: { strokeDasharray: "5,5" },
   },
@@ -174,40 +186,40 @@ const EXAMPLE_STRUCTURE = `{
     id: "e3-6",
     source: "3",
     target: "6",
-    sourceHandle: "bottom",
-    targetHandle: "top",
+    sourceHandle: "bottom-source",
+    targetHandle: "top-target",
     animated: true,
   },
   {
     id: "e3-7",
     source: "3",
     target: "7",
-    sourceHandle: "bottom",
-    targetHandle: "top",
+   sourceHandle: "bottom-source",
+    targetHandle: "top-target",
     animated: true,
   },
   {
     id: "e6-8",
     source: "6",
     target: "8",
-    sourceHandle: "bottom",
-    targetHandle: "top",
+    sourceHandle: "bottom-source",
+    targetHandle: "top-target",
     animated: true,
   },
   {
     id: "e7-8",
     source: "7",
     target: "8",
-    sourceHandle: "bottom",
-    targetHandle: "top",
+  sourceHandle: "bottom-source",
+    targetHandle: "top-target",
     animated: true,
   },
   {
     id: "e8-9",
     source: "8",
     target: "9",
-    sourceHandle: "bottom",
-    targetHandle: "top",
+    sourceHandle: "bottom-source",
+    targetHandle: "top-target",
     animated: true,
   },
 ]
@@ -225,7 +237,9 @@ const createSystemPrompt = (
    - Data object must include:
      * type: "topic" for main nodes, "subtopic" for side nodes
      * label: concise name
-     * isSkill: This is just if this is skill are Positionable in the cv
+     * skill_name: if the skill is putable in resume
+     * keywords: array of searchable terms related to the topic
+     * prerequisites: array of required prerequisite topics
      * isAnalysisNeeded: This just if this topic are find a job with topic name
      * description: detailed explanation
 
@@ -233,14 +247,14 @@ const createSystemPrompt = (
 2. Edge Structure:
    For main flow (vertical connections):
    - id: "e{source}-{target}"
-   - sourceHandle: "bottom"
-   - targetHandle: "top"
+   - sourceHandle: "bottom-source"
+   - targetHandle: "top-target"
    - animated: true
    
    For subtopics (side connections):
    - id: "e{source}-{target}"
-   - sourceHandle: "left" or "right" depending on direction
-   - targetHandle: "right" or "left" opposite of source
+   - sourceHandle: "left-source" or "right-source" depending on direction
+   - targetHandle: "right-target" or "left-target" opposite of source
    - type: "smoothstep"
    - style: { strokeDasharray: "5,5" }
 

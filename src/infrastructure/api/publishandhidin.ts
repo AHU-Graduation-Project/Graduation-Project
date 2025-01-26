@@ -5,26 +5,26 @@ export interface VisibilityResponse {
   success: boolean;
   message: string;
   roadmap: {
-    id: number;
+    slug: string;
   };
 }
 
 export interface ToggleRoadmapVisibility {
-  execute: (id: string) => Promise<VisibilityResponse>;
+  execute: (slug: string) => Promise<VisibilityResponse>;
 }
 
 export function ToggleRoadmapVisibility(): ToggleRoadmapVisibility {
   const { token } = useTokenStore();
 
   return {
-    execute: async (id: string): Promise<VisibilityResponse> => {
+    execute: async (slug: string): Promise<VisibilityResponse> => {
       if (!token) {
         throw new Error('Authentication token is missing');
       }
 
       try {
         const response = await axios.post<VisibilityResponse>(
-          `${import.meta.env.VITE_PATH_API}/roadmaps/publish/${id}`,
+          `${import.meta.env.VITE_PATH_API}/roadmaps/publish/${slug}`,
           {},
           {
             headers: {

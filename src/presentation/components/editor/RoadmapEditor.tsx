@@ -401,23 +401,24 @@ const RoadmapEditor = () => {
     setShowRefreshConfirm(false);
     window.location.reload();
   };
-  // Add event listener for beforeunload to prevent accidental refresh
-  useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (hasUnsavedChanges) {
-        e.preventDefault();
 
-        // Prevent the default alert from showing
-        e.returnValue = '';
-        // Show custom modal instead
-        // setShowRefreshConfirm(true);
-      }
-      e.preventDefault();
-    };
+  // // Add event listener for beforeunload to prevent accidental refresh
+  // useEffect(() => {
+  //   const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+  //     if (hasUnsavedChanges) {
+  //       e.preventDefault();
 
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [hasUnsavedChanges]);
+  //       // Prevent the default alert from showing
+  //       e.returnValue = '';
+  //       // Show custom modal instead
+  //       // setShowRefreshConfirm(true);
+  //     }
+  //     e.preventDefault();
+  //   };
+
+  //   window.addEventListener('beforeunload', handleBeforeUnload);
+  //   return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  // }, [hasUnsavedChanges]);
 
   const handlePublish = () => {
     // Here you would typically make an API call to publish the roadmap
@@ -633,7 +634,7 @@ const RoadmapEditor = () => {
     },
     [selectingPrerequisite, selectedNode, nodes, setNodes],
   );
-
+console.log(roadmapData)
   useEffect(() => {
     if (nodes.length > 0 || edges.length > 0) {
       setHasUnsavedChanges(true);
@@ -666,7 +667,7 @@ const RoadmapEditor = () => {
         setSelectedNode={setSelectedNode}
         setShowRightSidebar={setIsRightSidebarOpen}
         visibility={roadmapData.visibility}
-        roadmapId={roadmapData.id}
+        roadmapSlug={roadmapData.slug}
       />
 
       {/* ReactFlow container */}
@@ -759,6 +760,8 @@ const RoadmapEditor = () => {
           console.log('Saving resources:', resources);
           setIsResourcesDialogOpen(false);
         }}
+        initialResources={roadmapData.resources}
+        roadmapId={roadmapData.id}
       />
     </div>
   );
