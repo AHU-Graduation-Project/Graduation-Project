@@ -85,9 +85,7 @@ export function GetRoadmapById(): GetRoadmapById {
   const user = getUser();
   return {
     execute: async (id: string): Promise<GetRoadmapByIdResponse> => {
-      if (!token) {
-        throw new Error('Authentication token is missing');
-      }
+   
       try {
         const response = await axios.get<GetRoadmapByIdResponse>(
           `${import.meta.env.VITE_PATH_API}/roadmaps/${id}`,
@@ -96,9 +94,9 @@ export function GetRoadmapById(): GetRoadmapById {
               user: user,
             },
             headers: {
-              'Authorization': `Bearer ${token}`
+              ...(token && { Authorization: `Bearer ${token}` }),
             },
-          }
+          },
         );
         
         // Transform the response data
