@@ -61,7 +61,7 @@ const transformTopicsToNodes = (topics: RoadmapTopic[]): Node[] => {
       isAchieved: topic.is_achieved,
       description: topic.description,
       skillast_name: topic.skill_name,
-      isAnalysisNeeded: topic.is_analysis_needed,
+      isAnalysisNeeded: false,
     },
     type: 'custom',
   }));

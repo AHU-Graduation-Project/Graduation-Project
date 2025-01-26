@@ -129,7 +129,6 @@ export function AddGeneratedRoadmap(): AddGeneratedRoadmap {
       if (!token) {
         throw new Error('Authentication token is missing');
       }
-
       try {
         const transformedData = {
           topics: transformNodes(params.nodes),
