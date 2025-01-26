@@ -101,7 +101,6 @@ export default function AddResourceModal({
       setIsLoading(false);
     }
   };
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
       <div className="w-full max-w-2xl bg-white dark:bg-slate-800 rounded-xl shadow-xl">
@@ -206,7 +205,7 @@ export default function AddResourceModal({
               </div>
             </div>
           </div>
-
+                
           {/* Resource List */}
           <div className="space-y-3 max-h-[300px] overflow-y-auto">
             {resources.map((resource, index) => {

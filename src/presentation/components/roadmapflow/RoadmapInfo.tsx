@@ -91,7 +91,11 @@ export default function RoadmapInfo({
                 return (
                   <a
                     key={index}
-                    href={resource.link}
+                    href={
+                      resource.link.startsWith('http')
+                        ? resource.link
+                        : `https://${resource.link}`
+                    }
                     target="_blank"
                     rel="noopener noreferrer"
                     className="block p-4 rounded-lg bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors"
