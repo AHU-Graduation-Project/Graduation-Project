@@ -89,9 +89,9 @@ export default function RoadmapInfo({
               roadmap.resources.map((resource: any, index: number) => {
                 const Icon = IconComponents[resource.icon];
                 return (
-                  <Link
+                  <a
                     key={index}
-                    to={resource.link}
+                    href={resource.link}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="block p-4 rounded-lg bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors"
@@ -109,7 +109,7 @@ export default function RoadmapInfo({
                         </p>
                       </div>
                     </div>
-                  </Link>
+                  </a>
                 );
               })
             ) : (

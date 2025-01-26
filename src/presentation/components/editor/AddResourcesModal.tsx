@@ -216,7 +216,7 @@ export default function AddResourceModal({
                   key={index}
                   className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-900/50 group hover:bg-slate-100 dark:hover:bg-slate-900"
                 >
-                  <Link to={resource.link} className="flex items-center gap-3">
+                  <a href={resource.link} className="flex items-center gap-3">
                     <div className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800">
                       <ThemeIcon icon={Icon} />
                     </div>
@@ -226,7 +226,7 @@ export default function AddResourceModal({
                         {sliceLink(resource.link)}
                       </p>
                     </div>
-                  </Link>
+                  </a>
                   <button
                     onClick={() => handleRemoveResource(index)}
                     className="p-2 rounded-lg text-red-500 opacity-0 group-hover:opacity-100 hover:bg-red-50 dark:hover:bg-red-500/10 transition-all"
