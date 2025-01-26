@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import { AchiveSkills } from "../../../infrastructure/api/getAchivedSkill";
 import { SummaryForm } from "./CVCreation/SummaryForm";
 import { SkillsForm } from "./CVCreation/SkillsForm";
 import { PersonalInfoForm } from "./CVCreation/PersonalInfoForm";
@@ -41,13 +42,6 @@ interface Certification {
   dateObtained?: string;
 }
 
-const defaultSkills: Skill[] = [
-  { title: "Programming Languages: JavaScript, Python, Java" },
-  { title: "Frameworks: React, Angular, Node.js" },
-  { title: "Tools: Git, Docker, Jenkins" },
-  { title: "Database Management: SQL, MongoDB" },
-  { title: "Cloud Services: AWS, Azure" },
-];
 const defaultCertifi: Certification[] = [
   { name: "Udemy" },
   { name: "python" },
@@ -60,9 +54,11 @@ export const CVForm: React.FC = () => {
   const [certifications, setCertifications] =
     useState<Certification[]>(defaultCertifi);
   const [summary, setSummary] = useState<string>("");
-  const [skills, setSkills] = useState<Skill[]>(defaultSkills);
+  const [skills, setSkills] = useState<Skill[]>([]);
   const [activeTab, setActiveTab] = useState("personal");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const getAchivedSkill = AchiveSkills();
 
   const transformExperience = (exp: Experience) => ({
     title: exp.title,
@@ -71,6 +67,22 @@ export const CVForm: React.FC = () => {
     period: exp.period,
     responsibilities: exp.responsibilities.split("\n").filter((r) => r.trim()),
   });
+
+  useEffect(() => {
+    const loadUserskills = async () => {
+      try {
+        const response = await getAchivedSkill;
+        if (response.success) {
+          setSkills(response.topic);
+        }
+      } catch (error) {
+        setError(error instanceof Error ? error.message : "An error occurred");
+      } finally {
+        // setIsSubmitting(false);
+      }
+    };
+    loadUserskills();
+  }, []);
 
   const cvData = {
     name: personalInfo?.fullName || "John Doe",

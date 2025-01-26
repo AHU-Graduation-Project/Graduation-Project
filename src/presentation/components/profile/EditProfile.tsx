@@ -1,20 +1,14 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { AchiveSkills } from "../../../infrastructure/api/getAchivedSkill";
+import { UserData } from "../../../infrastructure/api/getUserData";
+import { UpdateUserData } from "../../../infrastructure/api/updateUserData";
 import ProfilePicture from "./ProfilePicture";
 import PersonalInfo from "./PersonalInfo";
 import DropdownSection from "./DropDownSection";
 import AboutMe from "./AboutMe";
 import Skills from "./Skills";
 import ChangePassword from "./ChangePassword";
-
-// Mock API function (apiMock.js)
-export const fetchUserData = async () => {
-  const response = await fetch("/src/infrastructure/api/profile.json");
-  console.log(response);
-  if (!response.ok) {
-    throw new Error("Failed to fetch user data");
-  }
-  return response.json();
-};
 
 const countries = [
   "Jordan",
@@ -31,14 +25,14 @@ const countries = [
   "Brazil",
   "Mexico",
 ];
-
 const levels = ["Junior", "Middle", "Senior", "Team Leader", "Project Manager"];
 
 const EditProfile: React.FC = () => {
+  const navigate = useNavigate();
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [first_name, setfirst_name] = useState("");
   const [last_name, setlast_name] = useState("");
-  const [skillList, setSkillList] = useState<string[]>([]);
+  const [skillsList, setSkillsList] = useState([]);
   const [email, setEmail] = useState("");
   const [aboutme, setAboutMe] = useState("");
   const [isEmailConf, setIsEmailConf] = useState(false);
@@ -47,33 +41,87 @@ const EditProfile: React.FC = () => {
   const [country, setCountry] = useState("");
   const [profilePicture, setProfilePicture] = useState("");
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const getAchivedSkill = AchiveSkills();
+  const getUserData = UserData();
+  // const updateData = UpdateUserData();
 
   useEffect(() => {
     const loadUserData = async () => {
       try {
-        const data = await fetchUserData();
-        const user = data[0]; // Assuming a single user for now
-        setfirst_name(user.first_name);
-        setlast_name(user.last_name);
-        setEmail(user.email);
-        setAboutMe(user.about_me);
-        setPosition(user.position);
-        setLevel(user.level);
-        setCountry(user.country);
+        const response = await getUserData;
 
-        setSkillList(user.skills);
-        setProfilePicture(user.profilePicture || "");
+        if (response.success) {
+          setfirst_name(response.profile.first_name);
+          setlast_name(response.profile.last_name);
+          setEmail(response.profile.email);
+          setAboutMe(response.profile.about_me);
+          setPosition(response.profile.position);
+          setLevel(response.profile.level);
+          setIsEmailConf(response.profile.is_email_confirmed);
+          setCountry(response.profile.country);
+          setProfilePicture(response.profile.profile_image);
+        }
       } catch (error) {
         console.error("Error loading user data:", error);
       }
     };
-
     loadUserData();
   }, []);
 
-  const handleSaveChanges = () => {
-    setSuccessMessage("Changes have been successfully saved!");
-    setTimeout(() => setSuccessMessage(null), 3000);
+  useEffect(() => {
+    const loadUserskills = async () => {
+      try {
+        const response = await getAchivedSkill;
+        if (response.success) {
+          setSkillsList(response.topic);
+        }
+      } catch (error) {
+        setError(error instanceof Error ? error.message : "An error occurred");
+      }
+    };
+    loadUserskills();
+  }, []);
+
+  const handleSaveChanges = async () => {
+    try {
+      setError("");
+      setSuccessMessage(null);
+
+      if (!first_name || !last_name) {
+        setError("First name and last name are required");
+        return;
+      }
+
+      const profileData = {
+        first_name,
+        last_name,
+        position,
+        country,
+        level,
+      };
+
+      const response = await UpdateUserData(profileData);
+
+      if (response.success) {
+        setSuccessMessage("Changes have been successfully saved!");
+
+        const timer = setTimeout(() => {
+          setSuccessMessage(null);
+        }, 3000);
+
+        return () => clearTimeout(timer);
+      } else {
+        setError(response.message || "Update failed");
+      }
+    } catch (error) {
+      // Comprehensive error handling
+      const errorMessage =
+        error instanceof Error ? error.message : "An unexpected error occurred";
+
+      setError(errorMessage);
+      console.error("Save changes error:", error);
+    }
   };
 
   const handleProfilePictureChange = (
@@ -139,7 +187,7 @@ const EditProfile: React.FC = () => {
         <h3 className="text-lg font-semibold text-theme dark:text-white mb-4">
           Skills
         </h3>
-        <Skills skillList={skillList} setSkillList={setSkillList} />
+        <Skills skillList={skillsList} setSkillList={setSkillsList} />
       </div>
 
       {/* Change Password Modal */}

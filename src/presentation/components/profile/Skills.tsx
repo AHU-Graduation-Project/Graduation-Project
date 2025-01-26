@@ -1,61 +1,60 @@
 import React, { useState, useEffect } from "react";
-import { useAuthStore } from "../../../application/state/authStore";
+import axios from "axios";
 
-type Skill = {
-  title: string;
-};
+interface SkillsProps {
+  skillList: string[];
+  setSkillList: React.Dispatch<React.SetStateAction<string[]>>;
+  isProfile: boolean;
+}
 
-const skills: Skill[] = [
-  { title: "HTML" },
-  { title: "CSS" },
-  { title: "JavaScript" },
-  { title: "TypeScript" },
-  { title: "React" },
-  { title: "Angular" },
-  { title: "Vue" },
-  { title: "Git/GitHub" },
-];
-
-const SkillSelector: React.FC = ({ skillList, setSkillList }) => {
-  const { user, addSkill, removeSkill } = useAuthStore();
-  const [selectedSkills, setSelectedSkills] = useState<Skill[]>([]);
+const SkillSelector: React.FC<SkillsProps> = ({ skillList, setSkillList }) => {
+  const [predefinedSkills, setPredefinedSkills] = useState<string[]>([]);
+  const [filteredSkills, setFilteredSkills] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredSkills, setFilteredSkills] = useState<Skill[]>(skills);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Populate selectedSkills with user's saved skills on component mount
+  // Fetch predefined skills on component mount
   useEffect(() => {
-    if (user?.selectedSkills) {
-      const userSkills = user.selectedSkills.map((skillTitle: string) =>
-        skills.find((skill) => skill.title === skillTitle)
-      );
-      setSelectedSkills(userSkills.filter((skill): skill is Skill => !!skill));
-      setSkillList(userSkills.filter((skill): skill is Skill => !!skill));
-    }
-  }, [user?.selectedSkills]);
+    const fetchSkills = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_PATH_API}/topics/`
+        );
+        if (response.data.success && response.data.topics) {
+          setPredefinedSkills(response.data.topics);
+          setLoading(false);
+        } else {
+          throw new Error("Invalid response format");
+        }
+      } catch (err) {
+        setError("Failed to load skills");
+        setLoading(false);
+      }
+    };
+
+    fetchSkills();
+  }, []);
 
   // Filter skills based on search term
   useEffect(() => {
-    const filtered = skills.filter(
+    const filtered = predefinedSkills.filter(
       (skill) =>
-        skill.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        !selectedSkills.some((s) => s.title === skill.title)
+        skill.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        !skillList.includes(skill)
     );
     setFilteredSkills(filtered);
-    setSkillList(selectedSkills);
-    // console.log(selectedSkills);
-  }, [searchTerm, selectedSkills]);
+  }, [searchTerm, skillList, predefinedSkills]);
 
-  const handleAddSkill = (skill: Skill) => {
-    setSelectedSkills((prev) => [...prev, skill]);
-    addSkill(skill.title);
+  const handleAddSkill = (skill: string) => {
+    setSkillList((prev) => [...prev, skill]);
     setSearchTerm("");
     setDropdownOpen(false);
   };
 
-  const handleRemoveSkill = (skill: Skill) => {
-    setSelectedSkills((prev) => prev.filter((s) => s.title !== skill.title));
-    removeSkill(skill.title);
+  const handleRemoveSkill = (skill: string) => {
+    setSkillList((prev) => prev.filter((s) => s !== skill));
   };
 
   const handleInputFocus = () => {
@@ -65,6 +64,14 @@ const SkillSelector: React.FC = ({ skillList, setSkillList }) => {
   const handleInputBlur = () => {
     setTimeout(() => setDropdownOpen(false), 150);
   };
+
+  if (loading) {
+    return <div>Loading skills...</div>;
+  }
+
+  if (error) {
+    return <div className="text-red-500">{error}</div>;
+  }
 
   return (
     <div className="w-full">
@@ -89,11 +96,11 @@ const SkillSelector: React.FC = ({ skillList, setSkillList }) => {
           <ul className="absolute z-10 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-500 rounded-md mt-1 w-full max-h-40 overflow-y-auto shadow-lg">
             {filteredSkills.map((skill) => (
               <li
-                key={skill.title}
+                key={skill}
                 onClick={() => handleAddSkill(skill)}
                 className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer"
               >
-                {skill.title}
+                {skill}
               </li>
             ))}
           </ul>
@@ -102,12 +109,12 @@ const SkillSelector: React.FC = ({ skillList, setSkillList }) => {
 
       {/* Selected Skills */}
       <div className="flex flex-wrap gap-2 mt-3">
-        {selectedSkills.map((skill) => (
+        {skillList.map((skill) => (
           <div
-            key={skill.title}
+            key={skill}
             className="flex items-center gap-2 px-3 py-1 rounded-full bg-theme text-white text-sm font-medium shadow-sm"
           >
-            <span>{skill.title}</span>
+            <span>{skill}</span>
             <button
               onClick={() => handleRemoveSkill(skill)}
               className="text-white hover:text-gray-300 focus:outline-none"
