@@ -111,7 +111,7 @@ export default function BrowseRoadmapsComponent() {
   const filteredSections = filterRoadmaps();
 
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="container mx-auto px-4 py-12 min-h-[calc(100vh-80px)]">
       <AnimationWrapper animationType={5}>
         <div className="max-w-3xl mx-auto text-center mb-12">
           <h1 className="text-4xl font-bold mb-4 text-theme text-transparent bg-clip-text">
@@ -154,6 +154,24 @@ export default function BrowseRoadmapsComponent() {
               <RoadmapSkeleton key={index} />
             ))}
         </div>
+      ) : searchQuery && !filteredRoadmaps.length ? (
+        <AnimationWrapper animationType={5}>
+          <div className="flex flex-col items-center justify-center p-8 bg-gray-50 dark:bg-slate-800 rounded-lg min-h-[400px]">
+            <p className="text-xl text-gray-600 dark:text-gray-400 text-center">
+              No roadmaps found matching "{searchQuery}"
+            </p>
+          </div>
+        </AnimationWrapper>
+      ) : !filteredSections.created.length && 
+         !filteredSections.enrolled.length && 
+         !filteredSections.other.length ? (
+        <AnimationWrapper animationType={5}>
+          <div className="flex flex-col items-center justify-center p-8  rounded-lg min-h-[400px]">
+            <p className="text-xl text-gray-600 dark:text-gray-400 text-center">
+              No roadmaps available yet. Check back later!
+            </p>
+          </div>
+        </AnimationWrapper>
       ) : (
         <>
           <RoadmapSection

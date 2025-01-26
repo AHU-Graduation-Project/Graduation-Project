@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { X } from 'lucide-react';
 import { AddGeneratedRoadmap } from '../../../infrastructure/api/AddGeneratedRoadmap';
-
+import { useNavigate } from 'react-router-dom';
+import useTokenStore from '../../../application/state/tokenStore';
 interface SaveRoadmapModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -11,51 +12,54 @@ interface SaveRoadmapModalProps {
   isGenerated?: boolean; // Add this prop to determine if it's a generated roadmap
 }
 
-export default function SaveRoadmapModal({ 
-  isOpen, 
-  onClose, 
-  onSave, 
-  nodes, 
+export default function SaveRoadmapModal({
+  isOpen,
+  onClose,
+  onSave,
+  nodes,
   edges,
-  isGenerated = true 
+  isGenerated = true,
 }: SaveRoadmapModalProps) {
+  const { getUser } = useTokenStore();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const generatedRoadmapService = AddGeneratedRoadmap();
-
+  const navigate = useNavigate();
+  const user = getUser();
   if (!isOpen) return null;
-  console.log('nodes', nodes);
-  console.log('edges', edges);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
 
     try {
-      if (isGenerated) {
-        // Handle generated roadmap saving
-        const created = await generatedRoadmapService.execute({
-          title,
-          description,
-          nodes,
-          edges
-        });
+      if (user) {
+        if (isGenerated) {
+          // Handle generated roadmap saving
+          const created = await generatedRoadmapService.execute({
+            title,
+            description,
+            nodes,
+            edges,
+          });
 
-        // Save the data with the returned slug and id
-        await generatedRoadmapService.saveData({
-          nodes,
-          edges,
-          slug: created.roadmap.slug,
-          roadmapId: created.roadmap.id
-        });
+          // Save the data with the returned slug and id
+          await generatedRoadmapService.saveData({
+            nodes,
+            edges,
+            slug: created.roadmap.slug,
+            roadmapId: created.roadmap.id,
+          });
+
+          navigate(`/roadmap/${created.roadmap.slug}`);
+        }
+
+        setTitle('');
+        setDescription('');
+        onClose();
       } else {
-        // Handle regular roadmap saving
-        onSave(title, description);
+        navigate('/auth');
       }
-
-      setTitle('');
-      setDescription('');
-      onClose();
     } catch (error) {
       console.error('Failed to save roadmap:', error);
       // You might want to show an error message to the user here
@@ -92,7 +96,9 @@ export default function SaveRoadmapModal({
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Description</label>
+            <label className="block text-sm font-medium mb-1">
+              Description
+            </label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
