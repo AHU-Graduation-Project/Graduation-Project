@@ -1,21 +1,25 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-interface SkillsProps {
-  skillList: string[];
-  setSkillList: React.Dispatch<React.SetStateAction<string[]>>;
-  isProfile: boolean;
+interface Skill {
+  id: number;
+  skill_name: string;
 }
 
-const SkillSelector: React.FC<SkillsProps> = ({ skillList, setSkillList }) => {
-  const [predefinedSkills, setPredefinedSkills] = useState<string[]>([]);
-  const [filteredSkills, setFilteredSkills] = useState<string[]>([]);
+interface SkillsProps {
+  skillList: Skill[];
+  setSkillList: React.Dispatch<React.SetStateAction<Skill[]>>;
+  isProfile?: boolean;
+}
+
+const SkillSelector: React.FC<SkillsProps> = ({ skillList = [], setSkillList }) => {
+  const [predefinedSkills, setPredefinedSkills] = useState<Skill[]>([]);
+  const [filteredSkills, setFilteredSkills] = useState<Skill[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch predefined skills on component mount
   useEffect(() => {
     const fetchSkills = async () => {
       try {
@@ -37,24 +41,28 @@ const SkillSelector: React.FC<SkillsProps> = ({ skillList, setSkillList }) => {
     fetchSkills();
   }, []);
 
-  // Filter skills based on search term
   useEffect(() => {
+    if (!searchTerm) {
+      setFilteredSkills([]);
+      return;
+    }
+
     const filtered = predefinedSkills.filter(
       (skill) =>
-        skill.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        !skillList.includes(skill)
+        skill.skill_name?.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        !skillList.some((s) => s.id === skill.id)
     );
     setFilteredSkills(filtered);
   }, [searchTerm, skillList, predefinedSkills]);
 
-  const handleAddSkill = (skill: string) => {
+  const handleAddSkill = (skill: Skill) => {
     setSkillList((prev) => [...prev, skill]);
     setSearchTerm("");
     setDropdownOpen(false);
   };
 
-  const handleRemoveSkill = (skill: string) => {
-    setSkillList((prev) => prev.filter((s) => s !== skill));
+  const handleRemoveSkill = (skill: Skill) => {
+    setSkillList((prev) => prev.filter((s) => s.id !== skill.id));
   };
 
   const handleInputFocus = () => {
@@ -96,11 +104,11 @@ const SkillSelector: React.FC<SkillsProps> = ({ skillList, setSkillList }) => {
           <ul className="absolute z-10 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-500 rounded-md mt-1 w-full max-h-40 overflow-y-auto shadow-lg">
             {filteredSkills.map((skill) => (
               <li
-                key={skill}
+                key={skill.id}
                 onClick={() => handleAddSkill(skill)}
                 className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer"
               >
-                {skill}
+                {skill.skill_name}
               </li>
             ))}
           </ul>
@@ -111,10 +119,10 @@ const SkillSelector: React.FC<SkillsProps> = ({ skillList, setSkillList }) => {
       <div className="flex flex-wrap gap-2 mt-3">
         {skillList.map((skill) => (
           <div
-            key={skill}
+            key={skill.id}
             className="flex items-center gap-2 px-3 py-1 rounded-full bg-theme text-white text-sm font-medium shadow-sm"
           >
-            <span>{skill}</span>
+            <span>{skill.skill_name}</span>
             <button
               onClick={() => handleRemoveSkill(skill)}
               className="text-white hover:text-gray-300 focus:outline-none"

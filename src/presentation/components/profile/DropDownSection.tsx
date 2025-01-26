@@ -4,7 +4,7 @@ import SelectDropDown from "../UI/SelectDropDown";
 type DropdownSectionProps = {
   label: string;
   items: string[];
-  selectedValue: string;
+  selectedValue: string | undefined;
   onChange: (value: string) => void;
 };
 
@@ -23,7 +23,7 @@ const DropdownSection: React.FC<DropdownSectionProps> = ({
     </label>
     <SelectDropDown
       items={items}
-      selectedValue={selectedValue}
+      selectedValue={selectedValue || ""}
       onChange={onChange}
       className="border border-gray-300 dark:border-gray-600 rounded-md text-sm"
     />

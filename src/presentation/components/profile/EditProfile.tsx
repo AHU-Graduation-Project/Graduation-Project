@@ -32,7 +32,7 @@ const EditProfile: React.FC = () => {
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [first_name, setfirst_name] = useState("");
   const [last_name, setlast_name] = useState("");
-  const [skillsList, setSkillsList] = useState([]);
+  const [skillsList, setSkillsList] = useState<any[]>([]); // Add proper type
   const [email, setEmail] = useState("");
   const [aboutme, setAboutMe] = useState("");
   const [isEmailConf, setIsEmailConf] = useState(false);
@@ -74,14 +74,14 @@ const EditProfile: React.FC = () => {
       try {
         const response = await getAchivedSkill;
         if (response.success) {
-          setSkillsList(response.topic);
+          setSkillsList(response.topics);
         }
       } catch (error) {
         setError(error instanceof Error ? error.message : "An error occurred");
       }
     };
     loadUserskills();
-  }, []);
+  }, [getAchivedSkill]);
 
   const handleSaveChanges = async () => {
     try {

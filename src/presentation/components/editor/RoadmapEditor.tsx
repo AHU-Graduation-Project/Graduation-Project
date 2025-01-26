@@ -508,7 +508,6 @@ const RoadmapEditor = () => {
           slug: slug , 
           id :roadmapData.id// Extract the ID from the route, default to 0 if undefined
         });
-        console.log('repone', repone);
         setHasUnsavedChanges(false);
         // Refresh the page after successful save
         window.location.reload();
@@ -634,7 +633,6 @@ const RoadmapEditor = () => {
     },
     [selectingPrerequisite, selectedNode, nodes, setNodes],
   );
-console.log(roadmapData)
   useEffect(() => {
     if (nodes.length > 0 || edges.length > 0) {
       setHasUnsavedChanges(true);

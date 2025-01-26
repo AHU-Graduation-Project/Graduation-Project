@@ -57,7 +57,7 @@ export function InputField({
           setIsFocused(false);
           validateInput();
         }}
-        className={`w-full ${classname} px-4 py-3 bg-transparent text-black  dark:text-gray-300  rounded-lg border  ${
+        className={`w-full ${classname} px-4 py-3 bg-transparent text-white  dark:text-gray-300  rounded-lg border  ${
           isInputInvalid
             ? "border-red-500 focus:ring-red-500"
             : "border-gray-600 focus:ring-cyan-400"

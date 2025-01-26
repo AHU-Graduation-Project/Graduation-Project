@@ -14,14 +14,13 @@ export async function AchiveSkills() {
   }
   try {
     const response = await axios.get<AchiveTopicResponse>(
-      `${import.meta.env.VITE_PATH_API}/topics/achieve`,
+      `${import.meta.env.VITE_PATH_API}/topics/achieved`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       }
     );
-    console.log(response.data);
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError) {

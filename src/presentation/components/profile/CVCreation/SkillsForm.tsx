@@ -9,23 +9,23 @@ interface SkillsFormProps {
   setSkills: (skills: Skill[]) => void;
 }
 
-export const SkillsForm: React.FC<SkillsFormProps> = ({
-  skills,
-  setSkills,
+export const SkillsForm: React.FC<SkillsFormProps> = ({ 
+  skills = [], // Provide default empty array
+  setSkills 
 }) => {
   const [newSkill, setNewSkill] = React.useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (newSkill.trim()) {
-      const updatedSkills = [...skills, { title: newSkill.trim() }];
+      const updatedSkills = [...(skills || []), { title: newSkill.trim() }];
       setSkills(updatedSkills);
       setNewSkill("");
     }
   };
 
   const handleDelete = (index: number) => {
-    const updatedSkills = skills.filter((_, i) => i !== index);
+    const updatedSkills = (skills || []).filter((_, i) => i !== index);
     setSkills(updatedSkills);
   };
 
@@ -47,12 +47,12 @@ export const SkillsForm: React.FC<SkillsFormProps> = ({
         </button>
       </form>
       <div className="flex flex-wrap gap-2">
-        {skills.map((skill, index) => (
+        {(skills || []).map((skill, index) => (
           <div
             key={index}
             className="flex items-center gap-2 bg-theme px-3 py-1 rounded-full"
           >
-            <span>{skill.title}</span>
+            <span>{skill?.title}</span>
             <button
               onClick={() => handleDelete(index)}
               className="text-red-500 hover:text-red-600"
