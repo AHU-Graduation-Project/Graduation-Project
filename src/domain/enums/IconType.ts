@@ -1,4 +1,20 @@
-import { Edit, Code, Map, Plus, Brain, Library, Cpu, BookOpen, Video, Globe, Youtube, GraduationCap, FileText, Github, LucideIcon } from 'lucide-react';
+import {
+  Edit,
+  Code,
+  Map,
+  Plus,
+  Brain,
+  Library,
+  Cpu,
+  BookOpen,
+  Video,
+  Globe,
+  Youtube,
+  GraduationCap,
+  FileText,
+  Github,
+  LucideIcon,
+} from 'lucide-react';
 
 export enum IconType {
   MAP = 'map',
