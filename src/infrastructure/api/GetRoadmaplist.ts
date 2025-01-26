@@ -23,21 +23,26 @@ export function GetRoadmaplist() {
   const user = getUser();
 
   return {
-    execute: async (page: number = 1, limit: number = 1000): Promise<GetRoadmapListResponse> => {
-
+    execute: async (page: number = 1, limit: number = 1000, search: string = ''): Promise<GetRoadmapListResponse> => {
       try {
+        const cleanSearch = search
+          .trim()
+          .toLowerCase()
+          .replace(/\s+/g, ' ') // Replace multiple spaces with single space
+          .replace(/[^a-z0-9\s-]/g, '') // Remove special characters except spaces and hyphens
+          .trim(); // Additional trim in case of leading/trailing spaces
+          
         const response = await axios.get<GetRoadmapListResponse>(
           `${import.meta.env.VITE_PATH_API}/roadmaps`,
           {
             params: {
-              user: user,
-              isEditor: userRole() === 2,
               page,
               limit,
+              search: cleanSearch,
             },
             headers: {
               'Content-Type': 'application/json',
-              ...(token && { 'Authorization': `Bearer ${token}` }), // Ensure token is passed in headers
+              ...(token && { 'Authorization': `Bearer ${token}` }),
             },
           },
         );

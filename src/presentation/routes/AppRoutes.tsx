@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import Overview from "../pages/Overview";
 import BrowseRoadmaps from "../pages/BrowseRoadmaps";
 import GenerateRoadmap from "../pages/GenerateRoadmap";
@@ -14,17 +14,18 @@ import TermsAndPrivacy from "../pages/TermsAndPrivacy";
 export default function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<Overview />} />
-      <Route path="/roadmaps" element={<BrowseRoadmaps />} />
-      <Route path="/generate" element={<GenerateRoadmap />} />
-      <Route path="/roadmap/:slug" element={<RoadmapFlow />} />
-      <Route path="/confirm-email" element={<ConfirmPage />} />
-      <Route path="/recovery-password" element={<RecoveryPassword />} />
-      <Route path="/auth" element={<Auth />} />
-      <Route path="/term&privacy" element={<TermsAndPrivacy />} />
-      <Route path="/profile" element={<Profile />} />
-      <Route path="/editor/:slug" element={<Editor />} />
-      <Route path="*" element={<NotFoundPage />} />
+      <Route path="/" element={<Overview/>}/>
+      <Route path="/roadmaps" element={<BrowseRoadmaps/>}/>
+      <Route path="/roadmaps/search" element={<BrowseRoadmaps/>}/>
+      <Route path="/generate" element={<GenerateRoadmap/>}/>
+      <Route path="/roadmap/:slug" element={<RoadmapFlow/>}/>
+      <Route path="/confirm-email" element={<ConfirmPage/>}/>
+      <Route path="/recovery-password" element={<RecoveryPassword/>}/>
+      <Route path="/auth" element={<Auth/>}/>
+      <Route path="/term&privacy" element={<TermsAndPrivacy/>}/>
+      <Route path="/profile" element={<Profile/>}/>
+      <Route path="/editor/:slug" element={<Editor/>}/>
+      <Route path="*" element={<NotFoundPage/>}/>
     </Routes>
   );
 }

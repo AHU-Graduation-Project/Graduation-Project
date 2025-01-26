@@ -31,7 +31,7 @@ const RoadmapSection = ({ title, roadmaps, type }) => {
   return (
     <div className="mb-12">
       <AnimationWrapper animationType={5}>
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex justify-center items-center  items-center mb-6">
           <h2 className="text-2xl font-bold text-theme">{title}</h2>
         
         </div>

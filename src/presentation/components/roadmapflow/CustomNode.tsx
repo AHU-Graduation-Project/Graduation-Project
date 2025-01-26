@@ -175,10 +175,10 @@ export function CustomNode({ data, id }: NodeProps<NodeData>) {
         transition={{ duration: 0.5 }}
         className={cn(
           'px-6 py-3 text-center border-2 shadow-lg rounded-xl relative hover:scale-105 transition-transform',
-          'min-w-[200px]',
+          'w-[250px]', // Changed min-w-[200px] to w-[250px] for fixed width
           data.type === 'topic'
             ? 'rounded-2xl  font-bold tracking-wide shadow-xl border-theme'
-            : 'text-sm font-medium tracking-normal shadow-md scale-90 border-dashed border-theme',
+            : 'text-sm font-medium tracking-normal shadow-md border-dashed border-theme',
           !shouldBeActive && 'opacity-50 bg-slate-800/50',
           shouldBeActive &&
             (isCompleted
