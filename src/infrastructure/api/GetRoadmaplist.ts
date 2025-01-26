@@ -23,7 +23,7 @@ export function GetRoadmaplist() {
   const user = getUser();
 
   return {
-    execute: async (page: number = 1, limit: number = 1000): Promise<GetRoadmapListResponse> => {
+    execute: async (page: number = 1, limit: number = 1000, search: string = ''): Promise<GetRoadmapListResponse> => {
 
       try {
         const response = await axios.get<GetRoadmapListResponse>(
@@ -34,6 +34,7 @@ export function GetRoadmaplist() {
               isEditor: userRole() === 2,
               page,
               limit,
+              search, // Add search parameter
             },
             headers: {
               'Content-Type': 'application/json',

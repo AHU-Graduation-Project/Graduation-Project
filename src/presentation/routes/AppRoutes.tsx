@@ -16,6 +16,7 @@ export default function AppRoutes() {
     <Routes>
       <Route path="/" element={<Overview />} />
       <Route path="/roadmaps" element={<BrowseRoadmaps />} />
+      <Route path="/roadmaps/search" element={<BrowseRoadmaps />} /> {/* Add search route */}
       <Route path="/generate" element={<GenerateRoadmap />} />
       <Route path="/roadmap/:slug" element={<RoadmapFlow />} />
       <Route path="/confirm-email" element={<ConfirmPage />} />
