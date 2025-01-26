@@ -28,7 +28,7 @@ const AddRoadmapModal = ({ isOpen, onClose}: AddRoadmapModalProps) => {
   const createRoadmap = CreateRoadmap(); // Move hook to component level
 
   const icons = Object.entries(IconComponents);
-  const baseUrl = 'http://devpath/#/roadmaps/';
+  const baseUrl = 'http://devpath/roadmap/';
 
   const handleClickOutside = (e) => {
     if (modalRef.current && !modalRef.current.contains(e.target)) {
@@ -118,7 +118,7 @@ const AddRoadmapModal = ({ isOpen, onClose}: AddRoadmapModalProps) => {
       setSelectedIconIndex(null);
       
       onClose();
-      navigate(`/editor/${response.roadmap.id}`);
+      navigate(`/editor/${response.roadmap.slug}`);
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Failed to create roadmap');
     } finally {

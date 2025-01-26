@@ -200,11 +200,8 @@ export default function RoadmapFlowComponent() {
           <RoadmapTopBar
             setRoadmap={setRoadmapData}
             roadmap={roadmapData}
-            progress={progress}
-            completedNodes={completedNodes}
-            totalNodes={totalNodes}
-            nodes={nodes}
-            edges={edges}
+            completedNodes={completedNodeIds.length}
+            totalNodes={nodes.length}
           />
 
           {/* Main Flow Area */}
