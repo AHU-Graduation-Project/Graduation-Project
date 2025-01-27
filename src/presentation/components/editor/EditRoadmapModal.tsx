@@ -209,7 +209,7 @@ const EditRoadmapModal = ({
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Icon
           </label>
-          <div className="flex space-x-2">
+          <div className="flex space-x-2 flex-wrap">
             {icons.map(([iconType, IconComponent], index) => (
               <button
                 key={iconType}
